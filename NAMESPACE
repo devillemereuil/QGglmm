@@ -1,1 +1,1 @@
-exportPattern("^[[:alpha:]]+")
+export(qg.params,qg.pred,mean.obs,var.exp,var.dist,psi)
