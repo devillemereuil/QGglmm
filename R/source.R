@@ -132,7 +132,7 @@ qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
   #Mean of lambda square, needed for the following
   lambda_sq=mean(exp(2*(mu+predict+var.p/2)))
   #Observed variance
-  var_obs=lambda_sq*exp(Vp)-lambda**2+lambda
+  var_obs=lambda_sq*exp(var.p)-lambda**2+lambda
   data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
 }
 
@@ -154,7 +154,7 @@ qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
   #Mean of lambda square, needed for the following
   lambda_sq=mean(exp(2*(mu+predict+var.p/2)))
   #Observed variance
-  var_obs=lambda_sq*exp(Vp)-lambda**2+lambda+mean(exp(2*(mu+predict+var.p)))/theta
+  var_obs=lambda_sq*exp(var.p)-lambda**2+lambda+mean(exp(2*(mu+predict+var.p)))/theta
   data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
 }
 
