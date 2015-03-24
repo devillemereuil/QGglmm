@@ -110,7 +110,7 @@ qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
   var_obs=p*(1-p)
   #Psi
   Psi=mean(dnorm(0,(mu+predict),sqrt(var.p+1)))
-  data.frame(mean.obs=p,var.obs=var_obs,Psi=Psi,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
+  data.frame(mean.obs=p,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=35) {
@@ -122,7 +122,7 @@ qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=35) {
   var_obs=((n.obs**2)-n.obs)*prob.sq.int - p**2 +p
   #Psi
   Psi=n.obs*mean(dnorm(0,(mu+predict),sqrt(var.p+1)))
-  data.frame(mean.obs=p,var.obs=var_obs,Psi=Psi,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
+  data.frame(mean.obs=p,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
@@ -133,7 +133,7 @@ qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
   lambda_sq=mean(exp(2*(mu+predict+var.p/2)))
   #Observed variance
   var_obs=lambda_sq*exp(Vp)-lambda**2+lambda
-  data.frame(mean.obs=lambda,var.obs=var_obs,Psi=lambda,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
+  data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
 }
 
 qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
@@ -144,7 +144,7 @@ qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
   var_obs=mean((mu+predict)**4 + 6*var.p*((mu+predict)**2)+3*(var.p**2))-lambda**2+lambda
   #Psi
   Psi=mean(2*(mu+predict))
-  data.frame(mean.obs=lambda,var.obs=var_obs,Psi=Psi,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
+  data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
@@ -155,7 +155,7 @@ qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
   lambda_sq=mean(exp(2*(mu+predict+var.p/2)))
   #Observed variance
   var_obs=lambda_sq*exp(Vp)-lambda**2+lambda+mean(exp(2*(mu+predict+var.p)))/theta
-  data.frame(mean.obs=lambda,var.obs=var_obs,Psi=lambda,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
+  data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
 }
 
 qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
@@ -166,12 +166,12 @@ qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
   var_obs=mean((mu+predict)**4 + 6*var.p*((mu+predict)**2)+3*(var.p**2))-lambda**2+lambda+(mean((mu+predict)**4 + 6*var.p*((mu+predict)**2)+3*(var.p**2))/theta)
   #Psi
   Psi=mean(2*(mu+predict))
-  data.frame(mean.obs=lambda,var.obs=var_obs,Psi=Psi,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
+  data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
-qg.params<-function(mu,var.a,var.p,model,width=35,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
+qg.params<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
 
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
   if (model=="binom1.probit"&closed.form) {						#Binary.probit model
@@ -199,7 +199,10 @@ qg.params<-function(mu,var.a,var.p,model,width=35,predict=NULL,closed.form=TRUE,
   
   ##Else, use the general integral equations
   #Use a custom model if defined, otherwise look into the "Dictionary"
-      if (is.null(custom.model)) {funcs=link.funcs(model,n.obs=n.obs,theta=theta)} else {funcs=custom.model}
+      if (is.null(custom.model)) {
+        if (model==""){stop("The function requires either model or custom.model.")} else {
+          funcs=link.funcs(model,n.obs=n.obs,theta=theta)
+        }} else {funcs=custom.model}
   #Observed mean computation
       if (verbose) print("Computing observed mean...")
       y_bar=mean.obs(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
@@ -212,7 +215,7 @@ qg.params<-function(mu,var.a,var.p,model,width=35,predict=NULL,closed.form=TRUE,
       if (verbose) print("Computing Psi...")
       Psi=psi(mu=mu,var=var.p,d.link.inv=funcs$d.inv.link,width=width,predict=predict)
   #Return a data.frame with the calculated components
-      data.frame(mean.obs=y_bar,var.obs=var_obs,Psi=Psi,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
+      data.frame(mean.obs=y_bar,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
   }
 }
 
