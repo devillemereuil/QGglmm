@@ -8,7 +8,9 @@
   Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
-QGparams(mu, var.a, var.p, model="", width = 35, predict = NULL, closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
+QGparams(mu, var.a, var.p, model="", width = 35, predict = NULL, 
+         closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, 
+         verbose = TRUE)
 }
 
 \arguments{
@@ -41,6 +43,8 @@ The function typically uses precise integral numerical approximation to compute 
 Only the most typical distribution/link function couples are implemented in the function. If you used an "exotic" GLMM, you can use the \code{custom.model} argument. It should take the form of a list of functions. The first function should be the inverse of the link function named \code{inv.link}, the second function should be the "distribution variance" function named \code{var.func} and the third function should be the derivative of the inverse link function named \code{d.inv.link} (see Example below).
 
 Some distributions require extra-arguments. This is the case for "binomN", which require the number of trials N, passed with the argument \code{n.obs}. The distribution "negbin" requires a dispersion parameter \code{theta}, such as the variance of the distribution is \code{mean + mean**2/theta} (mean/dispersion parametrisation).
+
+If fixed effects (apart from the intercept) have been included in the GLMM, they can be included as marginal predicted values, i.e. predicted values excluding the random effects, which can be calculated as the matrix product \strong{Xb} where \strong{X} is the design matrix and \strong{b} is the vector of fixed effects estimates. To do so, provide the vector of marginal predicted values using the argument \code{predict}. Note this can considerably slow down the algorithm, especially when no closed form is used.
 }
 
 \value{
@@ -57,7 +61,9 @@ The function yields a data.frame containing the following values:
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }
-
+\seealso{
+\code{\link{QGpredict}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
+}
 \examples{
 ##Example using binary data
 #Parameters
