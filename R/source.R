@@ -66,7 +66,7 @@ QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
     inv.link=function(x){n.obs*pnorm(x)}
     var.func=function(x){n.obs*pnorm(x)*(1-pnorm(x))}
     d.inv.link=function(x){n.obs*dnorm(x)}
-  } else if (name=="binom.logit") {
+  } else if (name=="binom1.logit") {
     inv.link=function(x){plogis(x)}
     var.func=function(x){plogis(x)*(1-plogis(x))}
     d.inv.link=function(x){dlogis(x)}
