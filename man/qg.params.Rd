@@ -2,159 +2,87 @@
 \alias{qg.params}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+  Quantitative Genetics parameters from GLMM estimates.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+  Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
-qg.params(mu, var.a, var.p, model, width = 35, predict = NULL, closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
+qg.params(mu, var.a, var.p, model="", width = 35, predict = NULL, closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{mu}{
-%%     ~~Describe \code{mu} here~~
-}
-  \item{var.a}{
-%%     ~~Describe \code{var.a} here~~
-}
-  \item{var.p}{
-%%     ~~Describe \code{var.p} here~~
-}
-  \item{model}{
-%%     ~~Describe \code{model} here~~
-}
-  \item{width}{
-%%     ~~Describe \code{width} here~~
-}
-  \item{predict}{
-%%     ~~Describe \code{predict} here~~
-}
-  \item{closed.form}{
-%%     ~~Describe \code{closed.form} here~~
-}
-  \item{custom.model}{
-%%     ~~Describe \code{custom.model} here~~
-}
-  \item{n.obs}{
-%%     ~~Describe \code{n.obs} here~~
-}
-  \item{theta}{
-%%     ~~Describe \code{theta} here~~
-}
-  \item{verbose}{
-%%     ~~Describe \code{verbose} here~~
-}
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (mu, var.a, var.p, model, width = 35, predict = NULL, 
-    closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, 
-    verbose = TRUE) 
-{
-    if (model == "binom1.probit" & closed.form) {
-        if (verbose) 
-            print("Using the closed forms for a Binomial1-probit model.")
-        qg.binom1.probit(mu = mu, var.a = var.a, var.p = var.p, 
-            predict = predict)
-    }
-    else if (model == "binomN.probit" & closed.form) {
-        if (is.null(n.obs)) {
-            stop("binomN.probit model used, but no observation number (n.obs) defined.")
-        }
-        if (verbose) 
-            print("Using the closed forms for a BinomialN-probit model.")
-        qg.binomN.probit(mu = mu, var.a = var.a, var.p = var.p, 
-            predict = predict, n.obs = n.obs, width = width)
-    }
-    else if (model == "Poisson.log" & closed.form) {
-        if (verbose) 
-            print("Using the closed forms for a Poisson-log model.")
-        qg.Poisson.log(mu = mu, var.a = var.a, var.p = var.p, 
-            predict = predict)
-    }
-    else if (model == "Poisson.sqrt" & closed.form) {
-        if (verbose) 
-            print("Using the closed forms for a Poisson-sqrt model.")
-        qg.Poisson.sqrt(mu = mu, var.a = var.a, var.p = var.p, 
-            predict = predict)
-    }
-    else if (model == "negbin.log" & closed.form) {
-        if (is.null(theta)) {
-            stop("negbin model used, but theta not defined.")
-        }
-        if (verbose) 
-            print("Using the closed forms for a NegativeBinomial-log model.")
-        qg.negbin.log(mu = mu, var.a = var.a, var.p = var.p, 
-            predict = predict, theta = theta)
-    }
-    else if (model == "negbin.sqrt" & closed.form) {
-        if (is.null(theta)) {
-            stop("negbin model used, but theta not defined.")
-        }
-        if (verbose) 
-            print("Using the closed forms for a NegativeBinomial-sqrt model.")
-        qg.negbin.sqrt(mu = mu, var.a = var.a, var.p = var.p, 
-            predict = predict, theta = theta)
-    }
-    else {
-        if (is.null(custom.model)) {
-            funcs = link.funcs(model, n.obs = n.obs, theta = theta)
-        }
-        else {
-            funcs = custom.model
-        }
-        if (verbose) 
-            print("Computing observed mean...")
-        y_bar = mean.obs(mu = mu, var = var.p, link.inv = funcs$inv.link, 
-            width = width, predict = predict)
-        if (verbose) 
-            print("Computing variances...")
-        var_exp = var.exp(mu = mu, var = var.p, link.inv = funcs$inv.link, 
-            obs.mean = y_bar, width = width, predict = predict)
-        var_dist = var.dist(mu = mu, var = var.p, var.func = funcs$var.func, 
-            width = width, predict = predict)
-        var_obs = var_exp + var_dist
-        if (verbose) 
-            print("Computing Psi...")
-        Psi = psi(mu = mu, var = var.p, d.link.inv = funcs$d.inv.link, 
-            width = width, predict = predict)
-        data.frame(mean.obs = y_bar, var.obs = var_obs, Psi = Psi, 
-            var.a.obs = (Psi^2) * var.a, h2.obs = ((Psi^2) * 
-                var.a)/var_obs)
+  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
+  \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. (character) Available models are :
+    \itemize{
+      \item{\strong{"binom1.probit"}} Binomial with 1 trial (binary data) with a probit link
+      \item{\strong{"binomN.probit"}} Binomial with N tria with a probit link (require the parameter \code{n.obs})
+      \item{\strong{"binom1.logit"}} Binomial with 1 trial (binary) with a logit link
+      \item{\strong{"binomN.logit"}} Binomial with N trial with a logit link (require the parameter \code{n.obs})
+      \item{\strong{"Poisson.log"}} Poisson distribution wiht a log link
+      \item{\strong{"Poisson.sqrt"}} Poisson distribution with a square-root link
+      \item{\strong{"negbin.log"}} Negative-Binomial distribution wiht a log link (require the parameter \code{theta})
+      \item{\strong{"negbin.sqrt"}} Negative-Binomial distribution with a square-root link (require the parameter \code{theta})
     }
   }
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
+  \item{closed.form}{When available, should closed forms be used instead of integral computations? (boolean)}
+  \item{custom.model}{If the model used is not available using the \code{model} argument, a list of functions describing the model can be provided. (list of functions, see Details)}
+  \item{n.obs}{Number of "trials" for the "binomN" distribution. (numeric)}
+  \item{theta}{Dispersion parameter for the Negative Binomial distribution. The parameter \code{theta} should be such as the variance of the distribution is \code{mean + mean**2/theta}. (numeric)}
+  \item{verbose}{Should the function be verbose? (boolean)}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\details{
+The function typically uses precise integral numerical approximation to compute quantitative genetics parameters on the observed scale, from latent estimates yielded by a GLMM. If closed form solutions for the integrals are available, it uses them if \code{closed.form=TRUE}.
+
+Only the most typical distribution/link function couples are implemented in the function. If you used an "exotic" GLMM, you can use the \code{custom.model} argument. It should take the form of a list of functions. The first function should be the inverse of the link function named \code{inv.link}, the second function should be the "distribution variance" function named \code{var.func} and the third function should be the derivative of the inverse link function named \code{d.inv.link} (see Example below).
+
+Some distributions require extra-arguments. This is the case for "binomN", which require the number of trials N, passed with the argument \code{n.obs}. The distribution "negbin" requires a dispersion parameter \code{theta}, such as the variance of the distribution is \code{mean + mean**2/theta} (mean/dispersion parametrisation).
+}
+
+\value{
+The function yields a data.frame containing the following values:
+  \item{mean.obs}{Phenotypic mean on the observed scale.}
+  \item{var.obs}{Phenotypic variance on the observed scale.}
+  \item{var.a.obs}{Additive genetic variance on the observed scale.}
+  \item{h2.obs}{Heritability on the observed scale.}
+}
+\references{
+\strong{REF!}
+}
+
+\author{
+Pierre de Villemereuil & Micheal B. Morrissey
+}
+
+\examples{
+##Example using binary data
+#Parameters
+mu=0
+va=1
+vp=2
+
+#Simulating data l = mu + a + e
+lat<-mu+rnorm(1000,0,sqrt(va))+rnorm(1000,0,sqrt(vp-va))
+y<-rbinom(1000,1,pnorm(lat))
+
+#Expected results
+qg.params(mu=0,var.p=2,var.a=1,model="binom1.probit")
+#Simulated results for mean and variance
+mean(y)
+var(y)
+
+#Using integral approximations
+qg.params(mu=0,var.p=2,var.a=1,model="binom1.probit",closed.form=FALSE)
+#Note that the approximation is exactly equal to the results obtained with the closed form
+
+#Let's create a custom model
+custom=list(inv.link=function(x){pnorm(x)},
+    var.func=function(x){pnorm(x)*(1-pnorm(x))},
+    d.inv.link=function(x){dnorm(x)})
+    
+qg.params(mu=0,var.p=2,var.a=1,custom.model=custom)
+}

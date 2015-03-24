@@ -3,7 +3,7 @@ Type: Package
 Title: Estimate Quantitative Genetics parameters from Generalised Linear Mixed Models
 Version: 0.1
 Date: 2015-03-20
-Author: Pierre de Villemereuil & Michael B. Morrissey
-Maintainer: Pierre de Villemereuil (bonamy@horus.ens.fr)
+Author: Pierre de Villemereuil, Michael B. Morrissey
+Maintainer: Pierre de Villemereuil <bonamy@horus.ens.fr>
 Description: This package allows to compute various quantitative genetics parameters from a Generalised Linear Mixed Model (GLMM) estimates. Especially, it yields the observed phenotypic mean, phenotypic variance and additive genetic variance.
 License: GPL-v3
