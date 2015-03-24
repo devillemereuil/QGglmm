@@ -1,5 +1,5 @@
 #----------------------------------------------------------------
-#	QGGLMM R package
+#	QGglmm R package
 #	Functions to estimate QG parameters from GLMM estimates
 #----------------------------------------------------------------
 #	Pierre de Villemereuil & Michael Morrissey (2015)
