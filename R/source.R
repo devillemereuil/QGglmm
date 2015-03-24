@@ -56,42 +56,42 @@ QGpsi<-function(mu,var,d.link.inv,width=35,predict=NULL) {
 ##-------------------------------"Dictionary" functions---------------------------------------------
 
 #Function creating the needed functions according to the link name
-link.funcs<-function(link.name,n.obs=NULL,theta=NULL) {
-  if (link.name=="binom1.probit") {
+QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
+  if (name=="binom1.probit") {
     inv.link=function(x){pnorm(x)}
     var.func=function(x){pnorm(x)*(1-pnorm(x))}
     d.inv.link=function(x){dnorm(x)}
-  } else  if (link.name=="binomN.probit") {
+  } else  if (name=="binomN.probit") {
     if (is.null(n.obs)) {stop("binomN model used, but no observation number (n.obs) defined.")}
     inv.link=function(x){n.obs*pnorm(x)}
     var.func=function(x){n.obs*pnorm(x)*(1-pnorm(x))}
     d.inv.link=function(x){n.obs*dnorm(x)}
-  } else if (link.name=="binom.logit") {
+  } else if (name=="binom.logit") {
     inv.link=function(x){plogis(x)}
     var.func=function(x){plogis(x)*(1-plogis(x))}
     d.inv.link=function(x){dlogis(x)}
-  } else if (link.name=="binomN.logit") {
+  } else if (name=="binomN.logit") {
     if (is.null(n.obs)) {stop("binomN model used, but no observation number (n.obs) defined.")}
     inv.link=function(x){n.obs*plogis(x)}
     var.func=function(x){n.obs*plogis(x)*(1-plogis(x))}
     d.inv.link=function(x){n.obs*dlogis(x)}
-  } else if (link.name=="threshold") {
+  } else if (name=="threshold") {
       ##TODO
       stop("Not implemented yet")
-  } else if (link.name=="Poisson.log") {
+  } else if (name=="Poisson.log") {
     inv.link=function(x){exp(x)}
     var.func=function(x){exp(x)}
     d.inv.link=function(x){exp(x)}
-  } else if (link.name=="Poisson.sqrt") {
+  } else if (name=="Poisson.sqrt") {
     inv.link=function(x){x**2}
     var.func=function(x){x**2}
     d.inv.link=function(x){2*x}
-  } else if (link.name=="negbin.log") {
+  } else if (name=="negbin.log") {
     if (is.null(theta)) {stop("negbin model used, but theta not defined.")}
     inv.link=function(x){exp(x)}
     var.func=function(x){exp(x)+(exp(2*x)/theta)}
     d.inv.link=function(x){exp(x)}
-  } else if (link.name=="negbin.sqrt") {
+  } else if (name=="negbin.sqrt") {
     if (is.null(theta)) {stop("negbin model used, but theta not defined.")}
     inv.link=function(x){x**2}
     var.func=function(x){(x**2)+((x**4)/theta)}
@@ -201,7 +201,7 @@ QGparams<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRU
   #Use a custom model if defined, otherwise look into the "Dictionary"
       if (is.null(custom.model)) {
         if (model==""){stop("The function requires either model or custom.model.")} else {
-          funcs=link.funcs(model,n.obs=n.obs,theta=theta)
+          funcs=QGlink.funcs(model,n.obs=n.obs,theta=theta)
         }} else {funcs=custom.model}
   #Observed mean computation
       if (verbose) print("Computing observed mean...")
