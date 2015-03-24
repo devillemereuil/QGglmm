@@ -225,15 +225,15 @@ qg.pred<-function(mu,var.a,var.p,model,fitness.func,width=35,predict=NULL,custom
   if (is.null(predict)) predict=0
   #Calculating the latent mean fitness
   print("Computing mean fitness...")
-  Wbar=mean(sapply(predict,function(pred_i){integrate(f=function(x){lat.fitness(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))
+  Wbar=mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))
   #Calculating the covariance between latent trait and latent fitness
   print("Computing the latent selection...")
-  sel=(mean(sapply(predict,function(pred_i){integrate(f=function(x){x*lat.fitness(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))-(mean(mu+predict)*Wbar))/Wbar
+  sel=(mean(sapply(predict,function(pred_i){integrate(f=function(x){x*fitness.func(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))-(mean(mu+predict)*Wbar))/Wbar
   print(sel)
   #Calculating the covariance between the breeding values and the latent fitness
   print("Computing the latent response... (this might take a while if predict is large)")
   #Calculating the latent mean fitness conditional to a
-  exp_W_a<-function(vec){sapply(vec,function(a){mean(sapply(predict,function(pred_i){integrate(f=function(x){lat.fitness(x)*dnorm(x,mu+a+pred_i,sqrt(var.p-var.a))},lower=mu+a+pred_i-width*sqrt(var.p-var.a),upper=mu+a+pred_i+width*sqrt(var.p-var.a))$value}))})}
+  exp_W_a<-function(vec){sapply(vec,function(a){mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,mu+a+pred_i,sqrt(var.p-var.a))},lower=mu+a+pred_i-width*sqrt(var.p-var.a),upper=mu+a+pred_i+width*sqrt(var.p-var.a))$value}))})}
   resp=(integrate(f=function(a){a*exp_W_a(a)*dnorm(a,0,sqrt(var.a))},lower=-width*sqrt(var.a),upper=width*sqrt(var.a))$value)/Wbar
   #Returning the results on the latent scale
   data.frame(mean.lat.fit=Wbar,pred.lat.sel=sel,pred.lat.resp=resp)
