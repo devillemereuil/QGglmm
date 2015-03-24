@@ -1,14 +1,14 @@
-\name{qg.pred}
-\alias{qg.pred}
+\name{QGpred}
+\alias{QGpred}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Predict the evolutionary response to selection on the observed scale
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-qg.pred(mu, var.a, var.p, model, fitness.func, width = 35, predict = NULL, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
+QGpred(mu, var.a, var.p, model, fitness.func, width = 35, predict = NULL, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

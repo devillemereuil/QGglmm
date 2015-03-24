@@ -21,17 +21,17 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean
-mean.obs<-function(mu,var,link.inv,width=35,predict=NULL) {
+QGmean.obs<-function(mu,var,link.inv,width=35,predict=NULL) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=0
   mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating the expected scale variance
-var.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
+QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
   #If not provided, compute the obsereved mean
   if (is.null(obs.mean)){
-    obs.mean=mean.obs(mu=mu,var=var,link.inv=link.inv,width=width,predict=predict)
+    obs.mean=QGmean.obs(mu=mu,var=var,link.inv=link.inv,width=width,predict=predict)
   }
   if (is.null(predict)) predict=0
   #Note: Using Koenig's formula
@@ -39,14 +39,14 @@ var.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
 }
 
 #Calculating the "distribution" variance
-var.dist<-function(mu,var,var.func,width=35,predict=NULL) {
+QGvar.dist<-function(mu,var,var.func,width=35,predict=NULL) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=0
   mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
-#Calculating "Psi" for the observed additive genetic variance computation
-psi<-function(mu,var,d.link.inv,width=35,predict=NULL) {
+#Calculating "psi" for the observed additive genetic variance computation
+QGpsi<-function(mu,var,d.link.inv,width=35,predict=NULL) {
     #If no fixed effects were included in the model
   if (is.null(predict)) predict=0
     psi<-integrate(f=function(x){d.link.inv(x)*dnorm(x,mu,sqrt(var))},lower=mu-width*sqrt(var),upper=mu+width*sqrt(var))$value
@@ -171,7 +171,7 @@ qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
-qg.params<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGparams<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
 
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
   if (model=="binom1.probit"&closed.form) {						#Binary.probit model
@@ -205,15 +205,15 @@ qg.params<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TR
         }} else {funcs=custom.model}
   #Observed mean computation
       if (verbose) print("Computing observed mean...")
-      y_bar=mean.obs(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
+      y_bar=QGmean.obs(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
   #Variances computation
       if (verbose) print("Computing variances...")
-      var_exp=var.exp(mu=mu,var=var.p,link.inv=funcs$inv.link,obs.mean=y_bar,width=width,predict=predict)
-      var_dist=var.dist(mu=mu,var=var.p,var.func=funcs$var.func,width=width,predict=predict)
+      var_exp=QGvar.exp(mu=mu,var=var.p,link.inv=funcs$inv.link,obs.mean=y_bar,width=width,predict=predict)
+      var_dist=QGvar.dist(mu=mu,var=var.p,var.func=funcs$var.func,width=width,predict=predict)
       var_obs=var_exp+var_dist
   #Psi computation (for the observed additive genetic variance)
       if (verbose) print("Computing Psi...")
-      Psi=psi(mu=mu,var=var.p,d.link.inv=funcs$d.inv.link,width=width,predict=predict)
+      Psi=QGpsi(mu=mu,var=var.p,d.link.inv=funcs$d.inv.link,width=width,predict=predict)
   #Return a data.frame with the calculated components
       data.frame(mean.obs=y_bar,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
   }
@@ -221,7 +221,7 @@ qg.params<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TR
 
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
-qg.pred<-function(mu,var.a,var.p,model,fitness.func,width=35,predict=NULL,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGpred<-function(mu,var.a,var.p,model,fitness.func,width=35,predict=NULL,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
   if (is.null(predict)) predict=0
   #Calculating the latent mean fitness
   print("Computing mean fitness...")

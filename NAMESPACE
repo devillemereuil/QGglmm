@@ -1,1 +1,1 @@
-export(qg.params,qg.pred,mean.obs,var.exp,var.dist,psi)
+export(QGparams,QGpred,QGmean.obs,QGvar.exp,QGvar.dist,QGpsi)

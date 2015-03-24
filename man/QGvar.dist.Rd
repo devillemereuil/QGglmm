@@ -1,14 +1,14 @@
-\name{psi}
-\alias{psi}
+\name{QGvar.dist}
+\alias{QGvar.dist}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Calculate the distribution variance.
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-psi(mu, var, d.link.inv, width = 35, predict = NULL)
+QGvar.dist(mu, var, var.func, width = 35, predict = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,8 +18,8 @@ psi(mu, var, d.link.inv, width = 35, predict = NULL)
   \item{var}{
 %%     ~~Describe \code{var} here~~
 }
-  \item{d.link.inv}{
-%%     ~~Describe \code{d.link.inv} here~~
+  \item{var.func}{
+%%     ~~Describe \code{var.func} here~~
 }
   \item{width}{
 %%     ~~Describe \code{width} here~~
@@ -59,16 +59,13 @@ psi(mu, var, d.link.inv, width = 35, predict = NULL)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (mu, var, d.link.inv, width = 35, predict = NULL) 
+function (mu, var, var.func, width = 35, predict = NULL) 
 {
     if (is.null(predict)) 
         predict = 0
-    psi <- integrate(f = function(x) {
-        d.link.inv(x) * dnorm(x, mu, sqrt(var))
-    }, lower = mu - width * sqrt(var), upper = mu + width * sqrt(var))$value
     mean(sapply(predict, function(pred_i) {
         integrate(f = function(x) {
-            d.link.inv(x) * dnorm(x, mu + pred_i, sqrt(var))
+            var.func(x) * dnorm(x, mu + pred_i, sqrt(var))
         }, lower = mu + pred_i - width * sqrt(var), upper = mu + 
             pred_i + width * sqrt(var))$value
     }))

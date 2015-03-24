@@ -1,5 +1,5 @@
-\name{qg.params}
-\alias{qg.params}
+\name{QGparams}
+\alias{QGparams}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
   Quantitative Genetics parameters from GLMM estimates.
@@ -8,7 +8,7 @@
   Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
-qg.params(mu, var.a, var.p, model="", width = 35, predict = NULL, closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
+QGparams(mu, var.a, var.p, model="", width = 35, predict = NULL, closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
 }
 
 \arguments{
@@ -17,14 +17,14 @@ qg.params(mu, var.a, var.p, model="", width = 35, predict = NULL, closed.form = 
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. (character) Available models are :
     \itemize{
-      \item{\strong{"binom1.probit"}} Binomial with 1 trial (binary data) with a probit link
-      \item{\strong{"binomN.probit"}} Binomial with N tria with a probit link (require the parameter \code{n.obs})
-      \item{\strong{"binom1.logit"}} Binomial with 1 trial (binary) with a logit link
-      \item{\strong{"binomN.logit"}} Binomial with N trial with a logit link (require the parameter \code{n.obs})
-      \item{\strong{"Poisson.log"}} Poisson distribution wiht a log link
-      \item{\strong{"Poisson.sqrt"}} Poisson distribution with a square-root link
-      \item{\strong{"negbin.log"}} Negative-Binomial distribution wiht a log link (require the parameter \code{theta})
-      \item{\strong{"negbin.sqrt"}} Negative-Binomial distribution with a square-root link (require the parameter \code{theta})
+      \item{"binom1.probit"} Binomial with 1 trial (binary data) with a probit link
+      \item{"binomN.probit"} Binomial with N tria with a probit link (require the parameter \code{n.obs})
+      \item{"binom1.logit"} Binomial with 1 trial (binary) with a logit link
+      \item{"binomN.logit"} Binomial with N trial with a logit link (require the parameter \code{n.obs})
+      \item{"Poisson.log"} Poisson distribution wiht a log link
+      \item{"Poisson.sqrt"} Poisson distribution with a square-root link
+      \item{"negbin.log"} Negative-Binomial distribution wiht a log link (require the parameter \code{theta})
+      \item{"negbin.sqrt"} Negative-Binomial distribution with a square-root link (require the parameter \code{theta})
     }
   }
   \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 35, which should be sensible for most models. (numeric)}
@@ -70,13 +70,13 @@ lat<-mu+rnorm(1000,0,sqrt(va))+rnorm(1000,0,sqrt(vp-va))
 y<-rbinom(1000,1,pnorm(lat))
 
 #Expected results
-qg.params(mu=0,var.p=2,var.a=1,model="binom1.probit")
+QGparams(mu=0,var.p=2,var.a=1,model="binom1.probit")
 #Simulated results for mean and variance
 mean(y)
 var(y)
 
 #Using integral approximations
-qg.params(mu=0,var.p=2,var.a=1,model="binom1.probit",closed.form=FALSE)
+QGparams(mu=0,var.p=2,var.a=1,model="binom1.probit",closed.form=FALSE)
 #Note that the approximation is exactly equal to the results obtained with the closed form
 
 #Let's create a custom model
@@ -84,5 +84,5 @@ custom=list(inv.link=function(x){pnorm(x)},
     var.func=function(x){pnorm(x)*(1-pnorm(x))},
     d.inv.link=function(x){dnorm(x)})
     
-qg.params(mu=0,var.p=2,var.a=1,custom.model=custom)
+QGparams(mu=0,var.p=2,var.a=1,custom.model=custom)
 }

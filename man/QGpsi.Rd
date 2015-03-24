@@ -1,14 +1,14 @@
-\name{mean.obs}
-\alias{mean.obs}
+\name{QGpsi}
+\alias{QGpsi}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Calculate "QGpsi" to compute additive genetic parameters on the observed scale
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-mean.obs(mu, var, link.inv, width = 35, predict = NULL)
+QGpsi(mu, var, d.link.inv, width = 35, predict = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,8 +18,8 @@ mean.obs(mu, var, link.inv, width = 35, predict = NULL)
   \item{var}{
 %%     ~~Describe \code{var} here~~
 }
-  \item{link.inv}{
-%%     ~~Describe \code{link.inv} here~~
+  \item{d.link.inv}{
+%%     ~~Describe \code{d.link.inv} here~~
 }
   \item{width}{
 %%     ~~Describe \code{width} here~~
@@ -59,13 +59,16 @@ mean.obs(mu, var, link.inv, width = 35, predict = NULL)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (mu, var, link.inv, width = 35, predict = NULL) 
+function (mu, var, d.link.inv, width = 35, predict = NULL) 
 {
     if (is.null(predict)) 
         predict = 0
+    QGpsi <- integrate(f = function(x) {
+        d.link.inv(x) * dnorm(x, mu, sqrt(var))
+    }, lower = mu - width * sqrt(var), upper = mu + width * sqrt(var))$value
     mean(sapply(predict, function(pred_i) {
         integrate(f = function(x) {
-            link.inv(x) * dnorm(x, mu + pred_i, sqrt(var))
+            d.link.inv(x) * dnorm(x, mu + pred_i, sqrt(var))
         }, lower = mu + pred_i - width * sqrt(var), upper = mu + 
             pred_i + width * sqrt(var))$value
     }))

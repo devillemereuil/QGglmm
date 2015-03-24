@@ -1,14 +1,14 @@
-\name{var.dist}
-\alias{var.dist}
+\name{QGvar.exp}
+\alias{QGvar.exp}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Calculate the variance of expected values on the expected data scale
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-var.dist(mu, var, var.func, width = 35, predict = NULL)
+QGvar.exp(mu, var, link.inv, obs.mean = NULL, width = 35, predict = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,8 +18,11 @@ var.dist(mu, var, var.func, width = 35, predict = NULL)
   \item{var}{
 %%     ~~Describe \code{var} here~~
 }
-  \item{var.func}{
-%%     ~~Describe \code{var.func} here~~
+  \item{link.inv}{
+%%     ~~Describe \code{link.inv} here~~
+}
+  \item{obs.mean}{
+%%     ~~Describe \code{obs.mean} here~~
 }
   \item{width}{
 %%     ~~Describe \code{width} here~~
@@ -59,16 +62,20 @@ var.dist(mu, var, var.func, width = 35, predict = NULL)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (mu, var, var.func, width = 35, predict = NULL) 
+function (mu, var, link.inv, obs.mean = NULL, width = 35, predict = NULL) 
 {
+    if (is.null(obs.mean)) {
+        obs.mean = mean.obs(mu = mu, var = var, link.inv = link.inv, 
+            width = width, predict = predict)
+    }
     if (is.null(predict)) 
         predict = 0
     mean(sapply(predict, function(pred_i) {
         integrate(f = function(x) {
-            var.func(x) * dnorm(x, mu + pred_i, sqrt(var))
+            (link.inv(x)^2) * dnorm(x, mu + pred_i, sqrt(var))
         }, lower = mu + pred_i - width * sqrt(var), upper = mu + 
             pred_i + width * sqrt(var))$value
-    }))
+    })) - (obs.mean^2)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
