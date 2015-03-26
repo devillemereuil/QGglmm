@@ -1,80 +1,49 @@
 \name{QGpsi}
 \alias{QGpsi}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Calculate "QGpsi" to compute additive genetic parameters on the observed scale
-}
+
+\title{Compute "Psi" (used to compute the additive genetic variance on the observed scale).}
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function computes the parameter "Psi" which relates the additive genetic variance on the latent scale to the additive genetic variance on the observed scale: Va.obs = (Psi**2)*Va
 }
 \usage{
 QGpsi(mu, var, d.link.inv, width = 35, predict = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{mu}{
-%%     ~~Describe \code{mu} here~~
-}
-  \item{var}{
-%%     ~~Describe \code{var} here~~
-}
-  \item{d.link.inv}{
-%%     ~~Describe \code{d.link.inv} here~~
-}
-  \item{width}{
-%%     ~~Describe \code{width} here~~
-}
-  \item{predict}{
-%%     ~~Describe \code{predict} here~~
-}
+  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{d.link.inv}{Derivative of the inverse-link function. (function)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+The parameter "Psi" is the average of the derivative of the inverse-link function. The additive genetic variance on the observed scale is linked to the additive genetic variance on the latent scale by : Va.obs = (Psi**2)*Va.lat.
 }
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
+\value{This function yields the "Psi" parameter. (numeric)}
 \references{
-%% ~put references to the literature/web site here ~
+\strong{REF!}
 }
 \author{
-%%  ~~who you are~~
+Pierre de Villemereuil & Micheal B. Morrissey
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+##Example using binom1.probit model
+mu=0
+va=1
+vp=2
+#The inverse-link for a probit is the CDF of a standard Gaussian
+#Hence its derivative is the PDF of a standard Gaussian
+dinv<-function(x){dnorm(x)}
 
-## The function is currently defined as
-function (mu, var, d.link.inv, width = 35, predict = NULL) 
-{
-    if (is.null(predict)) 
-        predict = 0
-    QGpsi <- integrate(f = function(x) {
-        d.link.inv(x) * dnorm(x, mu, sqrt(var))
-    }, lower = mu - width * sqrt(var), upper = mu + width * sqrt(var))$value
-    mean(sapply(predict, function(pred_i) {
-        integrate(f = function(x) {
-            d.link.inv(x) * dnorm(x, mu + pred_i, sqrt(var))
-        }, lower = mu + pred_i - width * sqrt(var), upper = mu + 
-            pred_i + width * sqrt(var))$value
-    }))
-  }
+#Computing Psi
+Psi<-QGpsi(mu=0,var=2,d.link.inv=dinv)
+#Computing additive variance on the observed scale
+(Psi**2)*va
+
+#This function is used by QGparams to obtain var.a.obs
+QGparams(mu=0,var.p=vp,var.a=va,model="binom1.probit")
+#Same results as above!
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

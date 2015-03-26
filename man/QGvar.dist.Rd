@@ -1,77 +1,70 @@
 \name{QGvar.dist}
 \alias{QGvar.dist}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Calculate the distribution variance.
-}
+
+\title{Compute the distribution variance}
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function computes the variance emerging from the error distribution around the individual expected value. This variance, added to the variance of the individual expected values themselves (see \code{\link{QGvar.exp}}) yields the total observed phenotypic variance.
 }
 \usage{
 QGvar.dist(mu, var, var.func, width = 35, predict = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{mu}{
-%%     ~~Describe \code{mu} here~~
-}
-  \item{var}{
-%%     ~~Describe \code{var} here~~
-}
-  \item{var.func}{
-%%     ~~Describe \code{var.func} here~~
-}
-  \item{width}{
-%%     ~~Describe \code{width} here~~
-}
-  \item{predict}{
-%%     ~~Describe \code{predict} here~~
-}
+  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{var.func}{Function giving the variance of the distribution according to a given latent value. (function)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+The distribution variance is the part of the observed variance emerging from the error distribution. It is calculated as an average error variance over all possible latent values. The distribution variance added to the variance of the expected values gives the total phenotypic variance on the observed scale.
+
+The variance function (\code{var.func}) is a function giving the variance of the error distribution of the GLMM according to a given latent value.
+
+Using a Poisson distribution with a logarithm link, this function is \code{exp(x)}, because the variance of a Poisson is its mean. Using a Negative Binomial distribution with a logarithm link, this function will now be \code{exp(x)+exp(2*x)/theta}. Note that the dispersion parameter \code{theta} is necessary for a Negative Binomial distribution.
+
+The \code{var.func} function is yielded by \code{\link{QGlink.funcs}} according to a given distribution.link model (see Example below).
+
+Contrary to \code{\link{QGparams}}, \code{QGvar.exp} never uses the closed form solutions, but always compute the integrals.
 }
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
+\value{This function yields the distribution variance. (numeric)}
 \references{
-%% ~put references to the literature/web site here ~
+\strong{REF!}
 }
 \author{
-%%  ~~who you are~~
+Pierre de Villemereuil & Micheal B. Morrissey
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{QGvar.exp}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGpsi}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+##Example using Poisson.log model
+mu=1
+va=0.2
+vp=0.5
 
-## The function is currently defined as
-function (mu, var, var.func, width = 35, predict = NULL) 
-{
-    if (is.null(predict)) 
-        predict = 0
-    mean(sapply(predict, function(pred_i) {
-        integrate(f = function(x) {
-            var.func(x) * dnorm(x, mu + pred_i, sqrt(var))
-        }, lower = mu + pred_i - width * sqrt(var), upper = mu + 
-            pred_i + width * sqrt(var))$value
-    }))
-  }
+#The variance function is simply the inverse-link function
+#because the variance of a Poisson is its mean
+varfunc<-function(x){exp(x)}
+
+QGvar.dist(mu=mu,var=vp,var.func=varfunc)
+
+#The QGlink.funcs gives a ready-to-use var.func
+funcs<-QGlink.funcs(name="Poisson.log")
+
+#Calculating the distribution variance
+vdist=QGvar.dist(mu=mu,var=vp,var.func=funcs$var.func)
+
+vdist           #Same value as above
+
+#Calculating the variance of the expected values
+vexp=QGvar.exp(mu=mu,var=vp,link.inv=funcs$inv.link)
+
+#The phenotypic variance on the observed scale is then:
+vexp+vdist
+
+#This computation is automatically performed by QGparams
+#but directly using the closed form solutions when available
+QGparams(mu=mu,var.p=vp,var.a=va,model="Poisson.log")
+#var.obs is equal to the sum above
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

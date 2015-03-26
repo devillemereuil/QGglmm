@@ -8,9 +8,9 @@
   Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
-QGparams(mu, var.a, var.p, model="", width = 35, predict = NULL, 
-         closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, 
-         verbose = TRUE)
+    QGparams(mu, var.a, var.p, model="", width = 35, predict = NULL, 
+             closed.form = TRUE, custom.model = NULL, n.obs = NULL, 
+             theta = NULL, verbose = TRUE)
 }
 
 \arguments{
@@ -62,7 +62,7 @@ The function yields a data.frame containing the following values:
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGpredict}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
+\code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
 }
 \examples{
 ##Example using binary data

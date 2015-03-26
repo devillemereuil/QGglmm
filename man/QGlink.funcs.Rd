@@ -1,168 +1,67 @@
 \name{QGlink.funcs}
 \alias{QGlink.funcs}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-List of functions according to a distribution and a link function
-}
+
+\title{List of functions according to a distribution and a link function}
 \description{
 Function yielding different functions (inverse-link, variance function, derivative of the inverse-link) according to a distribution and link function.
 }
 \usage{
-link.funcs(name, n.obs = NULL, theta = NULL)
+QGlink.funcs(name, n.obs = NULL, theta = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{name}{Name of the distribution.link couple. See }
-  \item{n.obs}{
-%%     ~~Describe \code{n.obs} here~~
-}
-  \item{theta}{
-%%     ~~Describe \code{theta} here~~
-}
+  \item{name}{Name of the distribution.link couple. See \code{\link{QGparams}} for a complete list of model available. (character)}
+  \item{n.obs}{Optional parameter required for "binomN" distributions (number of "trials"). See \code{\link{QGparams}}. (numeric)}
+  \item{theta}{Optional parameter required for "negbin" distributions (dispersion parameter). See \code{\link{QGparams}}. (numeric)}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+This function takes the name of a distribution.link couple and yields several important functions such as the inverse-link function and its derivative, as well as the "distribution variance function".
+
+The inverse-link function is the inverse function of the link function. For example, if the link function is the natural logarithm (typically for a Poisson distribution), then the inverse-link function is the exponential.
+
+The distribution variance function is a function yielding the variance of the distribution for a given latent trait. For a Poisson distribution, the variance is equal to the mean, hence the variance function is equal to the inverse-link function. For a binomial distribution, the variance is N*p(l)*(1-p(l)), where p is the inverse-link function.
+
+For some distributions, such as "binomN" and "negbin", some extra-parameters are required.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-\code{\link{QGparams}}, \code{\link{QGpredict}}, \code{\link{QGmean.obs}}
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (link.name, n.obs = NULL, theta = NULL) 
-{
-    if (link.name == "binom1.probit") {
-        inv.link = function(x) {
-            pnorm(x)
-        }
-        var.func = function(x) {
-            pnorm(x) * (1 - pnorm(x))
-        }
-        d.inv.link = function(x) {
-            dnorm(x)
-        }
-    }
-    else if (link.name == "binomN.probit") {
-        if (is.null(n.obs)) {
-            stop("binomN model used, but no observation number (n.obs) defined.")
-        }
-        inv.link = function(x) {
-            n.obs * pnorm(x)
-        }
-        var.func = function(x) {
-            n.obs * pnorm(x) * (1 - pnorm(x))
-        }
-        d.inv.link = function(x) {
-            n.obs * dnorm(x)
-        }
-    }
-    else if (link.name == "binom.logit") {
-        inv.link = function(x) {
-            plogis(x)
-        }
-        var.func = function(x) {
-            plogis(x) * (1 - plogis(x))
-        }
-        d.inv.link = function(x) {
-            dlogis(x)
-        }
-    }
-    else if (link.name == "binomN.logit") {
-        if (is.null(n.obs)) {
-            stop("binomN model used, but no observation number (n.obs) defined.")
-        }
-        inv.link = function(x) {
-            n.obs * plogis(x)
-        }
-        var.func = function(x) {
-            n.obs * plogis(x) * (1 - plogis(x))
-        }
-        d.inv.link = function(x) {
-            n.obs * dlogis(x)
-        }
-    }
-    else if (link.name == "threshold") {
-        stop("Not implemented yet")
-    }
-    else if (link.name == "Poisson.log") {
-        inv.link = function(x) {
-            exp(x)
-        }
-        var.func = function(x) {
-            exp(x)
-        }
-        d.inv.link = function(x) {
-            exp(x)
-        }
-    }
-    else if (link.name == "Poisson.sqrt") {
-        inv.link = function(x) {
-            x^2
-        }
-        var.func = function(x) {
-            x^2
-        }
-        d.inv.link = function(x) {
-            2 * x
-        }
-    }
-    else if (link.name == "negbin.log") {
-        if (is.null(theta)) {
-            stop("negbin model used, but theta not defined.")
-        }
-        inv.link = function(x) {
-            exp(x)
-        }
-        var.func = function(x) {
-            exp(x) + (exp(2 * x)/theta)
-        }
-        d.inv.link = function(x) {
-            exp(x)
-        }
-    }
-    else if (link.name == "negbin.sqrt") {
-        if (is.null(theta)) {
-            stop("negbin model used, but theta not defined.")
-        }
-        inv.link = function(x) {
-            x^2
-        }
-        var.func = function(x) {
-            (x^2) + ((x^4)/theta)
-        }
-        d.inv.link = function(x) {
-            2 * x
-        }
-    }
-    else {
-        stop("Invalid model name. Use a valid model name or enter a custom model specification.")
-    }
-    list(inv.link = inv.link, var.func = var.func, d.inv.link = d.inv.link)
+This function yields a list of function:
+  \itemize{
+    \item{\code{inv.link}}{Inverse function of the link function. (function)}
+    \item{\code{var.func}}{Distribution variance function. (function)}
+    \item{\code{inv.link}}{Derivative of the inverse-link function. (function)}
   }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\references{
+\strong{REF!!}
+}
+\author{
+Pierre de Villemereuil & Micheal B. Morrissey
+}
+
+\seealso{
+\code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGmean.obs}}
+}
+\examples{
+##Getting the functions for a Poisson.log model
+QGlink.funcs("Poisson.log")
+#Note that because the variance is equal to the mean in a Poisson distribution
+#and the derivative of exp is exp
+#all functions are the same!
+
+##Getting the functions for a binom1.probit model
+QGlink.funcs("binom1.probit")
+
+##The function QGparams automatically computes these functions
+QGparams(mu=0,var.p=2,var.a=1,model="binom1.logit")
+#Hence this is the same as using the custom.model argument with QGlink.funcs
+QGparams(mu=0,var.p=2,var.a=1,custom.model=QGlink.funcs("binom1.logit"))
+
+##We can create our own custom set of functions
+#Let's create a custom model exactly identical to QGlink.funcs("binom1.logit")
+custom=list(inv.link=function(x){plogis(x)},
+    var.func=function(x){plogis(x)*(1-plogis(x))},
+    d.inv.link=function(x){dlogis(x)})
+    
+QGparams(mu=0,var.p=2,var.a=1,custom.model=custom)
+}
+

@@ -1,9 +1,7 @@
 \name{QGmean.obs}
 \alias{QGmean.obs}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Calculate the phenotypic mean on the observed scale
-}
+
+\title{Compute the phenotypic mean on the observed scale}
 \description{
 This function calculates the phenotypic mean on the observed scale from the latent mean and variance.
 }
@@ -12,61 +10,46 @@ QGmean.obs(mu, var, link.inv, width = 35, predict = NULL)
 }
 \arguments{
   \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
-  \item{var}{Total }
-  \item{link.inv}{
-%%     ~~Describe \code{link.inv} here~~
+  \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{link.inv}{Inverse function of the link function. (function)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
 }
-  \item{width}{
-%%     ~~Describe \code{width} here~~
-}
-  \item{predict}{
-%%     ~~Describe \code{predict} here~~
-}
-}
+
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+This function needs the latent population mean (i.e. latent intercept \code{mu}) and variance (i.e. total latent variance \code{var}) to compute the observed phenotypic mean. To do so, it also requires the inverse function of the link function.
+  
+For example, if the link function is the natural logarithm, the inverse-link function will be the exponential. The inverse-link functions for many models are yielded by the \code{\link{QGlink.funcs}} function.
+
+Contrary to \code{\link{QGparams}}, \code{QGmean.obs} never uses the closed form solutions, but always compute the integrals.
 }
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
+\value{This function yields the phenotypic mean on the observed scale. (numeric)}
 \references{
-%% ~put references to the literature/web site here ~
+\strong{REF!}
 }
+
 \author{
-%%  ~~who you are~~
+Pierre de Villemereuil & Micheal B. Morrissey
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+##Computing the observed mean for a probit link
+QGmean.obs(mu=0.3,var=1,link.inv=pnorm)
+#The theoretical expectation is
+1-pnorm(0,0.3,sqrt(1+1))
 
-## The function is currently defined as
-function (mu, var, link.inv, width = 35, predict = NULL) 
-{
-    if (is.null(predict)) 
-        predict = 0
-    mean(sapply(predict, function(pred_i) {
-        integrate(f = function(x) {
-            link.inv(x) * dnorm(x, mu + pred_i, sqrt(var))
-        }, lower = mu + pred_i - width * sqrt(var), upper = mu + 
-            pred_i + width * sqrt(var))$value
-    }))
-  }
+#Or, using the QGlink.funcs function
+QGmean.obs(mu=0.3,var=1,link.inv=QGlink.funcs(name="binom1.probit")$inv.link)
+
+##Computing the observed mean for a logarithm link
+QGmean.obs(mu=1,var=1,link.inv=exp)
+#The theoretical expectation is
+exp(1+0.5*1)
+
+#This computation is automatically performed by QGparams
+#but directly using the closed form solution when available
+QGparams(mu=1,var.p=1,var.a=0.5,model="Poisson.log")
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

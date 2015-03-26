@@ -1,122 +1,76 @@
 \name{QGpred}
 \alias{QGpred}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Predict the evolutionary response to selection on the observed scale
-}
+
+\title{Predict the evolutionary response to selection on the observed scale}
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This function uses an assumed or measured fitness function to compute evolutionary response to selection on the observed scale. To do so a latent fitness function must be provided to the function. This fitness function is used to compute the evolutionary response on the latent scale.
 }
+
 \usage{
-QGpred(mu, var.a, var.p, model, fitness.func, width = 35, predict = NULL, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
+    QGpred(mu, var.a, var.p, fitness.func, width = 35, 
+           predict = NULL, verbose = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{mu}{
-%%     ~~Describe \code{mu} here~~
-}
-  \item{var.a}{
-%%     ~~Describe \code{var.a} here~~
-}
-  \item{var.p}{
-%%     ~~Describe \code{var.p} here~~
-}
-  \item{model}{
-%%     ~~Describe \code{model} here~~
-}
-  \item{fitness.func}{
-%%     ~~Describe \code{fitness.func} here~~
-}
-  \item{width}{
-%%     ~~Describe \code{width} here~~
-}
-  \item{predict}{
-%%     ~~Describe \code{predict} here~~
-}
-  \item{custom.model}{
-%%     ~~Describe \code{custom.model} here~~
-}
-  \item{n.obs}{
-%%     ~~Describe \code{n.obs} here~~
-}
-  \item{theta}{
-%%     ~~Describe \code{theta} here~~
-}
-  \item{verbose}{
-%%     ~~Describe \code{verbose} here~~
-}
+  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
+  \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{fitness.func}{Function giving the expected fitness on the observed scale for a given latent trait (see Example). (function)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
+  \item{verbose}{Should the function be verbose? (boolean)}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+The function uses the latent fitness function (\code{fitness.func}) and latent quantitative genetics parameters to compute the expected selection differential and response on the latent scale.
+
+There is no argument to describe the model used as it is already and implicitely contained in the calculation of \code{fitness.func}.
+
+If fixed effects were included during the estimation of the quantitative genetics parameters,  they can be included as marginal predicted values, i.e. predicted values excluding the random effects, which can be calculated as the matrix product \strong{Xb} where \strong{X} is the design matrix and \strong{b} is the vector of fixed effects estimates. To do so, provide the vector of marginal predicted values using the argument \code{predict}. Note this will considerably slow down the algorithm.
+
+The predictions can be transposed on the observed scale by using the \code{\link{QGmean.obs}} function (see Example below).
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (mu, var.a, var.p, model, fitness.func, width = 35, 
-    predict = NULL, custom.model = NULL, n.obs = NULL, theta = NULL, 
-    verbose = TRUE) 
-{
-    if (is.null(predict)) 
-        predict = 0
-    print("Computing mean fitness...")
-    Wbar = mean(sapply(predict, function(pred_i) {
-        integrate(f = function(x) {
-            lat.fitness(x) * dnorm(x, mu + pred_i, sqrt(var.p))
-        }, lower = mu + pred_i - width * sqrt(var.p), upper = mu + 
-            pred_i + width * sqrt(var.p))$value
-    }))
-    print("Computing the latent selection...")
-    sel = (mean(sapply(predict, function(pred_i) {
-        integrate(f = function(x) {
-            x * lat.fitness(x) * dnorm(x, mu + pred_i, sqrt(var.p))
-        }, lower = mu + pred_i - width * sqrt(var.p), upper = mu + 
-            pred_i + width * sqrt(var.p))$value
-    })) - (mu * Wbar))/Wbar
-    print("Computing the latent response... (this might take a while if predict is large)")
-    exp_W_a <- function(vec) {
-        sapply(vec, function(a) {
-            mean(sapply(predict, function(pred_i) {
-                integrate(f = function(x) {
-                  lat.fitness(x) * dnorm(x, mu + a + pred_i, 
-                    sqrt(var.p - var.a))
-                }, lower = mu + a + pred_i - width * sqrt(var.p - 
-                  var.a), upper = mu + a + pred_i + width * sqrt(var.p - 
-                  var.a))$value
-            }))
-        })
-    }
-    resp = (integrate(f = function(a) {
-        a * exp_W_a(a) * dnorm(a, 0, sqrt(var.a))
-    }, lower = -width * sqrt(var.a), upper = width * sqrt(var.a))$value)/Wbar
-    data.frame(mean.lat.fit = Wbar, pred.lat.sel = sel, pred.lat.resp = resp)
+The function yields a data.frame containing:
+  \itemize{
+    \item{\code{mean.lat.fitness}}{Average latent fitness. (numeric)}
+    \item{\code{lat.sel}}{Latent selection differential. (numeric)}
+    \item{\code{lat.resp}}{Latent evolutionary response to selection. (numeric)}
   }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\references{
+\strong{REF!!}
+}
+
+\author{
+Pierre de Villemereuil & Micheal B. Morrissey
+}
+
+\seealso{
+\code{\link{QGparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
+}
+
+\examples{
+##Example with binary traits and a fitness measurement
+#Let's assume we dispose of a binary trait measurement 
+#and associated fitness of trait 0 (say 1) and trait 1 (say 1.86)
+#We further assume a GLMM with Binomial distribution and probit link with:
+mu=-0.1
+va=2
+vp=2.5  #note that the latent heritability is very high
+
+#Creating the latent fitness function
+#i.e. expected fitness given a latent trait l
+#We have a trait 1 with probability pnorm(l) with fitness 1.86
+#We have a trait 0 with probability (1-pnorm(l)) with fitness 1
+lat.fit<-function(l){(1-pnorm(l))*1 + pnorm(l)*1.86}
+
+#Predicting the latent evolutionary response
+pred<-QGpred(mu=mu,var.p=vp,var.a=va,fitness.func=lat.fit)
+
+#Predicting the observed evolutionary response
+#Current observed phenotypic mean
+QGmean.obs(mu=mu,var=vp,link.inv=QGlink.funcs("binom1.probit")$inv.link)
+#Predicted observed phenotypic mean after selection
+QGmean.obs(mu=mu+pred$lat.resp,var=vp,link.inv=QGlink.funcs("binom1.probit")$inv.link)
+}
+
