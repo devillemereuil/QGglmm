@@ -49,7 +49,6 @@ QGvar.dist<-function(mu,var,var.func,width=35,predict=NULL) {
 QGpsi<-function(mu,var,d.link.inv,width=35,predict=NULL) {
     #If no fixed effects were included in the model
   if (is.null(predict)) predict=0 else mu=0;
-    psi<-integrate(f=function(x){d.link.inv(x)*dnorm(x,mu,sqrt(var))},lower=mu-width*sqrt(var),upper=mu+width*sqrt(var))$value
     mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
