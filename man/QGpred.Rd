@@ -12,7 +12,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
   \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{fitness.func}{Function giving the expected fitness on the observed scale for a given latent trait (see Example). (function)}

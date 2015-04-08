@@ -23,7 +23,7 @@
 #Calculating the observed/expected scale mean
 QGmean.obs<-function(mu,var,link.inv,width=35,predict=NULL) {
   #If no fixed effects were included in the model
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
@@ -33,7 +33,7 @@ QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
   if (is.null(obs.mean)){
     obs.mean=QGmean.obs(mu=mu,var=var,link.inv=link.inv,width=width,predict=predict)
   }
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   #Note: Using Koenig's formula
   mean(sapply(predict,function(pred_i){integrate(f=function(x){(link.inv(x)**2)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))-(obs.mean**2)
 }
@@ -41,14 +41,14 @@ QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
 #Calculating the "distribution" variance
 QGvar.dist<-function(mu,var,var.func,width=35,predict=NULL) {
   #If no fixed effects were included in the model
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating "psi" for the observed additive genetic variance computation
 QGpsi<-function(mu,var,d.link.inv,width=35,predict=NULL) {
     #If no fixed effects were included in the model
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
     psi<-integrate(f=function(x){d.link.inv(x)*dnorm(x,mu,sqrt(var))},lower=mu-width*sqrt(var),upper=mu+width*sqrt(var))$value
     mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
@@ -103,7 +103,7 @@ QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
 ##-----------------------------Special functions for known analytical solutions--------------
 
 qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
-  if (is.null(predict)) predict=0;
+  if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   p=mean(1-pnorm(0,mu+predict,sqrt(var.p+1)))
   #Observed variance
@@ -114,7 +114,7 @@ qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=35) {
-  if (is.null(predict)) predict=0;
+  if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   p=n.obs*mean(1-pnorm(0,mu+predict,sqrt(var.p+1)))
   #Observed variance
@@ -126,7 +126,7 @@ qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=35) {
 }
 
 qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   lambda=mean(exp(mu+predict+(var.p/2)))
   #Mean of lambda square, needed for the following
@@ -137,7 +137,7 @@ qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   lambda=mean((mu+predict)**2+var.p)
   #Observed variance
@@ -148,7 +148,7 @@ qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   lambda=mean(exp(mu+predict+(var.p/2)))
   #Mean of lambda square, needed for the following
@@ -159,7 +159,7 @@ qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
 }
 
 qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   lambda=mean((mu+predict)**2+var.p)
   #Observed variance
@@ -223,7 +223,7 @@ QGparams<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRU
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
 QGpred<-function(mu,var.a,var.p,fitness.func,width=35,predict=NULL,verbose=TRUE) {
-  if (is.null(predict)) predict=0
+  if (is.null(predict)) predict=0 else mu=0;
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")
   Wbar=mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))

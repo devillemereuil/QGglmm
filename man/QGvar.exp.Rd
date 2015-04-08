@@ -8,7 +8,7 @@ QGvar.exp(mu, var, link.inv, obs.mean = NULL, width = 35, predict = NULL)
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
   \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{link.inv}{Inverse function of the link function. (function)}
   \item{obs.mean}{Optional parameter giving the phenotypic mean on the observed scale. Automatically computed if not provided. (numeric)}

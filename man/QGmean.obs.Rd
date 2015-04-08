@@ -9,7 +9,7 @@ This function calculates the phenotypic mean on the observed scale from the late
 QGmean.obs(mu, var, link.inv, width = 35, predict = NULL)
 }
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
   \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{link.inv}{Inverse function of the link function. (function)}
   \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 35, which should be sensible for most models. (numeric)}

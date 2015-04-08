@@ -14,7 +14,7 @@
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
   \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. (character) Available models are :
