@@ -7,7 +7,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \usage{
-    QGpred(mu, var.a, var.p, fitness.func, width = 35, 
+    QGpred(mu, var.a, var.p, fitness.func, width = 10, 
            predict = NULL, verbose = TRUE)
 }
 
@@ -16,7 +16,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
   \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{fitness.func}{Function giving the expected fitness on the observed scale for a given latent trait (see Example). (function)}
-  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{verbose}{Should the function be verbose? (boolean)}
 }

@@ -21,14 +21,14 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean
-QGmean.obs<-function(mu,var,link.inv,width=35,predict=NULL) {
+QGmean.obs<-function(mu,var,link.inv,width=10,predict=NULL) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=0 else mu=0;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating the expected scale variance
-QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
+QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=10,predict=NULL) {
   if (is.null(predict)) predict=0 else mu=0;
   #If not provided, compute the obsereved mean
   if (is.null(obs.mean)){
@@ -39,14 +39,14 @@ QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=35,predict=NULL) {
 }
 
 #Calculating the "distribution" variance
-QGvar.dist<-function(mu,var,var.func,width=35,predict=NULL) {
+QGvar.dist<-function(mu,var,var.func,width=10,predict=NULL) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=0 else mu=0;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating "psi" for the observed additive genetic variance computation
-QGpsi<-function(mu,var,d.link.inv,width=35,predict=NULL) {
+QGpsi<-function(mu,var,d.link.inv,width=10,predict=NULL) {
     #If no fixed effects were included in the model
   if (is.null(predict)) predict=0 else mu=0;
     mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
@@ -112,7 +112,7 @@ qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
   data.frame(mean.obs=p,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
-qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=35) {
+qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=10) {
   if (is.null(predict)) predict=0 else mu=0;
   #Observed mean
   p=n.obs*mean(1-pnorm(0,mu+predict,sqrt(var.p+1)))
@@ -170,7 +170,7 @@ qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
-QGparams<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
   if (is.null(predict)) predict=0 else mu=0;
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
   if (model=="binom1.probit"&closed.form) {						#Binary.probit model
@@ -221,7 +221,7 @@ QGparams<-function(mu,var.a,var.p,model="",width=35,predict=NULL,closed.form=TRU
 
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
-QGpred<-function(mu,var.a,var.p,fitness.func,width=35,predict=NULL,verbose=TRUE) {
+QGpred<-function(mu,var.a,var.p,fitness.func,width=10,predict=NULL,verbose=TRUE) {
   if (is.null(predict)) predict=0 else mu=0;
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")

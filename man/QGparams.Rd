@@ -8,7 +8,7 @@
   Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
-    QGparams(mu, var.a, var.p, model="", width = 35, predict = NULL, 
+    QGparams(mu, var.a, var.p, model="", width = 10, predict = NULL, 
              closed.form = TRUE, custom.model = NULL, n.obs = NULL, 
              theta = NULL, verbose = TRUE)
 }
@@ -29,7 +29,7 @@
       \item{"negbin.sqrt"} Negative-Binomial distribution with a square-root link (require the parameter \code{theta})
     }
   }
-  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{closed.form}{When available, should closed forms be used instead of integral computations? (boolean)}
   \item{custom.model}{If the model used is not available using the \code{model} argument, a list of functions describing the model can be provided. (list of functions, see Details)}

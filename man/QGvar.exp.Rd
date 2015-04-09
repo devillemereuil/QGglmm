@@ -4,7 +4,7 @@
 \title{Compute the variance of expected values (i.e. the latent values after inverse-link transformation.)}
 \description{This function computes the variance of the expected values, i.e. the variance of the latent values after transformation through the inverse-link function. This variance, added to the distribution variance, yields to the phenotypic variance on the observed scale.}
 \usage{
-QGvar.exp(mu, var, link.inv, obs.mean = NULL, width = 35, predict = NULL)
+QGvar.exp(mu, var, link.inv, obs.mean = NULL, width = 10, predict = NULL)
 }
 
 \arguments{
@@ -12,7 +12,7 @@ QGvar.exp(mu, var, link.inv, obs.mean = NULL, width = 35, predict = NULL)
   \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{link.inv}{Inverse function of the link function. (function)}
   \item{obs.mean}{Optional parameter giving the phenotypic mean on the observed scale. Automatically computed if not provided. (numeric)}
-  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 35, which should be sensible for most models. (numeric)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
 }
 \details{
