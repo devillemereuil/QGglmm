@@ -29,6 +29,8 @@ QGmean.obs.mv<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #If predict is not included, then use mu, and 
   if(is.null(predict)) predict=matrix(mu,nrow=1)
   #Computing the mean
+  #The double apply is needed to compute the mean for all "predict" values,
+  #then average over them
   apply(apply(predict,1,function(pred_i){
       cuhre(ndim=d,ncomp=d,
             integrand=function(x){link.inv(x)*dmvnorm(x,pred_i,vcov)},
