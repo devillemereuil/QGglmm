@@ -37,3 +37,48 @@ QGmvmean.obs<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
             lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
             flags=list(verbose=0))$value}),1,mean)
 }
+
+#Calculating the expected scale variance-covariance matrix
+QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
+  #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+  w<-sqrt(diag(vcov))*width
+  #Number of dimensions
+  d<-length(w)
+  #If no fixed effects were included in the model
+  if (is.null(predict)) predict=matrix(mu,nrow=1)
+  
+  #Computing the upper-triangle matrix of "expectancy of the square"
+  v<-apply(#
+      apply(predict,1,
+            function(pred_i){
+              cuhre(ndim=d,ncomp=(d^2+d)/2,
+              integrand=function(x){(link.inv(x)%*%t(link.inv(x)))[upper.tri(x%*%t(x),diag=TRUE)]*dmvnorm(x,pred_i,vcov)},
+              lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol= 0.001,
+              flags=list(verbose=0))$value}
+            ),
+      1,mean)
+  
+  #Creating the VCV matrix
+  vcv<-matrix(NA,d,d)
+  vcv[upper.tri(vcv,diag=TRUE)]<-v
+  vcv[lower.tri(vcv)]<-vcv[upper.tri(vcv)]
+  #If necessary, computing the observed multivariate mean
+  if (is.null(mvmean.obs))
+    mvmean.obs <- QGmvmean.obs(mu,vcov,link.inv,predict=predict,rel.acc=rel.acc,width=width)
+  #Computing the VCV matrix using Keonig's formuka
+  vcv <- vcv - mvmean.obs%*%t(mvmean.obs)
+  
+  #Adding the distribution variance if needed (if exp.scale==FALSE)
+  if (!exp.scale) {
+    vec_vardist = apply(apply(predict,1,function(pred_i){
+                  cuhre(ndim=d,ncomp=d,
+                  integrand=function(x){var.func(x)*dmvnorm(x,pred_i,vcov)},
+                  lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
+                  flags=list(verbose=0))$value}),1,mean)
+    
+    vcv <- vcv + diag(vec_vardist)
+  }
+
+  #Printing the result
+  vcv
+}
