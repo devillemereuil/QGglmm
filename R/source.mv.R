@@ -21,7 +21,7 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean (multivariate)
-QGmean.obs.mv<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
+QGmvmean.obs<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
