@@ -82,3 +82,21 @@ QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.
   #Printing the result
   vcv
 }
+
+#Computing the Psi vector
+QGpsi.mv<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
+  #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+  w<-sqrt(diag(vcov))*width
+  #Number of dimensions
+  d<-length(w)
+  #If predict is not included, then use mu, and 
+  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  #Computing the mean
+  #The double apply is needed to compute the mean for all "predict" values,
+  #then average over them
+  apply(apply(predict,1,function(pred_i){
+    cuhre(ndim=d,ncomp=d,
+          integrand=function(x){d.link.inv(x)*dmvnorm(x,pred_i,vcov)},
+          lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
+          flags=list(verbose=0))$value}),1,mean)
+}
