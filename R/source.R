@@ -23,33 +23,33 @@
 #Calculating the observed/expected scale mean
 QGmean.obs<-function(mu,var,link.inv,width=10,predict=NULL) {
   #If no fixed effects were included in the model
-  if (is.null(predict)) predict=0 else mu=0;
-  mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
+  if (is.null(predict)) predict=mu;
+  mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating the expected scale variance
 QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=10,predict=NULL) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #If not provided, compute the obsereved mean
   if (is.null(obs.mean)){
     obs.mean=QGmean.obs(mu=mu,var=var,link.inv=link.inv,width=width,predict=predict)
   }
   #Note: Using Koenig's formula
-  mean(sapply(predict,function(pred_i){integrate(f=function(x){(link.inv(x)**2)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))-(obs.mean**2)
+  mean(sapply(predict,function(pred_i){integrate(f=function(x){(link.inv(x)**2)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))-(obs.mean**2)
 }
 
 #Calculating the "distribution" variance
 QGvar.dist<-function(mu,var,var.func,width=10,predict=NULL) {
   #If no fixed effects were included in the model
-  if (is.null(predict)) predict=0 else mu=0;
-  mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
+  if (is.null(predict)) predict=mu;
+  mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating "psi" for the observed additive genetic variance computation
 QGpsi<-function(mu,var,d.link.inv,width=10,predict=NULL) {
     #If no fixed effects were included in the model
-  if (is.null(predict)) predict=0 else mu=0;
-    mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,mu+pred_i,sqrt(var))},lower=mu+pred_i-width*sqrt(var),upper=mu+pred_i+width*sqrt(var))$value}))
+  if (is.null(predict)) predict=mu;
+    mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
 }
 
 ##-------------------------------"Dictionary" functions---------------------------------------------
@@ -102,76 +102,76 @@ QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
 ##-----------------------------Special functions for known analytical solutions--------------
 
 qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Observed mean
-  p=mean(1-pnorm(0,mu+predict,sqrt(var.p+1)))
+  p=mean(1-pnorm(0,predict,sqrt(var.p+1)))
   #Observed variance
   var_obs=p*(1-p)
   #Psi
-  Psi=mean(dnorm(0,(mu+predict),sqrt(var.p+1)))
+  Psi=mean(dnorm(0,(predict),sqrt(var.p+1)))
   data.frame(mean.obs=p,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=10) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Observed mean
-  p=n.obs*mean(1-pnorm(0,mu+predict,sqrt(var.p+1)))
+  p=n.obs*mean(1-pnorm(0,predict,sqrt(var.p+1)))
   #Observed variance
-  prob.sq.int=mean(sapply(predict,function(pred_i){integrate(f=function(x){(pnorm(x)**2)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))
+  prob.sq.int=mean(sapply(predict,function(pred_i){integrate(f=function(x){(pnorm(x)**2)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))
   var_obs=((n.obs**2)-n.obs)*prob.sq.int - p**2 +p
   #Psi
-  Psi=n.obs*mean(dnorm(0,(mu+predict),sqrt(var.p+1)))
+  Psi=n.obs*mean(dnorm(0,(predict),sqrt(var.p+1)))
   data.frame(mean.obs=p,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Observed mean
-  lambda=mean(exp(mu+predict+(var.p/2)))
+  lambda=mean(exp(predict+(var.p/2)))
   #Mean of lambda square, needed for the following
-  lambda_sq=mean(exp(2*(mu+predict+var.p/2)))
+  lambda_sq=mean(exp(2*(predict+var.p/2)))
   #Observed variance
   var_obs=lambda_sq*exp(var.p)-lambda**2+lambda
   data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
 }
 
 qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Observed mean
-  lambda=mean((mu+predict)**2+var.p)
+  lambda=mean((predict)**2+var.p)
   #Observed variance
-  var_obs=mean((mu+predict)**4 + 6*var.p*((mu+predict)**2)+3*(var.p**2))-lambda**2+lambda
+  var_obs=mean((predict)**4 + 6*var.p*((predict)**2)+3*(var.p**2))-lambda**2+lambda
   #Psi
-  Psi=mean(2*(mu+predict))
+  Psi=mean(2*(predict))
   data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Observed mean
-  lambda=mean(exp(mu+predict+(var.p/2)))
+  lambda=mean(exp(predict+(var.p/2)))
   #Mean of lambda square, needed for the following
-  lambda_sq=mean(exp(2*(mu+predict+var.p/2)))
+  lambda_sq=mean(exp(2*(predict+var.p/2)))
   #Observed variance
-  var_obs=lambda_sq*exp(var.p)-lambda**2+lambda+mean(exp(2*(mu+predict+var.p)))/theta
+  var_obs=lambda_sq*exp(var.p)-lambda**2+lambda+mean(exp(2*(predict+var.p)))/theta
   data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(lambda**2)*var.a,h2.obs=((lambda**2)*var.a)/var_obs)
 }
 
 qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Observed mean
-  lambda=mean((mu+predict)**2+var.p)
+  lambda=mean((predict)**2+var.p)
   #Observed variance
-  var_obs=mean((mu+predict)**4 + 6*var.p*((mu+predict)**2)+3*(var.p**2))-lambda**2+lambda+(mean((mu+predict)**4 + 6*var.p*((mu+predict)**2)+3*(var.p**2))/theta)
+  var_obs=mean((predict)**4 + 6*var.p*((predict)**2)+3*(var.p**2))-lambda**2+lambda+(mean((predict)**4 + 6*var.p*((predict)**2)+3*(var.p**2))/theta)
   #Psi
-  Psi=mean(2*(mu+predict))
+  Psi=mean(2*(predict))
   data.frame(mean.obs=lambda,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
 }
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
 QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
   if (model=="binom1.probit"&closed.form) {						#Binary.probit model
       if (verbose) print("Using the closed forms for a Binomial1-probit model.")
@@ -222,17 +222,17 @@ QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRU
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
 QGpred<-function(mu,var.a,var.p,fitness.func,width=10,predict=NULL,verbose=TRUE) {
-  if (is.null(predict)) predict=0 else mu=0;
+  if (is.null(predict)) predict=mu;
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")
-  Wbar=mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))
+  Wbar=mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))
   #Calculating the covariance between latent trait and latent fitness
   if (verbose) print("Computing the latent selection...")
-  sel=(mean(sapply(predict,function(pred_i){integrate(f=function(x){x*fitness.func(x)*dnorm(x,mu+pred_i,sqrt(var.p))},lower=mu+pred_i-width*sqrt(var.p),upper=mu+pred_i+width*sqrt(var.p))$value}))-(mean(mu+predict)*Wbar))/Wbar
+  sel=(mean(sapply(predict,function(pred_i){integrate(f=function(x){x*fitness.func(x)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))-(mean(predict)*Wbar))/Wbar
   #Calculating the covariance between the breeding values and the latent fitness
   if (verbose) print("Computing the latent response... (this might take a while if predict is large)")
   #Calculating the latent mean fitness conditional to a
-  exp_W_a<-function(vec){sapply(vec,function(a){mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,mu+a+pred_i,sqrt(var.p-var.a))},lower=mu+a+pred_i-width*sqrt(var.p-var.a),upper=mu+a+pred_i+width*sqrt(var.p-var.a))$value}))})}
+  exp_W_a<-function(vec){sapply(vec,function(a){mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,a+pred_i,sqrt(var.p-var.a))},lower=a+pred_i-width*sqrt(var.p-var.a),upper=a+pred_i+width*sqrt(var.p-var.a))$value}))})}
   resp=(integrate(f=function(a){a*exp_W_a(a)*dnorm(a,0,sqrt(var.a))},lower=-width*sqrt(var.a),upper=width*sqrt(var.a))$value)/Wbar
   #Returning the results on the latent scale
   data.frame(mean.lat.fit=Wbar,lat.sel=sel,lat.resp=resp)
