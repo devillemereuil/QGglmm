@@ -56,7 +56,11 @@ QGpsi<-function(mu,var,d.link.inv,width=10,predict=NULL) {
 
 #Function creating the needed functions according to the link name
 QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
-  if (name=="binom1.probit") {
+  if (name=="Gaussian") {
+    inv.link=function(x){x}
+    var.func=function(x){0}
+    d.inv.link=function(x){1}
+  } else if (name=="binom1.probit") {
     inv.link=function(x){pnorm(x)}
     var.func=function(x){pnorm(x)*(1-pnorm(x))}
     d.inv.link=function(x){dnorm(x)}
