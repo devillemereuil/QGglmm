@@ -84,7 +84,7 @@ QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.
 }
 
 #Computing the Psi vector
-QGpsi.mv<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
+QGmvpsi<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -99,4 +99,56 @@ QGpsi.mv<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
           integrand=function(x){d.link.inv(x)*dmvnorm(x,pred_i,vcov)},
           lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
           flags=list(verbose=0))$value}),1,mean)
+}
+
+##--------------------------------Meta-function for general calculation-----------------------------
+
+QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE)
+{
+  #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+  w<-sqrt(diag(vcv.P))*width
+  #Number of dimensions
+  d<-length(w)
+  #If predict is not included, then use mu, and 
+  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  #Defining the link/distribution functions
+  #If a vector of names were given
+  if (!(is.list(models))) {
+    tmp<-models
+    models<-lapply(tmp,function(string){QGlink.funcs(string)})
+  }
+  #Now we can compute the needed functions
+  inv.links=function(x){
+    res=numeric(length(x))
+    for (i in 1:length(x)) {
+      res[i] = models[[i]]$inv.link(x[i])
+    }
+    res
+  }
+  var.funcs=function(x){
+    res=numeric(length(x))
+    for (i in 1:length(x)) {
+      res[i] = models[[i]]$var.func(x[i])
+    }
+    res
+  }
+  d.inv.links=function(x){
+    res=numeric(length(x))
+    for (i in 1:length(x)) {
+      res[i] = models[[i]]$d.inv.link(x[i])
+    }
+    res
+  }
+  #Computing the observed mean
+  if (verbose) print("Computing observed mean...")
+  y_bar<-QGmvmean.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  #Computing the variance-covariance matrix
+  if (verbose) print("Computing variance-covariance matrix...")
+  vcv.P.obs<-QGvcov.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
+  if (verbose) print("Computing Psi...")
+  Psi<-QGmvpsi(mu=mu,vcov=vcv.P,d.link.inv=d.inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  Psi<-diag(Psi)
+  vcv.G.obs <- Psi %*% vcv.G %*% t(Psi)
+  #Return a list of QG parameters on the observed scale
+  list(mean.obs=y_bar,vcv.P.obs=vcv.P.obs,vcv.G.obs=vcv.G.obs)
 }
