@@ -105,6 +105,13 @@ QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
 
 ##-----------------------------Special functions for known analytical solutions--------------
 
+qg.Gaussian=function(mu,var.a,var.p,predict=NULL) {
+  if (is.null(predict)) predict=mu;
+  #Nothing to be done, except averaging over predict
+  if (length(predict)==1) {var_fixed=0} else {var_fixed=var(predict)}
+  data.frame(mean.obs=mean(predict),var.obs=var.p+var_fixed,var.a.obs=var.a,h2.obs=var.a/(var.p+var_fixed))
+}
+
 qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
   if (is.null(predict)) predict=mu;
   #Observed mean
@@ -177,7 +184,10 @@ qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
 QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
   if (is.null(predict)) predict=mu;
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
-  if (model=="binom1.probit"&closed.form) {						#Binary.probit model
+  if (model=="Gaussian"&closed.form) {            #Gaussian model with identity link (e.g. LMM)
+    if (verbose) print("Using the closed forms for a Gaussian model with identity link (e.g. LMM).")
+    qg.Gaussian(mu=mu,var.a=var.a,var.p=var.p,predict=predict)
+  } else if (model=="binom1.probit"&closed.form) {						#Binary.probit model
       if (verbose) print("Using the closed forms for a Binomial1-probit model.")
       qg.binom1.probit(mu=mu,var.a=var.a,var.p=var.p,predict=predict)
   } else if (model=="binomN.probit"&closed.form) {					#Binomial-not-binary model
