@@ -99,7 +99,10 @@ QGmvpsi<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
           integrand=function(x){d.link.inv(x)*dmvnorm(x,pred_i,vcov)},
           lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
           flags=list(verbose=0))$value}),1,mean)
+  #Make Psi a matrix
   Psi<-diag(Psi)
+  #print Psi
+  Psi
 }
 
 ##--------------------------------Meta-function for general calculation-----------------------------
