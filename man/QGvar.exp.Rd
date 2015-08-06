@@ -4,16 +4,16 @@
 \title{Compute the variance of expected values (i.e. the latent values after inverse-link transformation.)}
 \description{This function computes the variance of the expected values, i.e. the variance of the latent values after transformation through the inverse-link function. This variance, added to the distribution variance, yields to the phenotypic variance on the observed scale.}
 \usage{
-QGvar.exp(mu, var, link.inv, obs.mean = NULL, width = 10, predict = NULL)
+QGvar.exp(mu, var, link.inv, obs.mean = NULL, predict = NULL, width = 10)
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
   \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{link.inv}{Inverse function of the link function. (function)}
   \item{obs.mean}{Optional parameter giving the phenotypic mean on the observed scale. Automatically computed if not provided. (numeric)}
-  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 10, which should be sensible for most models. (numeric)}
 }
 \details{
 The variance of the expected values is the variance that directly arise from the variance of the latent values, but after transformation through the inverse-link function. For example, using a logarithm link, this is the variance of exp(l) where l is the latent trait.
@@ -34,7 +34,7 @@ Contrary to \code{\link{QGparams}}, \code{QGvar.dist} never uses the closed form
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGvar.exp}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGpsi}}
+\code{\link{QGvar.dist}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGpsi}}
 }
 \examples{
 ##Example using Poisson.log model

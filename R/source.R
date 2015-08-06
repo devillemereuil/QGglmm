@@ -21,14 +21,14 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean
-QGmean.obs<-function(mu,var,link.inv,width=10,predict=NULL) {
+QGmean.obs<-function(mu,var,link.inv,predict=NULL,width=10) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating the expected scale variance
-QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=10,predict=NULL) {
+QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,predict=NULL,width=10) {
   if (is.null(predict)) predict=mu;
   #If not provided, compute the obsereved mean
   if (is.null(obs.mean)){
@@ -39,14 +39,14 @@ QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,width=10,predict=NULL) {
 }
 
 #Calculating the "distribution" variance
-QGvar.dist<-function(mu,var,var.func,width=10,predict=NULL) {
+QGvar.dist<-function(mu,var,var.func,predict=NULL,width=10) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
 }
 
 #Calculating "psi" for the observed additive genetic variance computation
-QGpsi<-function(mu,var,d.link.inv,width=10,predict=NULL) {
+QGpsi<-function(mu,var,d.link.inv,predict=NULL,width=10) {
     #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
     mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))

@@ -94,11 +94,12 @@ QGmvpsi<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #Computing the mean
   #The double apply is needed to compute the mean for all "predict" values,
   #then average over them
-  apply(apply(predict,1,function(pred_i){
+  Psi<-apply(apply(predict,1,function(pred_i){
     cuhre(ndim=d,ncomp=d,
           integrand=function(x){d.link.inv(x)*dmvnorm(x,pred_i,vcov)},
           lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
           flags=list(verbose=0))$value}),1,mean)
+  Psi<-diag(Psi)
 }
 
 ##--------------------------------Meta-function for general calculation-----------------------------
@@ -147,7 +148,6 @@ QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.
   vcv.P.obs<-QGvcov.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
   if (verbose) print("Computing Psi...")
   Psi<-QGmvpsi(mu=mu,vcov=vcv.P,d.link.inv=d.inv.links,predict=predict,rel.acc=rel.acc,width=width)
-  Psi<-diag(Psi)
   vcv.G.obs <- Psi %*% vcv.G %*% t(Psi)
   #Return a list of QG parameters on the observed scale
   list(mean.obs=y_bar,vcv.P.obs=vcv.P.obs,vcv.G.obs=vcv.G.obs)

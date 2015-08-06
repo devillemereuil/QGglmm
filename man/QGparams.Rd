@@ -14,11 +14,12 @@
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
   \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. (character) Available models are :
     \itemize{
+      \item{"Gaussian"} Gaussian distribution with identity link (e.g. LMM)
       \item{"binom1.probit"} Binomial with 1 trial (binary data) with a probit link
       \item{"binomN.probit"} Binomial with N tria with a probit link (require the parameter \code{n.obs})
       \item{"binom1.logit"} Binomial with 1 trial (binary) with a logit link
@@ -62,7 +63,7 @@ The function yields a data.frame containing the following values:
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
+\code{\link{QGmvparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
 }
 \examples{
 ##Example using binary data
