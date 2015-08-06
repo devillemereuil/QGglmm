@@ -1,1 +1,2 @@
-export(QGparams,QGpred,QGmean.obs,QGvar.exp,QGvar.dist,QGpsi,QGlink.funcs)
+import(mvtnorm,R2Cuba)
+export(QGparams,QGmvparams,QGpred,QGmean.obs,QGmvmean.obs,QGvar.exp,QGvar.dist,QGvcov.obs,QGpsi,QGmvpsi,QGlink.funcs)

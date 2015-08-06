@@ -6,14 +6,14 @@
 This function computes the variance emerging from the error distribution around the individual expected value. This variance, added to the variance of the individual expected values themselves (see \code{\link{QGvar.exp}}) yields the total observed phenotypic variance.
 }
 \usage{
-QGvar.dist(mu, var, var.func, width = 10, predict = NULL)
+QGvar.dist(mu, var, var.func, predict = NULL, width = 10)
 }
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
   \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
   \item{var.func}{Function giving the variance of the distribution according to a given latent value. (function)}
-  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 10, which should be sensible for most models. (numeric)}
 }
 \details{
 The distribution variance is the part of the observed variance emerging from the error distribution. It is calculated as an average error variance over all possible latent values. The distribution variance added to the variance of the expected values gives the total phenotypic variance on the observed scale.
