@@ -1,12 +1,12 @@
-\name{QGvcov.obs}
-\alias{QGvcov.obs}
+\name{QGvcov}
+\alias{QGvcov}
 
 \title{Compute the phenotypic variance-covariance matrix on the observed/expected scale}
 \description{
 This function computes the total phenotypic variance-covariance matrix on the observed or expected scales.
 }
 \usage{
-QGvcov.obs(mu, vcov, link.inv, var.func, mvmean.obs = NULL,
+QGvcov(mu, vcov, link.inv, var.func, mvmean.obs = NULL,
           predict = NULL, rel.acc = 0.01, width = 10, exp.scale = FALSE)
 }
 \arguments{
@@ -33,7 +33,7 @@ To do so, it also requires the inverse functions of the link functions (\code{li
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGvar.exp}}, \code{\link{QGvar.dist}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov.obs}}, \code{\link{QGmvpsi}}
+\code{\link{QGvar.exp}}, \code{\link{QGvar.dist}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmvpsi}}
 }
 \examples{
 ##Example using a bivariate model (Binary trait/Gaussian trait)
@@ -52,8 +52,8 @@ var.funcs=function(vec){c(pnorm(vec[1])*(1-pnorm(vec[1])),0)} #probit and identi
 #The second element is 0 because the identity link does not create variance
 
 #Computing the multivariate mean on observed scale
-QGvcov.obs(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs) #Phenotypic VCV matrix on observed scale
-QGvcov.obs(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs,exp.scale=TRUE) #Phenotypic VCV matrix on the expected scale
+QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs) #Phenotypic VCV matrix on observed scale
+QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs,exp.scale=TRUE) #Phenotypic VCV matrix on the expected scale
 
 QGvar.exp(mu=0,var=1,link.inv=pnorm) #Same variance on the expected scale
 QGvar.exp(mu=0,var=1,link.inv=pnorm)+

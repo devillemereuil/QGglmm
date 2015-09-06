@@ -34,7 +34,7 @@ Contrary to \code{\link{QGparams}}, \code{QGvar.exp} never uses the closed form 
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGvar.exp}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGpsi}}
+\code{\link{QGvar.exp}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGpsi}}
 }
 \examples{
 ##Example using Poisson.log model

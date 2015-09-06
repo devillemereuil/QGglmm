@@ -39,7 +39,7 @@ Pierre de Villemereuil & Micheal B. Morrissey
 }
 
 \seealso{
-\code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGmean.obs}}
+\code{\link{QGparams}}, \code{\link{QGmvparams}}
 }
 \examples{
 ##Getting the functions for a Poisson.log model

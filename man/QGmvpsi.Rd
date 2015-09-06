@@ -30,7 +30,7 @@ This function requires the derivatives of the inverse-link functions (\code{d.li
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGpsi}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov.obs}}, \code{\link{QGmvpsi}}
+\code{\link{QGpsi}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov}}, \code{\link{QGmvpsi}}
 }
 \examples{
 ##Example using a bivariate model (Binary trait/Gaussian trait)

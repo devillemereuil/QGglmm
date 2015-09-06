@@ -34,7 +34,7 @@ Contrary to \code{\link{QGparams}}, \code{QGvar.dist} never uses the closed form
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGvar.dist}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGpsi}}
+\code{\link{QGvar.dist}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGpsi}}
 }
 \examples{
 ##Example using Poisson.log model
@@ -49,7 +49,7 @@ inv.link<-function(x){exp(x)}
 QGvar.exp(mu=mu,var=vp,link.inv=inv.link)
 
 #The mean on the observed scale can be computed beforehand
-y_bar=QGmean.obs(mu=mu,var=vp,link.inv=inv.link)
+y_bar=QGmean(mu=mu,var=vp,link.inv=inv.link)
 QGvar.exp(mu=mu,var=vp,obs.mean=y_bar,link.inv=inv.link)
 
 #The QGlink.funcs gives a ready-to-use inverse-link function

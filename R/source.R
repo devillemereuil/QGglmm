@@ -21,7 +21,7 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean
-QGmean.obs<-function(mu,var,link.inv,predict=NULL,width=10) {
+QGmean<-function(mu,var,link.inv,predict=NULL,width=10) {
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
@@ -32,7 +32,7 @@ QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,predict=NULL,width=10) {
   if (is.null(predict)) predict=mu;
   #If not provided, compute the obsereved mean
   if (is.null(obs.mean)){
-    obs.mean=QGmean.obs(mu=mu,var=var,link.inv=link.inv,width=width,predict=predict)
+    obs.mean=QGmean(mu=mu,var=var,link.inv=link.inv,width=width,predict=predict)
   }
   #Note: Using Koenig's formula
   mean(sapply(predict,function(pred_i){integrate(f=function(x){(link.inv(x)**2)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))-(obs.mean**2)
@@ -219,7 +219,7 @@ QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRU
         }} else {funcs=custom.model}
   #Observed mean computation
       if (verbose) print("Computing observed mean...")
-      y_bar=QGmean.obs(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
+      y_bar=QGmean(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
   #Variances computation
       if (verbose) print("Computing variances...")
       var_exp=QGvar.exp(mu=mu,var=var.p,link.inv=funcs$inv.link,obs.mean=y_bar,width=width,predict=predict)

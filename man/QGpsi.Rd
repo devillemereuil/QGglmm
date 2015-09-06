@@ -27,7 +27,7 @@ The parameter "Psi" is the average of the derivative of the inverse-link functio
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGmvpsi}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}
+\code{\link{QGmvpsi}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}
 }
 \examples{
 ##Example using binom1.probit model

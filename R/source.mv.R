@@ -21,7 +21,7 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean (multivariate)
-QGmvmean.obs<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
+QGmvmean<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -39,7 +39,7 @@ QGmvmean.obs<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
 }
 
 #Calculating the expected scale variance-covariance matrix
-QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
+QGvcov<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -64,7 +64,7 @@ QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.
   vcv[lower.tri(vcv)]<-vcv[upper.tri(vcv)]
   #If necessary, computing the observed multivariate mean
   if (is.null(mvmean.obs))
-    mvmean.obs <- QGmvmean.obs(mu,vcov,link.inv,predict=predict,rel.acc=rel.acc,width=width)
+    mvmean.obs <- QGmvmean(mu,vcov,link.inv,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the VCV matrix using Keonig's formuka
   vcv <- vcv - mvmean.obs%*%t(mvmean.obs)
   
@@ -145,10 +145,10 @@ QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.
   }
   #Computing the observed mean
   if (verbose) print("Computing observed mean...")
-  y_bar<-QGmvmean.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  y_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the variance-covariance matrix
   if (verbose) print("Computing variance-covariance matrix...")
-  vcv.P.obs<-QGvcov.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
+  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
   if (verbose) print("Computing Psi...")
   Psi<-QGmvpsi(mu=mu,vcov=vcv.P,d.link.inv=d.inv.links,predict=predict,rel.acc=rel.acc,width=width)
   vcv.G.obs <- Psi %*% vcv.G %*% t(Psi)

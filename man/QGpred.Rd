@@ -46,7 +46,7 @@ Pierre de Villemereuil & Micheal B. Morrissey
 }
 
 \seealso{
-\code{\link{QGparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean.obs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
+\code{\link{QGparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
 }
 
 \examples{
