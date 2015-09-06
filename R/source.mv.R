@@ -123,22 +123,22 @@ QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.
   }
   #Now we can compute the needed functions
   inv.links=function(x){
-    res=numeric(length(x))
-    for (i in 1:length(x)) {
+    res=numeric(d)
+    for (i in 1:d) {
       res[i] = models[[i]]$inv.link(x[i])
     }
     res
   }
   var.funcs=function(x){
-    res=numeric(length(x))
-    for (i in 1:length(x)) {
+    res=numeric(d)
+    for (i in 1:d) {
       res[i] = models[[i]]$var.func(x[i])
     }
     res
   }
   d.inv.links=function(x){
-    res=numeric(length(x))
-    for (i in 1:length(x)) {
+    res=numeric(d)
+    for (i in 1:d) {
       res[i] = models[[i]]$d.inv.link(x[i])
     }
     res
