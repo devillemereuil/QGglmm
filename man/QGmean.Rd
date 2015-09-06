@@ -1,12 +1,12 @@
-\name{QGmean.obs}
-\alias{QGmean.obs}
+\name{QGmean}
+\alias{QGmean}
 
 \title{Compute the phenotypic mean on the observed scale}
 \description{
 This function calculates the phenotypic mean on the observed scale from the latent mean and variance.
 }
 \usage{
-QGmean.obs(mu, var, link.inv, predict = NULL, width = 10)
+QGmean(mu, var, link.inv, predict = NULL, width = 10)
 }
 \arguments{
   \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
@@ -32,19 +32,19 @@ Contrary to \code{\link{QGparams}}, \code{QGmean.obs} never uses the closed form
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGmvmean.obs}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
+\code{\link{QGmvmean}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}
 }
 \examples{
 ##Computing the observed mean for a probit link
-QGmean.obs(mu=0.3,var=1,link.inv=pnorm)
+QGmean(mu=0.3,var=1,link.inv=pnorm)
 #The theoretical expectation is
 1-pnorm(0,0.3,sqrt(1+1))
 
 #Or, using the QGlink.funcs function
-QGmean.obs(mu=0.3,var=1,link.inv=QGlink.funcs(name="binom1.probit")$inv.link)
+QGmean(mu=0.3,var=1,link.inv=QGlink.funcs(name="binom1.probit")$inv.link)
 
 ##Computing the observed mean for a logarithm link
-QGmean.obs(mu=1,var=1,link.inv=exp)
+QGmean(mu=1,var=1,link.inv=exp)
 #The theoretical expectation is
 exp(1+0.5*1)
 

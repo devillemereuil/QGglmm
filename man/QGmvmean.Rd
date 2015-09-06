@@ -1,12 +1,12 @@
-\name{QGmvmean.obs}
-\alias{QGmvmean.obs}
+\name{QGmvmean}
+\alias{QGmvmean}
 
 \title{Compute the multivariate phenotypic mean on the observed scale}
 \description{
 This function calculates the multivariate phenotypic mean on the observed scale from multivariate latent mean and variance-covariance matrix.
 }
 \usage{
-QGmvmean.obs(mu, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10)
+QGmvmean(mu, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10)
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
@@ -31,7 +31,7 @@ To do so, it also requires the inverse functions of the link functions (\code{li
 Pierre de Villemereuil & Micheal B. Morrissey
 }
 \seealso{
-\code{\link{QGmean.obs}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov.obs}}, \code{\link{QGmvpsi}}
+\code{\link{QGmean}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov}}, \code{\link{QGmvpsi}}
 }
 \examples{
 ##Example using a bivariate model (Binary trait/Gaussian trait)
@@ -45,8 +45,8 @@ P=diag(c(1,4))
 inv.links=function(vec){c(pnorm(vec[1]),vec[2])} #probit link, identity link respectively
 
 #Computing the multivariate mean on observed scale
-QGmvmean.obs(mu=mu, vcov=P, link.inv=inv.links)
-QGmean.obs(mu=0,var=1,link.inv=pnorm)     #Same result than trait 1!
-QGmean.obs(mu=1,var=4,link.inv=function(x){x})     #Same result than trait 2!
+QGmvmean(mu=mu, vcov=P, link.inv=inv.links)
+QGmean(mu=0,var=1,link.inv=pnorm)     #Same result than trait 1!
+QGmean(mu=1,var=4,link.inv=function(x){x})     #Same result than trait 2!
 #Reminder: the results are the same here because we have no correlation between the two traits
 }

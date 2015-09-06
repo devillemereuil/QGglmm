@@ -21,7 +21,7 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean (multivariate)
-QGmvmean.obs<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
+QGmvmean<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -39,7 +39,7 @@ QGmvmean.obs<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
 }
 
 #Calculating the expected scale variance-covariance matrix
-QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
+QGvcov<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -64,7 +64,7 @@ QGvcov.obs<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.
   vcv[lower.tri(vcv)]<-vcv[upper.tri(vcv)]
   #If necessary, computing the observed multivariate mean
   if (is.null(mvmean.obs))
-    mvmean.obs <- QGmvmean.obs(mu,vcov,link.inv,predict=predict,rel.acc=rel.acc,width=width)
+    mvmean.obs <- QGmvmean(mu,vcov,link.inv,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the VCV matrix using Keonig's formuka
   vcv <- vcv - mvmean.obs%*%t(mvmean.obs)
   
@@ -123,35 +123,68 @@ QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.
   }
   #Now we can compute the needed functions
   inv.links=function(x){
-    res=numeric(length(x))
-    for (i in 1:length(x)) {
+    res=numeric(d)
+    for (i in 1:d) {
       res[i] = models[[i]]$inv.link(x[i])
     }
     res
   }
   var.funcs=function(x){
-    res=numeric(length(x))
-    for (i in 1:length(x)) {
+    res=numeric(d)
+    for (i in 1:d) {
       res[i] = models[[i]]$var.func(x[i])
     }
     res
   }
   d.inv.links=function(x){
-    res=numeric(length(x))
-    for (i in 1:length(x)) {
+    res=numeric(d)
+    for (i in 1:d) {
       res[i] = models[[i]]$d.inv.link(x[i])
     }
     res
   }
   #Computing the observed mean
   if (verbose) print("Computing observed mean...")
-  y_bar<-QGmvmean.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  y_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the variance-covariance matrix
   if (verbose) print("Computing variance-covariance matrix...")
-  vcv.P.obs<-QGvcov.obs(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
+  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
   if (verbose) print("Computing Psi...")
   Psi<-QGmvpsi(mu=mu,vcov=vcv.P,d.link.inv=d.inv.links,predict=predict,rel.acc=rel.acc,width=width)
   vcv.G.obs <- Psi %*% vcv.G %*% t(Psi)
   #Return a list of QG parameters on the observed scale
   list(mean.obs=y_bar,vcv.P.obs=vcv.P.obs,vcv.G.obs=vcv.G.obs)
+}
+
+##----------------------------------Function to calculate the evolutive prediction-----------------------------
+
+QGmvpred<-function(mu,vcv.G,vcv.P,fit.func,d.fit.func,predict=NULL,rel.acc=0.01,width=10,verbose=TRUE)
+{
+  #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+  w<-sqrt(diag(vcv.P))*width
+  #Number of dimensions
+  d<-length(w)
+  #If predict is not included, then use mu, and 
+  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  #Calculating the latent mean fitness
+  if (verbose) print("Computing mean fitness...")     
+  Wbar<-mean(apply(predict,1,function(pred_i){
+    cuhre(ndim=d,ncomp=1,                  #Note that ncomp=1 because fitness.func yields a scalar
+          integrand=function(x){fit.func(x)*dmvnorm(x,pred_i,vcv.P)},
+          lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
+          flags=list(verbose=0))$value}))
+  #Calculating the covariance between latent trait/breeding values and latent fitness
+  if (verbose) print("Computing the latent selection and response...")
+  #Computing the derivative of fitness
+  dW <- apply(apply(predict,1,function(pred_i){
+    cuhre(ndim=d,ncomp=d,
+          integrand=function(x){d.fit.func(x)*dmvnorm(x,pred_i,vcv.P)},
+          lower=pred_i-w,upper=pred_i+w,rel.tol=rel.acc,abs.tol=0.0001,
+          flags=list(verbose=0))$value}),1,mean)
+  #Computing the selection
+  if (dim(predict)[1]>1) sel<-as.vector(((vcv.P+var(predict)) %*% dW)/Wbar) else sel<-as.vector((vcv.P %*% dW)/Wbar)
+  #Computing the evolutionary response
+  resp<-as.vector((vcv.G %*% dW)/Wbar)
+  #Returning the results on the latent scale
+  list(mean.lat.fit=Wbar,lat.grad=dW/Wbar,lat.sel=sel,lat.resp=resp)
 }
