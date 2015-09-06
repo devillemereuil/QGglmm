@@ -1,2 +1,2 @@
 import(mvtnorm,R2Cuba)
-export(QGparams,QGmvparams,QGpred,QGmean.obs,QGmvmean.obs,QGvar.exp,QGvar.dist,QGvcov.obs,QGpsi,QGmvpsi,QGlink.funcs)
+export(QGparams,QGmvparams,QGpred,QGmvpred,QGmean,QGmvmean,QGvar.exp,QGvar.dist,QGvcov,QGpsi,QGmvpsi,QGlink.funcs)

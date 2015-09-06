@@ -235,19 +235,19 @@ QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRU
 
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
-QGpred<-function(mu,var.a,var.p,fitness.func,width=10,predict=NULL,verbose=TRUE) {
+QGpred<-function(mu,var.a,var.p,fit.func,d.fit.func,width=10,predict=NULL,verbose=TRUE) {
   if (is.null(predict)) predict=mu;
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")
-  Wbar=mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))
+  Wbar<-mean(sapply(predict,function(pred_i){integrate(f=function(x){fit.func(x)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))
   #Calculating the covariance between latent trait and latent fitness
-  if (verbose) print("Computing the latent selection...")
-  sel=(mean(sapply(predict,function(pred_i){integrate(f=function(x){x*fitness.func(x)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))-(mean(predict)*Wbar))/Wbar
-  #Calculating the covariance between the breeding values and the latent fitness
-  if (verbose) print("Computing the latent response... (this might take a while if predict is large)")
-  #Calculating the latent mean fitness conditional to a
-  exp_W_a<-function(vec){sapply(vec,function(a){mean(sapply(predict,function(pred_i){integrate(f=function(x){fitness.func(x)*dnorm(x,a+pred_i,sqrt(var.p-var.a))},lower=a+pred_i-width*sqrt(var.p-var.a),upper=a+pred_i+width*sqrt(var.p-var.a))$value}))})}
-  resp=(integrate(f=function(a){a*exp_W_a(a)*dnorm(a,0,sqrt(var.a))},lower=-width*sqrt(var.a),upper=width*sqrt(var.a))$value)/Wbar
+  if (verbose) print("Computing the latent selection and response...")
+  #Computing the derivative of fitness
+  dW<-mean(sapply(predict,function(pred_i){integrate(f=function(x){d.fit.func(x)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))
+  #Computing the selection
+  if (length(predict)>1) sel<-(var.p+var(predict))*dW/Wbar else sel<-var.p*dW/Wbar
+  #Computing the evolutionary response
+  resp<-var.a*dW/Wbar
   #Returning the results on the latent scale
-  data.frame(mean.lat.fit=Wbar,lat.sel=sel,lat.resp=resp)
+  data.frame(mean.lat.fit=Wbar,lat.grad=dW/Wbar,lat.sel=sel,lat.resp=resp)
 }
