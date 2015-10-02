@@ -6,7 +6,7 @@ The package is still in pre-release beta version. Use at your own risks! The pac
 
 ##How to install this package
 
-* Install the packages on which QGglmm depends: R2Cuba and mvtnorm:
+* Install the packages on which QGglmm depends: R2Cuba and mvtnorm.
     `install.packages(c("R2Cuba","mvtnorm"))`
 * Go to the [release page](https://github.com/devillemereuil/QGglmm/releases) and download the latest release.
 * In a terminal, go to the folder where the release was downloaded and enter the following line:  
