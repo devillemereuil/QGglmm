@@ -20,9 +20,7 @@ QGpsi(mu, var, d.link.inv, predict = NULL, width = 10)
 The parameter "Psi" is the average of the derivative of the inverse-link function. The additive genetic variance on the observed scale is linked to the additive genetic variance on the latent scale by : Va.obs = (Psi**2)*Va.lat.
 }
 \value{This function yields the "Psi" parameter. (numeric)}
-\references{
-\strong{REF!}
-}
+
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }

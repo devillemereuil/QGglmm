@@ -24,9 +24,6 @@ For example, if the link function is the natural logarithm, the inverse-link fun
 Contrary to \code{\link{QGparams}}, \code{QGmean.obs} never uses the closed form solutions, but always compute the integrals.
 }
 \value{This function yields the phenotypic mean on the observed scale. (numeric)}
-\references{
-\strong{REF!}
-}
 
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey

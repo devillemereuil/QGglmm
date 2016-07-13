@@ -1,10 +1,11 @@
 Package: QGglmm
 Type: Package
-Title: Estimate Quantitative Genetics parameters from Generalised Linear Mixed Models
+Title: Estimate Quantitative Genetics Parameters from Generalised Linear Mixed Models
 Version: 0.3
-Date: 2015-03-20
-Author: Pierre de Villemereuil, Michael B. Morrissey
+Date: 2016-07-13
+Author: Pierre de Villemereuil <bonamy@horus.ens.fr>
 Maintainer: Pierre de Villemereuil <bonamy@horus.ens.fr>
-Description: This package allows to compute various quantitative genetics parameters from a Generalised Linear Mixed Model (GLMM) estimates. Especially, it yields the observed phenotypic mean, phenotypic variance and additive genetic variance.
+BugReports: https://github.com/devillemereuil/qgglmm/issues
+Description: Compute various quantitative genetics parameters from a Generalised Linear Mixed Model (GLMM) estimates. Especially, it yields the observed phenotypic mean, phenotypic variance and additive genetic variance.
 Depends: mvtnorm, R2Cuba
 License: GPL-2

@@ -26,9 +26,7 @@ This function needs the multivariate latent population mean (\code{mu}) or the m
 To do so, it also requires the inverse functions of the link functions (\code{link.inv}) and the distribution variance functions (\code{var.func}). For an analysis with d traits, the function given to these arguments should use a vector of length d and yield a vector of length d (see Example below).
 }
 \value{This function yields the phenotypic variance-covariance on the observed or expected scale. (numeric)}
-\references{
-\strong{REF!}
-}
+
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }
@@ -52,8 +50,10 @@ var.funcs=function(vec){c(pnorm(vec[1])*(1-pnorm(vec[1])),0)} #probit and identi
 #The second element is 0 because the identity link does not create variance
 
 #Computing the multivariate mean on observed scale
-QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs) #Phenotypic VCV matrix on observed scale
-QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs,exp.scale=TRUE) #Phenotypic VCV matrix on the expected scale
+#Phenotypic VCV matrix on observed scale
+QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs) 
+#Phenotypic VCV matrix on the expected scale
+QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs,exp.scale=TRUE) 
 
 QGvar.exp(mu=0,var=1,link.inv=pnorm) #Same variance on the expected scale
 QGvar.exp(mu=0,var=1,link.inv=pnorm)+

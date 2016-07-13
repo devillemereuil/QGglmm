@@ -23,9 +23,6 @@ This function needs the multivariate latent population mean (\code{mu}) or the m
 To do so, it also requires the inverse functions of the link functions (\code{link.inv}). For an analysis with d traits, the function given to the \code{link.inv} argument should use a vector of length d and yield a vector of length d (see Example below).
 }
 \value{This function yields the mutlivariate phenotypic mean on the observed scale. (numeric)}
-\references{
-\strong{REF!}
-}
 
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey

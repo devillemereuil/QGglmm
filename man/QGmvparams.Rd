@@ -53,9 +53,6 @@ The function yields a list containing the following values:
   \item{vcv.P.obs}{Phenotypic variance-covariance matrix on the observed scale.}
   \item{vcv.G.obs}{Additive genetic variance-covariance (a.k.a. G-matrix) on the observed scale.}
 }
-\references{
-\strong{REF!}
-}
 
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey

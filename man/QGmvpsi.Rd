@@ -23,9 +23,7 @@ The multivariate parameter "Psi" is a diagonal matrix which elements are the ave
 This function requires the derivatives of the inverse-link functions (\code{d.link.inv}). For an analysis with d traits, the function given to the \code{d.link.inv} argument should use a vector of length d and yield a vector of length d (see Example below).
 }
 \value{This function yields the matrix "Psi". (numeric)}
-\references{
-\strong{REF!}
-}
+
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }

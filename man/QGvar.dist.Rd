@@ -27,9 +27,7 @@ The \code{var.func} function is yielded by \code{\link{QGlink.funcs}} according 
 Contrary to \code{\link{QGparams}}, \code{QGvar.exp} never uses the closed form solutions, but always compute the integrals.
 }
 \value{This function yields the distribution variance. (numeric)}
-\references{
-\strong{REF!}
-}
+
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }

@@ -55,9 +55,6 @@ The function yields a data.frame containing the following values:
   \item{var.a.obs}{Additive genetic variance on the observed scale.}
   \item{h2.obs}{Heritability on the observed scale.}
 }
-\references{
-\strong{REF!}
-}
 
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey

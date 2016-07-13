@@ -31,9 +31,7 @@ This function yields a list of function:
     \item{\code{inv.link}}{Derivative of the inverse-link function. (function)}
   }
 }
-\references{
-\strong{REF!!}
-}
+
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }

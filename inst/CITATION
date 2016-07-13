@@ -1,0 +1,23 @@
+bibentry(bibtype = "Article",
+  title        = "General methods for evolutionary quantitative genetic inference from generalised mixed models",
+  author       = c(person(given = "Pierre",
+                          family = "de Villemereuil"),
+                   person(given = "Holger",
+                          family = "Schielzeth"),
+                   person(given = "Shinichi",
+                          family = "Nakagawa"),
+                   person(given = "Michael",
+                          family = "Morrissey")),
+  journal      = "bioRxiv",
+  year         = "2016",
+  pages        = "026377",
+  doi          = "10.1101/026377",
+
+  header       = "To cite QGglmm in publications use:",
+  textVersion  =
+  paste("de Villemereuil, P., Schielzeth, H., Nakagwa, S. and Morrissey M. (2016).",
+        "General methods for evolutionary quantitative genetic inference from generalised mixed models.",
+        "bioRxiv (submitted to Genetics).",
+        "doi:10.1101/026377")
+)
+

@@ -39,9 +39,6 @@ The function yields a data.frame containing:
     \item{\code{lat.resp}}{Latent evolutionary response to selection. (numeric)}
   }
 }
-\references{
-\strong{REF!!}
-}
 
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey

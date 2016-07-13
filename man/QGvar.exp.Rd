@@ -27,9 +27,7 @@ The function required for \code{link.inv} is yielded by \code{\link{QGlink.funcs
 Contrary to \code{\link{QGparams}}, \code{QGvar.dist} never uses the closed form solutions, but always compute the integrals.
 }
 \value{This function yields the variance of the expected values. (numeric)}
-\references{
-\strong{REF!}
-}
+
 \author{
 Pierre de Villemereuil & Micheal B. Morrissey
 }
