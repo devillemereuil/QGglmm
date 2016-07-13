@@ -16,8 +16,8 @@ For some distribution/link models (e.g. Binomial/probit and Poisson and Negative
   \tabular{ll}{
   Package: \tab QGglmm\cr
   Type: \tab Package\cr
-  Version: \tab 0.1\cr
-  Date: \tab 2015-03-20\cr
+  Version: \tab 0.4\cr
+  Date: \tab 2016-07-13\cr
   License: \tab GPL-2\cr
   }
 }
