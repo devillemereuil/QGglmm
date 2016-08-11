@@ -8,7 +8,7 @@
   Function to estimate the multivariate quantitative genetics parameters on the observed scale based on estimates on the latent scale. Contrary to the univariate function, this one cannot use the analytical closed forms and yields a list of paramaters instead of a data.frame.
 }
 \usage{
-    QGmvparams(mu, vcv.G, vcv.P, models, predict = NULL, rel.acc = 0.01, 
+    QGmvparams(mu=NULL, vcv.G, vcv.P, models, predict = NULL, rel.acc = 0.01, 
     width = 10, n.obs = NULL, theta = NULL, verbose = TRUE)
 }
 

@@ -4,7 +4,7 @@
 \title{Compute the variance of expected values (i.e. the latent values after inverse-link transformation.)}
 \description{This function computes the variance of the expected values, i.e. the variance of the latent values after transformation through the inverse-link function. This variance, added to the distribution variance, yields to the phenotypic variance on the observed scale.}
 \usage{
-QGvar.exp(mu, var, link.inv, obs.mean = NULL, predict = NULL, width = 10)
+QGvar.exp(mu=NULL, var, link.inv, obs.mean = NULL, predict = NULL, width = 10)
 }
 
 \arguments{

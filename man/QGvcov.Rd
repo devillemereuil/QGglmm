@@ -6,7 +6,7 @@
 This function computes the total phenotypic variance-covariance matrix on the observed or expected scales.
 }
 \usage{
-QGvcov(mu, vcov, link.inv, var.func, mvmean.obs = NULL,
+QGvcov(mu=NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
           predict = NULL, rel.acc = 0.01, width = 10, exp.scale = FALSE)
 }
 \arguments{

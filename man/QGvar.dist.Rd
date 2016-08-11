@@ -6,7 +6,7 @@
 This function computes the variance emerging from the error distribution around the individual expected value. This variance, added to the variance of the individual expected values themselves (see \code{\link{QGvar.exp}}) yields the total observed phenotypic variance.
 }
 \usage{
-QGvar.dist(mu, var, var.func, predict = NULL, width = 10)
+QGvar.dist(mu=NULL, var, var.func, predict = NULL, width = 10)
 }
 \arguments{
   \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric of length 1)}

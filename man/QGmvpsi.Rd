@@ -6,7 +6,7 @@
 This function computes a multivariate version of the parameter "Psi" which relates the additive genetic variance-covariance matrix on the latent scale to the additive genetic variance-covariance matrix on the observed scale: G.obs = Psi \%*\% G \%*\% t(Psi)
 }
 \usage{
-QGmvpsi(mu, vcov, d.link.inv, predict = NULL, rel.acc = 0.01, width = 10)
+QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, rel.acc = 0.01, width = 10)
 }
 
 \arguments{

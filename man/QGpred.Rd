@@ -7,7 +7,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \usage{
-    QGpred(mu, var.a, var.p, fit.func, d.fit.func, width = 10, 
+    QGpred(mu=NULL, var.a, var.p, fit.func, d.fit.func, width = 10, 
            predict = NULL, verbose = TRUE)
 }
 

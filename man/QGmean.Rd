@@ -6,7 +6,7 @@
 This function calculates the phenotypic mean on the observed scale from the latent mean and variance.
 }
 \usage{
-QGmean(mu, var, link.inv, predict = NULL, width = 10)
+QGmean(mu=NULL, var, link.inv, predict = NULL, width = 10)
 }
 \arguments{
   \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric of length 1)}

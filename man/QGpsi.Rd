@@ -6,7 +6,7 @@
 This function computes the parameter "Psi" which relates the additive genetic variance on the latent scale to the additive genetic variance on the observed scale: Va.obs = (Psi**2)*Va
 }
 \usage{
-QGpsi(mu, var, d.link.inv, predict = NULL, width = 10)
+QGpsi(mu=NULL, var, d.link.inv, predict = NULL, width = 10)
 }
 
 \arguments{

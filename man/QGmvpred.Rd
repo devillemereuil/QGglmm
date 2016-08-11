@@ -7,7 +7,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \usage{
-    QGmvpred(mu, vcv.G, vcv.P, fit.func, d.fit.func, predict=NULL, rel.acc=0.01, 
+    QGmvpred(mu=NULL, vcv.G, vcv.P, fit.func, d.fit.func, predict=NULL, rel.acc=0.01, 
     width = 10, verbose = TRUE)
 }
 
