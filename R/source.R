@@ -82,9 +82,8 @@ QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
     inv.link=function(x){n.obs*plogis(x)}
     var.func=function(x){n.obs*plogis(x)*(1-plogis(x))}
     d.inv.link=function(x){n.obs*dlogis(x)}
-  } else if (name=="threshold") {
-      ##TODO
-      stop("Not implemented yet")
+  } else if (name=="ordinal") {
+      stop("ordinal models are particular, please use the QGparams function only")
   } else if (name=="Poisson.log") {
     inv.link=function(x){exp(x)}
     var.func=function(x){exp(x)}
@@ -192,7 +191,7 @@ qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
-QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,cut.points=NULL,theta=NULL,verbose=TRUE) {
   if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
@@ -221,6 +220,10 @@ QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRU
       if (is.null(theta)) {stop("negbin model used, but theta not defined.")}
       if(verbose) print("Using the closed forms for a NegativeBinomial-sqrt model.")
       qg.negbin.sqrt(mu=mu,var.a=var.a,var.p=var.p,predict=predict,theta=theta)
+  } else if (model=="ordinal"){								#Ordinal model
+    if (is.null(cut.points)) {stop("cut points must be specified to use the ordinal model.")}
+    if(verbose) print("Using the closed forms for an ordinal model (ignoring the closed.form argument)")
+    qg.ordinal(mu=mu,var.a=var.a,var.p=var.p,predict=predict,cut.points=cut.points)
   } else {
   
   ##Else, use the general integral equations
