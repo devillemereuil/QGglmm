@@ -9,8 +9,8 @@ This function calculates the phenotypic mean on the observed scale from the late
 QGmean(mu, var, link.inv, predict = NULL, width = 10)
 }
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
-  \item{var}{Latent total variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric of length 1)}
+  \item{var}{Latent total variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric of length 1)}
   \item{link.inv}{Inverse function of the link function. (function)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var)} to \code{mu}+\code{width*sqrt(var)}. The default value is 10, which should be sensible for most models. (numeric)}

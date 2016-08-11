@@ -22,6 +22,7 @@
 
 #Calculating the observed/expected scale mean
 QGmean<-function(mu,var,link.inv,predict=NULL,width=10) {
+  if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
@@ -29,6 +30,7 @@ QGmean<-function(mu,var,link.inv,predict=NULL,width=10) {
 
 #Calculating the expected scale variance
 QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,predict=NULL,width=10) {
+  if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #If not provided, compute the obsereved mean
   if (is.null(obs.mean)){
@@ -40,6 +42,7 @@ QGvar.exp<-function(mu,var,link.inv,obs.mean=NULL,predict=NULL,width=10) {
 
 #Calculating the "distribution" variance
 QGvar.dist<-function(mu,var,var.func,predict=NULL,width=10) {
+  if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
   mean(sapply(predict,function(pred_i){integrate(f=function(x){var.func(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
@@ -47,6 +50,7 @@ QGvar.dist<-function(mu,var,var.func,predict=NULL,width=10) {
 
 #Calculating "psi" for the observed additive genetic variance computation
 QGpsi<-function(mu,var,d.link.inv,predict=NULL,width=10) {
+  if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
     #If no fixed effects were included in the model
   if (is.null(predict)) predict=mu;
     mean(sapply(predict,function(pred_i){integrate(f=function(x){d.link.inv(x)*dnorm(x,pred_i,sqrt(var))},lower=pred_i-width*sqrt(var),upper=pred_i+width*sqrt(var))$value}))
@@ -106,6 +110,7 @@ QGlink.funcs<-function(name,n.obs=NULL,theta=NULL) {
 ##-----------------------------Special functions for known analytical solutions--------------
 
 qg.Gaussian=function(mu,var.a,var.p,predict=NULL) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Nothing to be done, except averaging over predict
   if (length(predict)==1) {var_fixed=0} else {var_fixed=var(predict)}
@@ -113,6 +118,7 @@ qg.Gaussian=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Observed mean
   p=mean(1-pnorm(0,predict,sqrt(var.p+1)))
@@ -124,6 +130,7 @@ qg.binom1.probit=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=10) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Observed mean
   p=n.obs*mean(1-pnorm(0,predict,sqrt(var.p+1)))
@@ -136,6 +143,7 @@ qg.binomN.probit=function(mu,var.a,var.p,n.obs,predict=NULL,width=10) {
 }
 
 qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Observed mean
   lambda=mean(exp(predict+(var.p/2)))
@@ -147,6 +155,7 @@ qg.Poisson.log=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Observed mean
   lambda=mean((predict)**2+var.p)
@@ -158,6 +167,7 @@ qg.Poisson.sqrt=function(mu,var.a,var.p,predict=NULL) {
 }
 
 qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Observed mean
   lambda=mean(exp(predict+(var.p/2)))
@@ -169,6 +179,7 @@ qg.negbin.log=function(mu,var.a,var.p,theta,predict=NULL) {
 }
 
 qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Observed mean
   lambda=mean((predict)**2+var.p)
@@ -182,6 +193,7 @@ qg.negbin.sqrt=function(mu,var.a,var.p,theta,predict=NULL) {
 ##--------------------------------Meta-function for general calculation-----------------------------
 
 QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
   if (model=="Gaussian"&closed.form) {            #Gaussian model with identity link (e.g. LMM)
@@ -236,6 +248,7 @@ QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRU
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
 QGpred<-function(mu,var.a,var.p,fit.func,d.fit.func,width=10,predict=NULL,verbose=TRUE) {
+  if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) predict=mu;
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")

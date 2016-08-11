@@ -8,8 +8,8 @@ QGvar.exp(mu, var, link.inv, obs.mean = NULL, predict = NULL, width = 10)
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
-  \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric of length 1)}
+  \item{var}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric of length 1)}
   \item{link.inv}{Inverse function of the link function. (function)}
   \item{obs.mean}{Optional parameter giving the phenotypic mean on the observed scale. Automatically computed if not provided. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}

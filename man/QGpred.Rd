@@ -12,9 +12,9 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric)}
-  \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
-  \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (set to 0 if \code{predict} is not \code{NULL}). (numeric of length 1)}
+  \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric of length 1)}
+  \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric of length 1)}
   \item{fit.func}{Function giving the expected fitness on the observed scale for a given latent trait (see Example). (function)}
   \item{d.fit.func}{Derivative of the expected fitness to the latent trait (see Example). (function)}
   \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 10, which should be sensible for most models. (numeric)}

@@ -14,9 +14,9 @@
 }
 
 \arguments{
-  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
-  \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric)}
-  \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric)}
+  \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric of length 1)}
+  \item{var.a}{Latent additive genetic variance estimated from a GLMM. (numeric of length 1)}
+  \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric of length 1)}
   \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. (character) Available models are :
     \itemize{
       \item{"Gaussian"} Gaussian distribution with identity link (e.g. LMM)
@@ -89,4 +89,11 @@ custom=list(inv.link=function(x){pnorm(x)},
     d.inv.link=function(x){dnorm(x)})
     
 QGparams(mu=0,var.p=2,var.a=1,custom.model=custom)
+
+#Integrating over a posterior distribution
+#e.g. output from MCMCglmm named "model"
+#df <- data.frame(mu=model$Sol[,'intercept'],va=model$VCV[,'animal'],vp=rowSums(model$VCV))
+#params <- apply(df,1,function(row){
+#        QGparams(mu=row$mu,var.a=row$va,var.p=row$vp,model="Poisson.log")
+#})
 }
