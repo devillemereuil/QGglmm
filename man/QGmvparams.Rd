@@ -55,7 +55,7 @@ The function yields a list containing the following values:
 }
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmvmean}}, \code{\link{QGvcov}}, \code{\link{QGmvpsi}}

@@ -25,7 +25,7 @@ To do so, it also requires the inverse functions of the link functions (\code{li
 \value{This function yields the mutlivariate phenotypic mean on the observed scale. (numeric)}
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGmean}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov}}, \code{\link{QGmvpsi}}

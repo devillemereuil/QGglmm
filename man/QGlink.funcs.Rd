@@ -33,7 +33,7 @@ This function yields a list of function:
 }
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 
 \seealso{

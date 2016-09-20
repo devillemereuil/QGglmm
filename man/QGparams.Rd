@@ -57,7 +57,7 @@ The function yields a data.frame containing the following values:
 }
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGmvparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}

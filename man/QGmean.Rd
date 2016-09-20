@@ -26,7 +26,7 @@ Contrary to \code{\link{QGparams}}, \code{QGmean.obs} never uses the closed form
 \value{This function yields the phenotypic mean on the observed scale. (numeric)}
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGmvmean}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}, \code{\link{QGpsi}}

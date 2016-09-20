@@ -29,7 +29,7 @@ Contrary to \code{\link{QGparams}}, \code{QGvar.exp} never uses the closed form 
 \value{This function yields the distribution variance. (numeric)}
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGvar.exp}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGpsi}}

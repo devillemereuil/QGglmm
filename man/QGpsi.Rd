@@ -22,7 +22,7 @@ The parameter "Psi" is the average of the derivative of the inverse-link functio
 \value{This function yields the "Psi" parameter. (numeric)}
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGmvpsi}}, \code{\link{QGparams}}, \code{\link{QGpred}}, \code{\link{QGlink.funcs}}, \code{\link{QGmean}}, \code{\link{QGvar.dist}}, \code{\link{QGvar.exp}}

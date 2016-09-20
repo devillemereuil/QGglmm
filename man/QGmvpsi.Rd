@@ -25,7 +25,7 @@ This function requires the derivatives of the inverse-link functions (\code{d.li
 \value{This function yields the matrix "Psi". (numeric)}
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGpsi}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov}}, \code{\link{QGmvpsi}}

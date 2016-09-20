@@ -28,7 +28,7 @@ To do so, it also requires the inverse functions of the link functions (\code{li
 \value{This function yields the phenotypic variance-covariance on the observed or expected scale. (numeric)}
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 \seealso{
 \code{\link{QGvar.exp}}, \code{\link{QGvar.dist}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmvpsi}}

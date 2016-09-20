@@ -42,7 +42,7 @@ The function yields a data.frame containing:
 }
 
 \author{
-Pierre de Villemereuil & Micheal B. Morrissey
+Pierre de Villemereuil & Michael B. Morrissey
 }
 
 \seealso{
