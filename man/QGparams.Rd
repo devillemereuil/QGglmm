@@ -8,9 +8,14 @@
   Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
+<<<<<<< HEAD
     QGparams(mu=NULL, var.a, var.p, model="", width = 10, predict = NULL, 
              closed.form = TRUE, custom.model = NULL, n.obs = NULL, 
              theta = NULL, verbose = TRUE)
+=======
+    QGparams(mu, var.a, var.p, model="", width = 10, predict = NULL, closed.form = TRUE, custom.model = NULL,
+             n.obs = NULL, cut.points = NULL, theta = NULL, verbose = TRUE)
+>>>>>>> ordinal
 }
 
 \arguments{
@@ -28,13 +33,15 @@
       \item{"Poisson.sqrt"} Poisson distribution with a square-root link
       \item{"negbin.log"} Negative-Binomial distribution wiht a log link (require the parameter \code{theta})
       \item{"negbin.sqrt"} Negative-Binomial distribution with a square-root link (require the parameter \code{theta})
+      \item{"ordinal"} Multiple threshold model for ordinal categorical traits (require the parameter \code{cut.points})
     }
   }
   \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
-  \item{closed.form}{When available, should closed forms be used instead of integral computations? (boolean)}
+  \item{closed.form}{When available, should closed forms be used instead of integral computations? (boolean, ignored if \code{model="ordinal"})}
   \item{custom.model}{If the model used is not available using the \code{model} argument, a list of functions describing the model can be provided. (list of functions, see Details)}
   \item{n.obs}{Number of "trials" for the "binomN" distribution. (numeric)}
+  \item{cut.points}{Values for the "cut points" in the multiple threshold model ("ordinal"). Should be a vector of length equal to the number of categories plus one, starting with the value -Inf and ending with the value Inf. (numeric)}
   \item{theta}{Dispersion parameter for the Negative Binomial distribution. The parameter \code{theta} should be such as the variance of the distribution is \code{mean + mean**2/theta}. (numeric)}
   \item{verbose}{Should the function be verbose? (boolean)}
 }
@@ -46,6 +53,8 @@ Only the most typical distribution/link function couples are implemented in the 
 Some distributions require extra-arguments. This is the case for "binomN", which require the number of trials N, passed with the argument \code{n.obs}. The distribution "negbin" requires a dispersion parameter \code{theta}, such as the variance of the distribution is \code{mean + mean**2/theta} (mean/dispersion parametrisation).
 
 If fixed effects (apart from the intercept) have been included in the GLMM, they can be included as marginal predicted values, i.e. predicted values excluding the random effects, which can be calculated as the matrix product \strong{Xb} where \strong{X} is the design matrix and \strong{b} is the vector of fixed effects estimates. To do so, provide the vector of marginal predicted values using the argument \code{predict}. Note this can considerably slow down the algorithm, especially when no closed form is used.
+
+Ordinal model is different from the other models, because it yields multivariate inference on the observed data scale, even though the latent scale is not multivariate. As a consequence, this model can only be accessed using the function \code{QGparams} and has an output similar to the one of \code{QGmvparams}.
 }
 
 \value{
@@ -89,6 +98,10 @@ custom=list(inv.link=function(x){pnorm(x)},
     d.inv.link=function(x){dnorm(x)})
     
 QGparams(mu=0,var.p=2,var.a=1,custom.model=custom)
+
+#Using an ordinal model (with 4 categories)
+QGparams(mu=0.1,var.a=1,var.p=2,cut.points=c(-Inf,0,0.5,1,Inf),model="ordinal")
+#Note the slightly different output (see QGmvparams)
 
 #Integrating over a posterior distribution
 #e.g. output from MCMCglmm named "model"

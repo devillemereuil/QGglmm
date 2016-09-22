@@ -109,6 +109,8 @@ QGmvpsi<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
 
 QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE)
 {
+  #Error if ordinal is used (multivariate code not available yet)
+  if ("ordinal" %in% models) {error("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcv.P))*width
   #Number of dimensions
