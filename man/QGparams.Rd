@@ -8,14 +8,8 @@
   Function to estimate the quantitative genetics parameters on the observed scale based on estimates on the latent scale. The function yields a data.frame which includes the phenotypic mean and variance, as well as the additive genetic variance and heritability, on the observed scale.
 }
 \usage{
-<<<<<<< HEAD
-    QGparams(mu=NULL, var.a, var.p, model="", width = 10, predict = NULL, 
-             closed.form = TRUE, custom.model = NULL, n.obs = NULL, 
-             theta = NULL, verbose = TRUE)
-=======
     QGparams(mu, var.a, var.p, model="", width = 10, predict = NULL, closed.form = TRUE, custom.model = NULL,
              n.obs = NULL, cut.points = NULL, theta = NULL, verbose = TRUE)
->>>>>>> ordinal
 }
 
 \arguments{

@@ -191,11 +191,7 @@ qg.negbin.sqrt=function(mu=NULL,var.a,var.p,theta,predict=NULL) {
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
-<<<<<<< HEAD
-QGparams<-function(mu=NULL,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,theta=NULL,verbose=TRUE) {
-=======
 QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRUE,custom.model=NULL,n.obs=NULL,cut.points=NULL,theta=NULL,verbose=TRUE) {
->>>>>>> ordinal
   if(length(mu)>1 | length(var.a)!=1 | length(var.p) != 1) stop("The parameters mu, var.a and var.p must be of length 1, please check your input.")
   if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   ##Using analytical solutions if possible (and asked for, see closed.form arg)
