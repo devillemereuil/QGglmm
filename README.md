@@ -1,10 +1,11 @@
 # QGglmm
 
-##Warning!
-
-The package is still in pre-release beta version. Use at your own risks! The package should compile and install itself in R, and all the functions should work without critical issue.
-
 ##How to install this package
+
+###Using CRAN
+* Simply use `install.packages("QGglmm")` as for any package.
+
+###From this GitHub
 
 * Install the packages on which QGglmm depends: R2Cuba and mvtnorm.
     `install.packages(c("R2Cuba","mvtnorm"))`
