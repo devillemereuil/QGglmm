@@ -18,55 +18,127 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-QGicc <- function(mu, var.comp, var.p, link.inv, predict=NULL,width=10){
+QGicc <- function(mu, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, cut.points=NULL, theta=NULL, verbose=TRUE){
   if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   
-  error("Nothing for now!")
+  #Use a custom model if defined, otherwise look into the "Dictionary"
+  if (is.null(custom.model)) {
+    if (model==""){stop("The function requires either model or custom.model.")} else {
+      funcs=QGlink.funcs(model,n.obs=n.obs,theta=theta)
+    }} else {funcs=custom.model}
+
+  #Observed mean computation
+  if (verbose) print("Computing observed mean...")
+  z_bar=QGmean(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
+
+  #Phenotypic variances computation
+  if (verbose) print("Computing phenotypic variance...")
+  var_exp=QGvar.exp(mu=mu,var=var.p,link.inv=funcs$inv.link,obs.mean=z_bar,width=width,predict=predict)
+  var_dist=QGvar.dist(mu=mu,var=var.p,var.func=funcs$var.func,width=width,predict=predict)
+  var_obs=var_exp+var_dist
+   
+  #Computing conditional variance (i.e. without var.comp)
+  var.cond <- var.p - var.comp
+
+  
+  #Function giving the conditional expectancy
+  cond_exp <- function(t){
+    sapply(t,function(t_i){
+      mean(sapply(predict,function(pred_i){integrate(f=function(u){funcs$inv.link(u)*dnorm(u,pred_i+t_i,sqrt(var.cond))},
+      lower=pred_i+t_i-width*sqrt(var.cond),upper=pred_i+t_i+width*sqrt(var.cond))$value}))
+    })
+  }
+
+  #Computing variance of component on the observed data scale
+  #Note: Using Koenig's formula
+  if (verbose) print("Computing component variance...")
+  var_comp_obs <- integrate(f=function(x){((cond_exp(x)-z_bar)^2)*dnorm(x,0,sqrt(var.comp))},lower=-width*sqrt(var.comp),upper=width*sqrt(var.comp))$value
+  
+  #Return a data.frame with the calculated components
+  data.frame(mean.obs=z_bar,var.obs=var_obs,var.comp.obs=var_comp_obs,icc.obs=var_comp_obs/var_obs)
 }
 
 
-QGmvicc<-function(mu,vcov.comp,vcov.p,link.inv,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10) {
+QGmvicc<-function(mu,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
-  w<-sqrt(diag(vcov.p))*width
+  w1<-sqrt(diag(vcov.p-vcov.comp))*width
+  w2<-sqrt(diag(vcov.comp))*width
   #Number of dimensions
-  d<-length(w)
+  d<-length(w1)
   #If no fixed effects were included in the model
   if (is.null(predict)) predict=matrix(mu,nrow=1)
   
-  #Function giving the conditional expectancy
-  ##TODO: make this function predict-aware (i.e. replace mu by pred_i and average over it)
-  cond_exp <- function(a) {
-    cuhre(ndim=d,ncomp=d,
-              integrand=function(x){link.inv(x)*dmvnorm(x,mu+a,vcov.p-vcov.comp)},
-              lower=mu-w,upper=mu+w,rel.tol=rel.acc,abs.tol= 0.001,
-              flags=list(verbose=0))$value
+  #Defining the link/distribution functions
+  #If a vector of names were given
+  if (!(is.list(models))) {
+    tmp<-models
+    models<-lapply(tmp,function(string){QGlink.funcs(string)})
   }
+  #Now we can compute the needed functions
+  inv.links=function(x){
+    res=numeric(d)
+    for (i in 1:d) {
+      res[i] = models[[i]]$inv.link(x[i])
+    }
+    res
+  }
+  var.funcs=function(x){
+    res=numeric(d)
+    for (i in 1:d) {
+      res[i] = models[[i]]$var.func(x[i])
+    }
+    res
+  }
+  d.inv.links=function(x){
+    res=numeric(d)
+    for (i in 1:d) {
+      res[i] = models[[i]]$d.inv.link(x[i])
+    }
+    res
+  }
+  #Computing the observed mean
+  if (verbose) print("Computing observed mean...")
+  z_bar<-QGmvmean(mu=mu,vcov=vcov.p,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  #Computing the variance-covariance matrix
+  if (verbose) print("Computing phenotypic variance-covariance matrix...")
+  vcv.P.obs<-QGvcov(mu=mu,vcov=vcov.p,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
   
-  #Computing the upper-triangle matrix of "expectancy of the square"
-  v<-apply(#
+  
+  #Function giving the conditional expectancy
+  cond_exp <- function(t) {
+  apply(#
       apply(predict,1,
             function(pred_i){
-              cuhre(ndim=d,ncomp=(d^2+d)/2,
-              integrand=function(x){
-		  (cond_exp(x)%*%t(cond_exp(x)))[upper.tri(x%*%t(x),diag=TRUE)]*dmvnorm(x,rep(0,d),vcov.comp)
-	      },
-	      lower=-w,upper=w,rel.tol=rel.acc,abs.tol= 0.001,
-	      flags=list(verbose=0))$value
+	      cuhre(ndim=d,ncomp=d,
+              integrand=function(x){inv.links(x)*dmvnorm(x,pred_i+t,vcov.p-vcov.comp)},
+              lower=pred_i+t-w1,upper=pred_i+t+w1,rel.tol=rel.acc,abs.tol= 0.001,
+              flags=list(verbose=0))$value
 	    }
       ),
      1,mean)
+  }
+  
+  if (verbose) print("Computing component variance-covariance matrix...")
+  #Computing the upper-triangle matrix of "expectancy of the square"
+  v<-cuhre(ndim=d,ncomp=(d^2+d)/2,
+      integrand=function(x){
+	  (cond_exp(x)%*%t(cond_exp(x)))[upper.tri(x%*%t(x),diag=TRUE)]*dmvnorm(x,rep(0,d),vcov.comp)
+     },
+     lower=-w2,upper=w2,rel.tol=rel.acc,abs.tol= 0.001,
+     flags=list(verbose=0))$value
   
   #Creating the VCV matrix
   vcv<-matrix(NA,d,d)
   vcv[upper.tri(vcv,diag=TRUE)]<-v
   vcv[lower.tri(vcv)]<-vcv[upper.tri(vcv)]
-  #If necessary, computing the observed multivariate mean
-  if (is.null(mvmean.obs))
-    mvmean.obs <- QGmvmean(mu,vcov.p,link.inv,predict=predict,rel.acc=rel.acc,width=width)
+
   #Computing the VCV matrix using Keonig's formuka
-  vcv <- vcv - mvmean.obs%*%t(mvmean.obs)
+  vcv <- vcv - z_bar%*%t(z_bar)
   
   #Printing the result
   vcv
+  
+  #Return a list of QG parameters on the observed scale
+  list(mean.obs=z_bar,vcv.P.obs=vcv.P.obs,vcv.comp.obs=vcv)
 } 
