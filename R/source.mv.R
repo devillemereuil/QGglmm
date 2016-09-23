@@ -147,15 +147,15 @@ QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.
   }
   #Computing the observed mean
   if (verbose) print("Computing observed mean...")
-  y_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  z_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the variance-covariance matrix
   if (verbose) print("Computing variance-covariance matrix...")
-  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=y_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
+  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
   if (verbose) print("Computing Psi...")
   Psi<-QGmvpsi(mu=mu,vcov=vcv.P,d.link.inv=d.inv.links,predict=predict,rel.acc=rel.acc,width=width)
   vcv.G.obs <- Psi %*% vcv.G %*% t(Psi)
   #Return a list of QG parameters on the observed scale
-  list(mean.obs=y_bar,vcv.P.obs=vcv.P.obs,vcv.G.obs=vcv.G.obs)
+  list(mean.obs=z_bar,vcv.P.obs=vcv.P.obs,vcv.G.obs=vcv.G.obs)
 }
 
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------

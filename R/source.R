@@ -234,17 +234,17 @@ QGparams<-function(mu,var.a,var.p,model="",width=10,predict=NULL,closed.form=TRU
         }} else {funcs=custom.model}
   #Observed mean computation
       if (verbose) print("Computing observed mean...")
-      y_bar=QGmean(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
+      z_bar=QGmean(mu=mu,var=var.p,link.inv=funcs$inv.link,width=width,predict=predict)
   #Variances computation
       if (verbose) print("Computing variances...")
-      var_exp=QGvar.exp(mu=mu,var=var.p,link.inv=funcs$inv.link,obs.mean=y_bar,width=width,predict=predict)
+      var_exp=QGvar.exp(mu=mu,var=var.p,link.inv=funcs$inv.link,obs.mean=z_bar,width=width,predict=predict)
       var_dist=QGvar.dist(mu=mu,var=var.p,var.func=funcs$var.func,width=width,predict=predict)
       var_obs=var_exp+var_dist
   #Psi computation (for the observed additive genetic variance)
       if (verbose) print("Computing Psi...")
       Psi=QGpsi(mu=mu,var=var.p,d.link.inv=funcs$d.inv.link,width=width,predict=predict)
   #Return a data.frame with the calculated components
-      data.frame(mean.obs=y_bar,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
+      data.frame(mean.obs=z_bar,var.obs=var_obs,var.a.obs=(Psi**2)*var.a,h2.obs=((Psi**2)*var.a)/var_obs)
   }
 }
 
