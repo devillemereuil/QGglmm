@@ -21,7 +21,7 @@
 ##---------------------------------General functions----------------------------------------
 
 #Calculating the observed/expected scale mean (multivariate)
-QGmvmean<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
+QGmvmean<-function(mu=NULL,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -39,7 +39,7 @@ QGmvmean<-function(mu,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
 }
 
 #Calculating the expected scale variance-covariance matrix
-QGvcov<-function(mu,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
+QGvcov<-function(mu=NULL,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
