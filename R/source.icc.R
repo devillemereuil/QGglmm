@@ -18,7 +18,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-QGicc <- function(mu, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, cut.points=NULL, theta=NULL, verbose=TRUE){
+QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, cut.points=NULL, theta=NULL, verbose=TRUE){
   if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   
@@ -60,7 +60,7 @@ QGicc <- function(mu, var.comp, var.p, model="", width=10, predict=NULL, closed.
 }
 
 
-QGmvicc<-function(mu,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w1<-sqrt(diag(vcov.p-vcov.comp))*width
   w2<-sqrt(diag(vcov.comp))*width
