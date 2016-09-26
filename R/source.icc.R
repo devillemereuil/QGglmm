@@ -28,6 +28,39 @@ qg.Gaussian.icc=function(mu=NULL,var.comp,var.p,predict=NULL) {
   data.frame(mean.obs=mean(predict),var.obs=var.p+var_fixed,var.comp.obs=var.comp,icc.obs=var.comp/(var.p+var_fixed))
 }
 
+qg.binom1.probit.icc <- function(mu=NULL,var.comp,var.p,predict=NULL, width=10){
+  if(length(mu)>1 | length(var.comp)!=1 | length(var.p) != 1) stop("The parameters mu, var.comp and var.p must be of length 1, please check your input.")
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
+  #Observed mean
+  p=mean(1-pnorm(0,predict,sqrt(var.p+1)))
+  #Observed variance
+  var_obs=p*(1-p)
+  #Component variance
+  var_comp_obs = integrate(f=function(x){
+    sapply(x,function(x_i){
+      (mean(pnorm(x_i,-predict,sqrt(var.p-var.comp+1)))^2)*dnorm(x_i,0,sqrt(var.comp))
+    })
+  },lower=-width*sqrt(var.comp),upper=width*sqrt(var.comp))$value - (p^2)
+  data.frame(mean.obs=p,var.obs=var_obs,var.comp.obs=var_comp_obs,icc.obs=var_comp_obs/var_obs)
+}
+
+qg.binomN.probit.icc <- function(mu=NULL,var.comp,var.p,n.obs,predict=NULL, width=10){
+  if(length(mu)>1 | length(var.comp)!=1 | length(var.p) != 1) stop("The parameters mu, var.comp and var.p must be of length 1, please check your input.")
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
+  #Observed mean
+  p=n.obs*mean(1-pnorm(0,predict,sqrt(var.p+1)))
+  #Observed variance
+  prob.sq.int=mean(sapply(predict,function(pred_i){integrate(f=function(x){(pnorm(x)**2)*dnorm(x,pred_i,sqrt(var.p))},lower=pred_i-width*sqrt(var.p),upper=pred_i+width*sqrt(var.p))$value}))
+  var_obs=((n.obs**2)-n.obs)*prob.sq.int - p**2 +p
+  #Component variance
+  var_comp_obs = integrate(f=function(x){
+    sapply(x,function(x_i){
+      (mean(n.obs*pnorm(x_i,-predict,sqrt(var.p-var.comp+1)))^2)*dnorm(x_i,0,sqrt(var.comp))
+    })
+  },lower=-width*sqrt(var.comp),upper=width*sqrt(var.comp))$value - (p^2)
+  data.frame(mean.obs=p,var.obs=var_obs,var.comp.obs=var_comp_obs,icc.obs=var_comp_obs/var_obs)
+}
+
 qg.Poisson.log.icc <- function(mu=NULL,var.comp,var.p,predict=NULL){
   if(length(mu)>1 | length(var.comp)!=1 | length(var.p) != 1) stop("The parameters mu, var.comp and var.p must be of length 1, please check your input.")
   if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
@@ -42,9 +75,25 @@ qg.Poisson.log.icc <- function(mu=NULL,var.comp,var.p,predict=NULL){
   data.frame(mean.obs=lambda,var.obs=var_obs,var.comp.obs=var_comp_obs,icc.obs=var_comp_obs/var_obs)
 }
 
+qg.negbin.log.icc <- function(mu=NULL,var.comp,var.p,theta,predict=NULL){
+  if(length(mu)>1 | length(var.comp)!=1 | length(var.p) != 1) stop("The parameters mu, var.comp and var.p must be of length 1, please check your input.")
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
+  #Observed mean
+  lambda=mean(exp(predict+(var.p/2)))
+  #Mean of lambda square, needed for the following
+  lambda_sq=mean(exp(2*(predict+var.p/2)))
+  #Observed variance
+  var_obs=lambda_sq*exp(var.p)-lambda**2+lambda+(mean(exp(2*(predict+var.p)))/theta)
+  #Component variance
+  var_comp_obs = exp(var.comp + var.p)*(mean(exp(predict))^2) - (lambda^2)
+  data.frame(mean.obs=lambda,var.obs=var_obs,var.comp.obs=var_comp_obs,icc.obs=var_comp_obs/var_obs)
+}
+
 ##-------------------------------General functions--------------------------------------------
 
 QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, cut.points=NULL, theta=NULL, verbose=TRUE){
+  #Error if ordinal is used (multivariate code not available yet)
+  if ("ordinal" %in% model) {error("ICC computations are not able to address ordinal traits (yet?).")}
   if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   
@@ -52,9 +101,22 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
   if (model=="Gaussian"&closed.form) {
     if (verbose) print("Using the closed forms for a Gaussian model with identity link (e.g. LMM).")
     qg.Gaussian.icc(mu=mu,var.comp=var.comp,var.p=var.p,predict=predict)
+  } else if (model=="binom1.probit"&closed.form) {
+    if(verbose) print("Using a semi-closed form for a binom1.probit model.")
+    warning("Some component (var.comp.obs) are not totally from a closed form solution: an integral is computed")
+    qg.binom1.probit.icc(mu=mu,var.comp=var.comp,var.p=var.p,predict=predict,width=width)
+  } else if (model=="binomN.probit"&closed.form) {					#Binomial-not-binary model
+      if (is.null(n.obs)) {stop("binomN.probit model used, but no observation number (n.obs) defined.")}
+      if (verbose) print("Using a semi-closed form for a BinomialN-probit model.")
+      warning("Some component (var.obs and var.comp.obs) are not totally from a closed form solution: an integral is computed")
+      qg.binomN.probit.icc(mu=mu,var.comp=var.comp,var.p=var.p,predict=predict,n.obs=n.obs,width=width)
   } else if (model=="Poisson.log"&closed.form) {
     if(verbose) print("Using the closed forms for a Poisson-log model.")
     qg.Poisson.log.icc(mu=mu,var.comp=var.comp,var.p=var.p,predict=predict)
+  } else if (model=="negbin.log"&closed.form){						#NegBin-log model
+      if (is.null(theta)) {stop("negbin model used, but theta not defined.")}
+      if(verbose) print("Using the closed forms for a NegativeBinomial-log model.")
+      qg.negbin.log.icc(mu=mu,var.comp=var.comp,var.p=var.p,predict=predict,theta=theta)
   } else {
   
     #Use a custom model if defined, otherwise look into the "Dictionary"
@@ -98,6 +160,8 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
 
 
 QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
+  #Error if ordinal is used (multivariate code not available yet)
+  if ("ordinal" %in% models) {error("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w1<-sqrt(diag(vcov.p-vcov.comp))*width
   w2<-sqrt(diag(vcov.comp))*width
