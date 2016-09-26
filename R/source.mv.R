@@ -22,13 +22,12 @@
 
 #Calculating the observed/expected scale mean (multivariate)
 QGmvmean<-function(mu=NULL,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
-  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
   d<-length(w)
   #If predict is not included, then use mu, and 
-  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
   #Computing the mean
   #The double apply is needed to compute the mean for all "predict" values,
   #then average over them
@@ -41,13 +40,12 @@ QGmvmean<-function(mu=NULL,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
 
 #Calculating the expected scale variance-covariance matrix
 QGvcov<-function(mu=NULL,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
-  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
   d<-length(w)
   #If no fixed effects were included in the model
-  if (is.null(predict)) predict=matrix(mu,nrow=1)
+  if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
   
   #Computing the upper-triangle matrix of "expectancy of the square"
   v<-apply(#
@@ -87,13 +85,12 @@ QGvcov<-function(mu=NULL,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel
 
 #Computing the Psi vector
 QGmvpsi<-function(mu=NULL,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
-  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
   d<-length(w)
   #If predict is not included, then use mu, and 
-  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
   #Computing the mean
   #The double apply is needed to compute the mean for all "predict" values,
   #then average over them
@@ -114,13 +111,12 @@ QGmvparams<-function(mu=NULL,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=
 {
   #Error if ordinal is used (multivariate code not available yet)
   if ("ordinal" %in% models) {stop("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
-  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcv.P))*width
   #Number of dimensions
   d<-length(w)
   #If predict is not included, then use mu, and 
-  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
   #Defining the link/distribution functions
   #If a vector of names were given
   if (!(is.list(models))) {
@@ -166,13 +162,12 @@ QGmvparams<-function(mu=NULL,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=
 
 QGmvpred<-function(mu=NULL,vcv.G,vcv.P,fit.func,d.fit.func,predict=NULL,rel.acc=0.01,width=10,verbose=TRUE)
 {
-  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcv.P))*width
   #Number of dimensions
   d<-length(w)
   #If predict is not included, then use mu, and 
-  if(is.null(predict)) predict=matrix(mu,nrow=1)
+  if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")     
   Wbar<-mean(apply(predict,1,function(pred_i){
