@@ -51,7 +51,7 @@ If fixed effects (apart from the intercept) have been included in the GLMM, they
 The function yields a list containing the following values:
   \item{mean.obs}{Vector of phenotypic means on the observed scale.}
   \item{vcv.P.obs}{Phenotypic variance-covariance matrix on the observed scale.}
-  \item{vcv.comp.obs}Component variance-covariance (G-matrix-like, but broad-sense) on the observed scale.}
+  \item{vcv.comp.obs}{Component variance-covariance (G-matrix-like, but broad-sense) on the observed scale.}
 }
 
 \author{
