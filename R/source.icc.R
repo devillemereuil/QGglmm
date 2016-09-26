@@ -40,16 +40,17 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
    
   #Computing conditional variance (i.e. without var.comp)
   var.cond <- var.p - var.comp
-
   
   #Function giving the conditional expectancy
   cond_exp <- function(t){
     sapply(t,function(t_i){
-      mean(sapply(predict,function(pred_i){integrate(f=function(u){funcs$inv.link(u)*dnorm(u,pred_i+t_i,sqrt(var.cond))},
-      lower=pred_i+t_i-width*sqrt(var.cond),upper=pred_i+t_i+width*sqrt(var.cond))$value}))
+      mean(sapply(predict,function(pred_i){
+	integrate(f=function(u){funcs$inv.link(u)*dnorm(u,pred_i+t_i,sqrt(var.cond))},
+	lower=pred_i+t_i-width*sqrt(var.cond),upper=pred_i+t_i+width*sqrt(var.cond))$value
+      }))
     })
   }
-
+  
   #Computing variance of component on the observed data scale
   #Note: Using Koenig's formula
   if (verbose) print("Computing component variance...")
@@ -97,13 +98,13 @@ QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,widt
     }
     res
   }
+  
   #Computing the observed mean
   if (verbose) print("Computing observed mean...")
   z_bar<-QGmvmean(mu=mu,vcov=vcov.p,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the variance-covariance matrix
   if (verbose) print("Computing phenotypic variance-covariance matrix...")
   vcv.P.obs<-QGvcov(mu=mu,vcov=vcov.p,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
-  
   
   #Function giving the conditional expectancy
   cond_exp <- function(t) {
