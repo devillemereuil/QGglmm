@@ -93,7 +93,7 @@ qg.negbin.log.icc <- function(mu=NULL,var.comp,var.p,theta,predict=NULL){
 
 QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, theta=NULL, verbose=TRUE){
   #Error if ordinal is used (multivariate code not available yet)
-  if ("ordinal" %in% model) {error("ICC computations are not able to address ordinal traits (yet?).")}
+  if ("ordinal" %in% model) {stop("ICC computations are not able to address ordinal traits (yet?).")}
   if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
   if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   
@@ -161,7 +161,7 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
 
 QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
   #Error if ordinal is used (multivariate code not available yet)
-  if ("ordinal" %in% models) {error("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
+  if ("ordinal" %in% models) {stop("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w1<-sqrt(diag(vcv.P-vcv.comp))*width
   w2<-sqrt(diag(vcv.comp))*width
