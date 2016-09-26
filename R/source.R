@@ -203,8 +203,8 @@ QGparams<-function(mu=NULL,var.a,var.p,model="",width=10,predict=NULL,closed.for
       qg.binom1.probit(mu=mu,var.a=var.a,var.p=var.p,predict=predict)
   } else if (model=="binomN.probit"&closed.form) {					#Binomial-not-binary model
       if (is.null(n.obs)) {stop("binomN.probit model used, but no observation number (n.obs) defined.")}
-      if (verbose) print("Using the closed forms for a BinomialN-probit model.")
-      warning("Some component (var.obs) are not totally from a closed form solution:an integral is computed")
+      if (verbose) print("Using a semi-closed form for a BinomialN-probit model.")
+      warning("Some component (var.obs) are not totally from a closed form solution: an integral is computed")
       qg.binomN.probit(mu=mu,var.a=var.a,var.p=var.p,predict=predict,n.obs=n.obs,width=width)
   } else if (model=="Poisson.log"&closed.form){						#Poisson-log model
       if(verbose) print("Using the closed forms for a Poisson-log model.")
