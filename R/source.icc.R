@@ -91,7 +91,7 @@ qg.negbin.log.icc <- function(mu=NULL,var.comp,var.p,theta,predict=NULL){
 
 ##-------------------------------General functions--------------------------------------------
 
-QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, cut.points=NULL, theta=NULL, verbose=TRUE){
+QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, closed.form=TRUE, custom.model=NULL, n.obs=NULL, theta=NULL, verbose=TRUE){
   #Error if ordinal is used (multivariate code not available yet)
   if ("ordinal" %in% model) {error("ICC computations are not able to address ordinal traits (yet?).")}
   if(length(mu)>1 | length(var) >1) stop("The parameters mu and var must be of length 1, please check your input.")
@@ -159,12 +159,12 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
 }
 
 
-QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
   #Error if ordinal is used (multivariate code not available yet)
   if ("ordinal" %in% models) {error("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
-  w1<-sqrt(diag(vcov.p-vcov.comp))*width
-  w2<-sqrt(diag(vcov.comp))*width
+  w1<-sqrt(diag(vcv.P-vcv.comp))*width
+  w2<-sqrt(diag(vcv.comp))*width
   #Number of dimensions
   d<-length(w1)
   #If no fixed effects were included in the model
@@ -201,10 +201,10 @@ QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,widt
   
   #Computing the observed mean
   if (verbose) print("Computing observed mean...")
-  z_bar<-QGmvmean(mu=mu,vcov=vcov.p,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  z_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
   #Computing the variance-covariance matrix
   if (verbose) print("Computing phenotypic variance-covariance matrix...")
-  vcv.P.obs<-QGvcov(mu=mu,vcov=vcov.p,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
+  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
   
   #Function giving the conditional expectancy
   cond_exp <- function(t) {
@@ -212,7 +212,7 @@ QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,widt
       apply(predict,1,
             function(pred_i){
 	      cuhre(ndim=d,ncomp=d,
-              integrand=function(x){inv.links(x)*dmvnorm(x,pred_i+t,vcov.p-vcov.comp)},
+              integrand=function(x){inv.links(x)*dmvnorm(x,pred_i+t,vcv.P-vcv.comp)},
               lower=pred_i+t-w1,upper=pred_i+t+w1,rel.tol=rel.acc,abs.tol= 0.001,
               flags=list(verbose=0))$value
 	    }
@@ -224,7 +224,7 @@ QGmvicc<-function(mu=NULL,vcov.comp,vcov.p,models,predict=NULL,rel.acc=0.01,widt
   #Computing the upper-triangle matrix of "expectancy of the square"
   v<-cuhre(ndim=d,ncomp=(d^2+d)/2,
       integrand=function(x){
-	  (cond_exp(x)%*%t(cond_exp(x)))[upper.tri(x%*%t(x),diag=TRUE)]*dmvnorm(x,rep(0,d),vcov.comp)
+	  (cond_exp(x)%*%t(cond_exp(x)))[upper.tri(x%*%t(x),diag=TRUE)]*dmvnorm(x,rep(0,d),vcv.comp)
      },
      lower=-w2,upper=w2,rel.tol=rel.acc,abs.tol= 0.001,
      flags=list(verbose=0))$value
