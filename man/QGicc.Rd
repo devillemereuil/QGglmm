@@ -8,8 +8,8 @@
   Function to estimate the Intra-Class Correlation coefficients (ICC, a.k.a. repeatability-like estimates) on the observed scale based on estimates on the latent scale. For a specific variance component, the function yields a data.frame which includes the phenotypic mean and variance, as well as the variance component and associated ICC, on the observed data scale.
 }
 \usage{
-    QGicc(mu = NULL, var.comp, var.p, model="", width = 10, predict = NULL, closed.form = TRUE, custom.model = NULL,
-             n.obs = NULL, theta = NULL, verbose = TRUE)
+    QGicc(mu = NULL, var.comp, var.p, model="", width = 10, predict = NULL,
+    closed.form = TRUE, custom.model = NULL, n.obs = NULL, theta = NULL, verbose = TRUE)
 }
 
 \arguments{
