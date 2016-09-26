@@ -22,6 +22,7 @@
 
 #Calculating the observed/expected scale mean (multivariate)
 QGmvmean<-function(mu=NULL,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -40,6 +41,7 @@ QGmvmean<-function(mu=NULL,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10) {
 
 #Calculating the expected scale variance-covariance matrix
 QGvcov<-function(mu=NULL,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel.acc=0.01,width=10,exp.scale=FALSE) {
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -84,7 +86,8 @@ QGvcov<-function(mu=NULL,vcov,link.inv,var.func,mvmean.obs=NULL,predict=NULL,rel
 }
 
 #Computing the Psi vector
-QGmvpsi<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
+QGmvpsi<-function(mu=NULL,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcov))*width
   #Number of dimensions
@@ -107,10 +110,11 @@ QGmvpsi<-function(mu,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10) {
 
 ##--------------------------------Meta-function for general calculation-----------------------------
 
-QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE)
+QGmvparams<-function(mu=NULL,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE)
 {
   #Error if ordinal is used (multivariate code not available yet)
   if ("ordinal" %in% models) {stop("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcv.P))*width
   #Number of dimensions
@@ -160,8 +164,9 @@ QGmvparams<-function(mu,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.
 
 ##----------------------------------Function to calculate the evolutive prediction-----------------------------
 
-QGmvpred<-function(mu,vcv.G,vcv.P,fit.func,d.fit.func,predict=NULL,rel.acc=0.01,width=10,verbose=TRUE)
+QGmvpred<-function(mu=NULL,vcv.G,vcv.P,fit.func,d.fit.func,predict=NULL,rel.acc=0.01,width=10,verbose=TRUE)
 {
+  if (is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=mu;}}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
   w<-sqrt(diag(vcv.P))*width
   #Number of dimensions
