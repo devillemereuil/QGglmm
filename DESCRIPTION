@@ -1,8 +1,8 @@
 Package: QGglmm
 Type: Package
 Title: Estimate Quantitative Genetics Parameters from Generalised Linear Mixed Models
-Version: 0.4
-Date: 2016-07-13
+Version: 0.5
+Date: 2016-09-28
 Author: Pierre de Villemereuil <bonamy@horus.ens.fr>
 Maintainer: Pierre de Villemereuil <bonamy@horus.ens.fr>
 BugReports: https://github.com/devillemereuil/qgglmm/issues
