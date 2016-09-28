@@ -1,5 +1,4 @@
-%VignetteIndexEntry{How to use QGglmm}
-%VignetteEngine{Sweave}
+% \VignetteIndexEntry{How to use QGglmm}
 
 \documentclass[a4paper,12pt]{article}
 
