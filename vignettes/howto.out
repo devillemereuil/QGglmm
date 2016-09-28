@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section.1}{Summary and aim of the package}{}% 1
+\BOOKMARK [1][-]{section.2}{Overview of the theory}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Quantitative genetics and linear mixed models}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Generalised linear mixed model}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{An illustrative example}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Quantitative genetics and GLMM}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{The framework behind QGglmm}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Computing the phenotypic mean and variance}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{Computing the additive genetic variance and related parameters}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.3}{The issue of fixed effects}{section.3}% 10
+\BOOKMARK [1][-]{section.4}{Using QGglmm}{}% 11
+\BOOKMARK [2][-]{subsection.4.1}{Extracting information from the models}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.2}{Using QGparams to obtain parameters on the observed data scale}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.3}{Using QGmvparams to obtain multivariate parameters on the observed data scale}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.4}{Using QGpredict to obtain evolutionary prediction}{section.4}% 15
+\BOOKMARK [1][-]{section.5}{Particular cases}{}% 16
+\BOOKMARK [2][-]{subsection.5.1}{Including fixed effects}{section.5}% 17
+\BOOKMARK [2][-]{subsection.5.2}{Obtaining intra-class correlation \(ICC\) coefficients}{section.5}% 18
+\BOOKMARK [2][-]{subsection.5.3}{Integrating over a posterior prediction}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.4}{The special case of ordinal data}{section.5}% 20

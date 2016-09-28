@@ -1,0 +1,53 @@
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL: }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{(DOI:\discretionary{}{}{}#1)}\else
+  \providecommand{\doi}{(DOI:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url)}\fi
+
+\bibitem[{de~Villemereuil \textit{et~al.}(2016)de~Villemereuil, Schielzeth,
+  Nakagawa \& Morrissey}]{de_villemereuil_general_2016}
+\textbf{de~Villemereuil P., Schielzeth H., Nakagawa S. \& Morrissey M.}\textbf{
+  (2016)}.
+\newblock General methods for evolutionary quantitative genetic inference from
+  generalised mixed models.
+\newblock \emph{Genetics} p. genetics.115.186536.
+\newblock \doi{10.1534/genetics.115.186536}.
+
+\bibitem[{Fisher(1918)}]{fisher_correlation_1918}
+\textbf{Fisher R.A.}\textbf{ (1918)}.
+\newblock The correlation between relatives on the supposition of {Mendelian}
+  inheritance.
+\newblock \emph{Transactions of the Royal Society of Edinburgh} \textbf{52}:
+  399--433.
+
+\bibitem[{Henderson(1950)}]{henderson_estimation_1950}
+\textbf{Henderson C.R.}\textbf{ (1950)}.
+\newblock Estimation of genetic parameters.
+\newblock \emph{Annals of Mathematical Statistics} \textbf{21}: 309--310.
+
+\bibitem[{Henderson(1976)}]{henderson_simple_1976}
+\textbf{Henderson C.R.}\textbf{ (1976)}.
+\newblock A simple method for computing the inverse of a numerator relationship
+  matrix used in prediction of breeding values.
+\newblock \emph{Biometrics} \textbf{32}: 69--83,
+  \urlprefix\url{http://www.jstor.org/stable/2529339}.
+
+\bibitem[{Kruuk(2004)}]{kruuk_estimating_2004}
+\textbf{Kruuk L.E.B.}\textbf{ (2004)}.
+\newblock Estimating genetic parameters in natural populations using the
+  ‘animal model’.
+\newblock \emph{Philosophical Transactions of the Royal Society of London.
+  Series B: Biological Sciences} \textbf{359}: 873 --890.
+\newblock \doi{10.1098/rstb.2003.1437}.
+
+\bibitem[{Nakagawa \& Schielzeth(2010)}]{nakagawa_repeatability_2010}
+\textbf{Nakagawa S. \& Schielzeth H.}\textbf{ (2010)}.
+\newblock Repeatability for {Gaussian} and non {Gaussian} data: a practical
+  guide for biologists.
+\newblock \emph{Biological Reviews} \textbf{85}: 935--956.
+\newblock \doi{10.1111/j.1469-185X.2010.00141.x}.
+
+\end{thebibliography}
