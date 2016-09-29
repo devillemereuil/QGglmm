@@ -1197,7 +1197,7 @@ eigen(cov2cor(out[["vcv.G.obs"]]))\$values	#Only 1 non-null eigen value
 \end{Schunk}
 
 
-\bibliography{Vignette.bib}
+\bibliography{Vignette}
 \bibliographystyle{perso_sorted_en}
 
 \end{document}
