@@ -1,6 +1,7 @@
 ##Version beta 0.5 (2016-09-28)
 
 Add a bunch of new features:
+
 * New model "ordinal" for QGparams to compute heritabilities from ordinal traits (i.e. multiple threshold)
 * New functions QGicc and QGmvicc to compute Intra-Class Correlation (ICC) on the observed data scale for univariate and multivariate analyses
 * New vignette "How to use QGglmm" explaining the framework, some facts about GLMMs and providing detailed examples. To access it, use `vignette("QGglmmHowTo")`.
