@@ -1,5 +1,7 @@
 # QGglmm
 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/QGglmm)](http://cran.r-project.org/package=QGglmm)
+
 ##What is this package?
 
 QGglmm computes various quantitative genetics parameters on the observed data scale from latent parameters estimated using a Generalised Linear Mixed Model (GLMM) estimates. Especially, it yields the phenotypic mean, phenotypic variance and additive genetic variance on the observed data scale.
