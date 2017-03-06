@@ -8,16 +8,16 @@ bibentry(bibtype = "Article",
                           family = "Nakagawa"),
                    person(given = "Michael",
                           family = "Morrissey")),
-  journal      = "bioRxiv",
+  journal      = "Genetics",
   year         = "2016",
-  pages        = "026377",
-  doi          = "10.1101/026377",
+  pages        = "1281-1294",
+  doi          = "10.1534/genetics.115.186536",
 
   header       = "To cite QGglmm in publications use:",
   textVersion  =
   paste("de Villemereuil, P., Schielzeth, H., Nakagwa, S. and Morrissey M. (2016).",
         "General methods for evolutionary quantitative genetic inference from generalised mixed models.",
-        "bioRxiv (submitted to Genetics).",
-        "doi:10.1101/026377")
+        "Genetics",
+        "doi:10.1534/genetics.115.186536")
 )
 
