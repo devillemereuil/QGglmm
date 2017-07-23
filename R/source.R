@@ -201,6 +201,9 @@ QGparams<-function(mu=NULL,var.a,var.p,model="",width=10,predict=NULL,closed.for
   } else if (model=="binom1.probit"&closed.form) {						#Binary.probit model
       if (verbose) print("Using the closed forms for a Binomial1-probit model.")
       qg.binom1.probit(mu=mu,var.a=var.a,var.p=var.p,predict=predict)
+  } else if (model=="threshold") {						#Binary.probit model
+      if (verbose) print("Using the closed forms for a threshold model (e.g. for MCMCglmm package). Closed form argument is ignored...")
+      qg.binom1.probit(mu=mu,var.a=var.a,var.p=var.p-1,predict=predict)
   } else if (model=="binomN.probit"&closed.form) {					#Binomial-not-binary model
       if (is.null(n.obs)) {stop("binomN.probit model used, but no observation number (n.obs) defined.")}
       if (verbose) print("Using a semi-closed form for a BinomialN-probit model.")
