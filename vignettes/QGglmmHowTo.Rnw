@@ -1028,12 +1028,24 @@ df <- cbind(mu1=model[["Sol"]][,"traitphen1"],
       mu2=model[["Sol"]][,"traitphen2"],model[["VCV"]])
  \end{Sinput}
 \end{Schunk}
-Now, we need to do is construct the matrix ``on the fly'' before calling \texttt{QGmvparams}:
+Now, all we need to do is construct the matrix ``on the fly'' before calling \texttt{QGmvparams}:
 \begin{Schunk}
  \begin{Sinput}
-post <- apply(df,1,function(row){
-
-})
+post <- apply(df,1,function(row)\{
+  mu <- c(row["mu1"],row["mu2"])
+  G <- matrix(c(row["traitphen1:traitphen1.animal"],
+		row["traitphen1:traitphen2.animal"],
+		row["traitphen1:traitphen2.animal"],
+		row["traitphen2:traitphen2.animal"]),
+		ncol=2)
+  P <- matrix(c(row["traitphen1:traitphen1.units"],
+		row["traitphen1:traitphen2.units"],
+		row["traitphen1:traitphen2.units"],
+		row["traitphen2:traitphen2.units"]),
+		ncol=2)
+  QGmvparams(mu=mu,vcv.G=G,vcv.P=P,
+       model=c("binom1.probit","Gaussian","Poisson.log"),verbose=FALSE)
+\})
  \end{Sinput}
 \end{Schunk}
 
@@ -1045,7 +1057,7 @@ post <- apply(df,1,function(row){
 An ordinal trait is a categorical trait for which the categories have a meaningful order\footnote{Though binary traits are a special case of ordinal trait, they are excluded here for two reasons. First, they are a very peculiar, degenerate kind of ordinal trait. Second, the core function of QGglmm can deal with them as binomial traits much efficiently.}. Think about, for example, a morphological trait categorised as ``small'', ``intermediate'' and ``large'' or a disease which could manifest a ``asymptomatic'', ``unwell'' and ``severe''. It is pretty clear that these categories are ordered and what the order is (whether you begin by small or large doesn't really matter).
 
 \paragraph{How are these traits studied?}
-The most common model to study those traits in quantitative genetics is called the \textit{multiple threshold model}. In this model, a Gaussian variable (the ``liability'') is cut into separate parts by cut-points (or thresholds) corresponding to each categories (see Fig.~\ref{fig_threshold}), e.g. defining their relative proportions. Because of unidentifiability issues, one of the cut-points (or the intercept $\mu$) has to be arbitrarily set. Thus, most often, the first cut-point is set to be 0 (see Fig.~\ref{fig_threshold}).
+The most common mod	el to study those traits in quantitative genetics is called the \textit{multiple threshold model}. In this model, a Gaussian variable (the ``liability'') is cut into separate parts by cut-points (or thresholds) corresponding to each categories (see Fig.~\ref{fig_threshold}), e.g. defining their relative proportions. Because of unidentifiability issues, one of the cut-points (or the intercept $\mu$) has to be arbitrarily set. Thus, most often, the first cut-point is set to be 0 (see Fig.~\ref{fig_threshold}).
 
 \begin{figure}
  \centering
