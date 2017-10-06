@@ -1044,11 +1044,11 @@ post <- apply(df,1,function(row)\{
 		row["traitphen2:traitphen2.units"]),
 		ncol=2)
   QGmvparams(mu=mu,vcv.G=G,vcv.P=P,
-       model=c("binom1.probit","Gaussian","Poisson.log"),verbose=FALSE)
+       model=c("binom1.probit","Gaussian"),verbose=FALSE)
 \})
  \end{Sinput}
 \end{Schunk}
-
+Of course, all names (``phen1'', ``phen2'', etc.) should be changed to fit your actual code, as should your selection of models in QGmvparams.
 
 \subsection{The special case of ordinal data}
 \label{subsec_ordinal}
