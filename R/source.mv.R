@@ -28,6 +28,7 @@ QGmvmean<-function(mu=NULL,vcov,link.inv,predict=NULL,rel.acc=0.01,width=10,mask
   d<-length(w)
   #If predict is not included, then use mu, and 
   if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
+  
   #Computing the mean
   #The double apply is needed to compute the mean for all "predict" values,
   #then average over them
@@ -102,6 +103,7 @@ QGmvpsi<-function(mu=NULL,vcov,d.link.inv,predict=NULL,rel.acc=0.01,width=10,mas
   d<-length(w)
   #If predict is not included, then use mu, and 
   if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
+
   #Computing the mean
   #The double apply is needed to compute the mean for all "predict" values,
   #then average over them
@@ -131,6 +133,10 @@ QGmvparams<-function(mu=NULL,vcv.G,vcv.P,models,predict=NULL,rel.acc=0.01,width=
   d<-length(w)
   #If predict is not included, then use mu, and 
   if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
+  #Dimensions checks
+  if (length(models) != d | nrow(vcv.G) != d | ncol(vcv.G) != d | nrow(vcv.P) != d | ncol(vcv.P) != d | ncol(predict) != d) {
+    stop("Dimensions are incompatible, please check the dimensions of the input.")
+  }
   #Defining the link/distribution functions
   #If a vector of names were given
   if (!(is.list(models))) {
@@ -182,6 +188,11 @@ QGmvpred<-function(mu=NULL,vcv.G,vcv.P,fit.func,d.fit.func,predict=NULL,rel.acc=
   d<-length(w)
   #If predict is not included, then use mu, and 
   if(is.null(predict)) { if(is.null(mu)) {stop("Please provide either mu or predict.")} else {predict=matrix(mu,nrow=1)}}
+  #Dimensions checks
+  if (nrow(vcv.G) != d | ncol(vcv.G) != d | nrow(vcv.P) != d | ncol(vcv.P) != d) {
+    stop("Dimensions are incompatible, please check the dimensions of the input.")
+  }
+  
   #Calculating the latent mean fitness
   if (verbose) print("Computing mean fitness...")     
   Wbar<-mean(apply(predict,1,function(pred_i){
