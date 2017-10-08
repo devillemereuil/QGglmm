@@ -1,6 +1,6 @@
 # QGglmm
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/QGglmm)](http://cran.r-project.org/package=QGglmm)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/QGglmm)](https://cran.r-project.org/package=QGglmm)
 
 ## What is this package?
 
