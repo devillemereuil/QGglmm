@@ -159,7 +159,7 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
 }
 
 
-QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE) {
+QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=10,n.obs=NULL,theta=NULL,verbose=TRUE,mask=NULL) {
   #Error if ordinal is used (multivariate code not available yet)
   if ("ordinal" %in% models) {stop("Multivariate functions of QGglmm are not able to address ordinal traits (yet?).")}
   #Setting the integral width according to vcov (lower mean-w, upper mean+w)
@@ -168,7 +168,7 @@ QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=
   #Number of dimensions
   d<-length(w1)
   #If no fixed effects were included in the model
-  if (is.null(predict)) predict=matrix(mu,nrow=1)
+  if (is.null(predict)) predict<-matrix(mu,nrow=1)
   
   #Defining the link/distribution functions
   #If a vector of names were given
@@ -201,10 +201,10 @@ QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=
   
   #Computing the observed mean
   if (verbose) print("Computing observed mean...")
-  z_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width)
+  z_bar<-QGmvmean(mu=mu,vcov=vcv.P,link.inv=inv.links,predict=predict,rel.acc=rel.acc,width=width,mask=mask)
   #Computing the variance-covariance matrix
   if (verbose) print("Computing phenotypic variance-covariance matrix...")
-  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE)
+  vcv.P.obs<-QGvcov(mu=mu,vcov=vcv.P,link.inv=inv.links,var.func=var.funcs,mvmean.obs=z_bar,predict=predict,rel.acc=rel.acc,width=width,exp.scale=FALSE,mask=mask)
   
   #Function giving the conditional expectancy
   cond_exp <- function(t) {
@@ -228,6 +228,12 @@ QGmvicc<-function(mu=NULL,vcv.comp,vcv.P,models,predict=NULL,rel.acc=0.01,width=
      },
      lower=-w2,upper=w2,rel.tol=rel.acc,abs.tol= 0.001,
      flags=list(verbose=0))$value
+  #Applying the mask if provided
+  if(!is.null(mask)) {
+      mask2 <- matrix(FALSE, ncol = ncol(v), nrow = nrow(v))
+      mask2[((1:d) * ((1:d) + 1)) / 2, ] <- t(mask)
+      v[mask2] <- NA
+  }
   
   #Creating the VCV matrix
   vcv<-matrix(NA,d,d)
