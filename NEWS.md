@@ -1,3 +1,19 @@
+##Version beta 0.6 (2017-10-09)
+
+New features:
+
+* Mask argument for e.g. sex-based bivariate models where some predicted values do not exists in the population (i.e. individuals are either males/trait1 or females/trait2)
+
+Bug fixes:
+
+* Fixed some types in the vignette
+* Added dimensions checks for multivariate functions
+
+Misc:
+
+* Improved formatting in some parts of the code (work ongoing)
+* Updated CITATION to the Genetics paper
+
 ##Version beta 0.5 (2016-09-28)
 
 Add a bunch of new features:
