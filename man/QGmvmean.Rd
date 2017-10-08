@@ -6,7 +6,7 @@
 This function calculates the multivariate phenotypic mean on the observed scale from multivariate latent mean and variance-covariance matrix.
 }
 \usage{
-QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10)
+QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10, mask = NULL) 
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
@@ -15,6 +15,7 @@ QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10)
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 
 \details{

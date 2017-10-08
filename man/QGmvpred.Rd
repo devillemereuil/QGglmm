@@ -8,7 +8,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 
 \usage{
     QGmvpred(mu=NULL, vcv.G, vcv.P, fit.func, d.fit.func, predict=NULL, rel.acc=0.01, 
-    width = 10, verbose = TRUE)
+    width = 10, verbose = TRUE, mask = NULL)
 }
 
 \arguments{
@@ -21,6 +21,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{verbose}{Should the function be verbose? (boolean)}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 The function uses the latent fitness function (\code{fitness.func}) and latent quantitative genetics parameters to compute the expected selection differential and response on the latent scale.

@@ -6,7 +6,8 @@
 This function computes a multivariate version of the parameter "Psi" which relates the additive genetic variance-covariance matrix on the latent scale to the additive genetic variance-covariance matrix on the observed scale: G.obs = Psi \%*\% G \%*\% t(Psi)
 }
 \usage{
-QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, rel.acc = 0.01, width = 10)
+QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, 
+        rel.acc = 0.01, width = 10, mask = NULL)
 }
 
 \arguments{
@@ -16,6 +17,7 @@ QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, rel.acc = 0.01, width = 10)
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 The multivariate parameter "Psi" is a diagonal matrix which elements are the average of the derivative of the inverse-link function. The additive genetic variance-covariance matrix on the latent scale G is linked to the additive genetic variance-covariance matrix on the observed scale G.obs through Psi: G.obs = Psi \%*\% G \%*\% t(Psi).
