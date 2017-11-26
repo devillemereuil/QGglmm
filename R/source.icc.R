@@ -146,6 +146,13 @@ QGicc <- function(mu=NULL, var.comp, var.p, model="", width=10, predict=NULL, cl
 	  lower=pred_i+t_i-width*sqrt(var.cond),upper=pred_i+t_i+width*sqrt(var.cond))$value
 	}))
       })
+
+    if (var.cond == 0) {
+        cond_exp <- function(t) {
+            sapply(t, function(t_i){
+                mean(funcs$inv.link(predict + t_i))
+            })
+        }
     }
     
     #Computing variance of component on the observed data scale
