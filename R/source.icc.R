@@ -415,7 +415,7 @@ QGmvicc <- function(mu = NULL,
                     vcv.P,
                     models,
                     predict = NULL,
-                    rel.acc = 0.01,
+                    rel.acc = 0.001,
                     width = 10, 
                     n.obs = NULL,
                     theta = NULL,
@@ -503,19 +503,17 @@ QGmvicc <- function(mu = NULL,
         apply(
             apply(predict, 1,
                   function(pred_i) {
-                      cuhre(ndim = d,
-                            ncomp = d,
-                            integrand = function(x) {
-                                            inv.links(x) *
-                                                dmvnorm(x,
-                                                        pred_i + t,
-                                                        vcv.P - vcv.comp)
-                                        },
-                            lower = pred_i + t - w1,
-                            upper = pred_i + t + w1,
-                            rel.tol = rel.acc,
-                            abs.tol= 0.001,
-                            flags = list(verbose = 0))$value
+                      adaptIntegrate(f  = function(x) {
+                                               inv.links(x) *
+                                                   dmvnorm(x,
+                                                           pred_i + t,
+                                                           vcv.P - vcv.comp)
+                                           },
+                                     lowerLimit = pred_i + t - w1,
+                                     upperLimit = pred_i + t + w1,
+                                     fDim       = d,
+                                     tol        = rel.acc,
+                                     absError   = 0.0001)$integral
                   }
             ), 1, mean)
     }
@@ -525,18 +523,16 @@ QGmvicc <- function(mu = NULL,
     }
     
     #Computing the upper - triangle matrix of "expectancy of the square"
-    v <- cuhre(ndim  = d,
-               ncomp = (d^2 + d)/2,
-               integrand = function(x){
-                            (cond_exp(x) %*% t(cond_exp(x)))[
-                                upper.tri(x %*% t(x), diag = TRUE)
-                            ] * dmvnorm(x, rep(0, d), vcv.comp)
+    v <- adaptIntegrate(f  = function(x) {
+                                (cond_exp(x) %*% t(cond_exp(x)))[
+                                    upper.tri(x %*% t(x), diag = TRUE)
+                                ] * dmvnorm(x, rep(0, d), vcv.comp)
                             },
-               lower = -w2,
-               upper = w2,
-               rel.tol = rel.acc,
-               abs.tol= 0.001,
-               flags = list(verbose = 0))$value
+                        lowerLimit = -w2,
+                        upperLimit = w2,
+                        fDim       = (d^2 + d)/2,
+                        tol        = rel.acc,
+                        absError   = 0.0001)$integral
     
     #Applying the mask if provided
     if(!is.null(mask)) {
