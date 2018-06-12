@@ -25,7 +25,7 @@ QGmvmean <- function(mu = NULL,
                      vcov, 
                      link.inv, 
                      predict = NULL, 
-                     rel.acc = 0.01, 
+                     rel.acc = 0.001, 
                      width = 10, 
                      mask = NULL) 
 {
@@ -48,16 +48,14 @@ QGmvmean <- function(mu = NULL,
     #The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     mat <- apply(predict, 1, function(pred_i) {
-        integr <- cuhre(ndim  = d, 
-                        ncomp = d,
-                        integrand = function(x) {
-                                        link.inv(x) * dmvnorm(x, pred_i, vcov)
-                                    },
-                        lower = pred_i-w, 
-                        upper = pred_i + w, 
-                        rel.tol = rel.acc, 
-                        abs.tol = 0.0001,
-                        flags = list(verbose = 0))$value
+        adaptIntegrate(f  = function(x) {
+                                link.inv(x) * dmvnorm(x, pred_i, vcov)
+                            },
+                       lowerLimit = pred_i - w,
+                       upperLimit = pred_i + w,
+                       fDim       = d,
+                       tol        = rel.acc,
+                       absError   = 0.0001)$integral
     })
     
     #Applyign the mask if provided
@@ -73,7 +71,7 @@ QGvcov <- function(mu = NULL,
                    var.func,
                    mvmean.obs = NULL,
                    predict = NULL,
-                   rel.acc = 0.01, 
+                   rel.acc = 0.001, 
                    width = 10,
                    exp.scale = FALSE,
                    mask = NULL) 
@@ -96,18 +94,16 @@ QGvcov <- function(mu = NULL,
     #Computing the upper-triangle matrix of "expectancy of the square"
     v <- apply(predict, 1,
                function(pred_i) {
-                   cuhre(ndim  = d, 
-                         ncomp = (d^2 + d) / 2,
-                         integrand = function(x) {
-                                        (link.inv(x) %*% t(link.inv(x)))[
-                                            upper.tri(x %*% t(x), diag = TRUE)
-                                        ] * dmvnorm(x, pred_i, vcov)
-                                      },
-                         lower = pred_i-w,
-                         upper = pred_i + w,
-                         rel.tol = rel.acc,
-                         abs.tol = 0.0001,
-                         flags = list(verbose = 0))$value
+                   adaptIntegrate(f  = function(x) {
+                                           (link.inv(x) %*% t(link.inv(x)))[
+                                                upper.tri(x %*% t(x), diag = TRUE)
+                                           ] * dmvnorm(x, pred_i, vcov)
+                                       },
+                                  lowerLimit = pred_i - w,
+                                  upperLimit = pred_i + w,
+                                  fDim       = (d^2 + d) / 2,
+                                  tol        = rel.acc,
+                                  absError   = 0.0001)$integral
     })
     
     #Applying the mask if provided
@@ -140,16 +136,14 @@ QGvcov <- function(mu = NULL,
     #Adding the distribution variance if needed (if exp.scale == FALSE)
     if (!exp.scale) {
         vardist <- apply(predict, 1, function(pred_i) {
-            cuhre(ndim  = d, 
-                  ncomp = d,
-                  integrand = function(x) {
-                                 var.func(x) * dmvnorm(x, pred_i, vcov)
-                              },
-                  lower = pred_i - w,
-                  upper = pred_i + w,
-                  rel.tol = rel.acc,
-                  abs.tol = 0.0001,
-                  flags = list(verbose = 0))$value
+            adaptIntegrate(f  = function(x) {
+                                    var.func(x) * dmvnorm(x, pred_i, vcov)
+                                },
+                           lowerLimit = pred_i - w,
+                           upperLimit = pred_i + w,
+                           fDim       = d,
+                           tol        = rel.acc,
+                           absError   = 0.0001)$integral
         })
         
         #Applyign the mask if provided
@@ -169,9 +163,9 @@ QGmvpsi <- function(mu = NULL,
                     vcov,
                     d.link.inv,
                     predict = NULL,
-                    rel.acc = 0.01,
+                    rel.acc = 0.001,
                     width = 10,
-                    mask = NULL) 
+                    mask = NULL)
 {
     #Setting the integral width according to vcov (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcov)) * width
@@ -192,16 +186,14 @@ QGmvpsi <- function(mu = NULL,
     #The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     Psi <- apply(predict, 1, function(pred_i) {
-        cuhre(ndim = d, 
-              ncomp = d,
-              integrand = function(x) {
-                            d.link.inv(x) * dmvnorm(x, pred_i, vcov)
-                          },
-              lower = pred_i-w,
-              upper = pred_i + w,
-              rel.tol = rel.acc,
-              abs.tol = 0.0001,
-              flags = list(verbose = 0))$value
+        adaptIntegrate(f  = function(x) {
+                                d.link.inv(x) * dmvnorm(x, pred_i, vcov)
+                            },
+                       lowerLimit = pred_i - w,
+                       upperLimit = pred_i + w,
+                       fDim       = d,
+                       tol        = rel.acc,
+                       absError   = 0.0001)$integral
     })
     
     #Applyign the mask if provided
@@ -214,14 +206,14 @@ QGmvpsi <- function(mu = NULL,
     return(Psi)
 }
 
-## -----------------Meta-function for general calculation------------------- ##
+## ----------------- Wrapper function for general calculation ------------------- ##
 
 QGmvparams <- function(mu = NULL,
                        vcv.G,
                        vcv.P,
                        models,
                        predict = NULL,
-                       rel.acc = 0.01,
+                       rel.acc = 0.001,
                        width = 10,
                        n.obs = NULL,
                        theta = NULL,
@@ -347,7 +339,7 @@ QGmvpred <- function(mu = NULL,
                      fit.func,
                      d.fit.func,
                      predict = NULL, 
-                     rel.acc = 0.01,
+                     rel.acc = 0.001,
                      width = 10,
                      verbose = TRUE,
                      mask = NULL)
@@ -384,17 +376,15 @@ QGmvpred <- function(mu = NULL,
     
     Wbar <- 
         mean(apply(predict, 1,function(pred_i) {
-            cuhre(ndim = d,
-                  #Note that ncomp = 1 because fitness.func yields a scalar
-                  ncomp = 1,
-                  integrand = function(x) {
-                                fit.func(x) * dmvnorm(x, pred_i, vcv.P)
-                              },
-                  lower = pred_i - w,
-                  upper = pred_i + w,
-                  rel.tol = rel.acc,
-                  abs.tol = 0.0001,
-                  flags = list(verbose = 0))$value
+            adaptIntegrate(f  = function(x) {
+                                    fit.func(x) * dmvnorm(x, pred_i, vcv.P)
+                                },
+                           lowerLimit = pred_i - w,
+                           upperLimit = pred_i + w,
+                           #Note that fDim = 1 because fitness.func yields a scalar
+                           fDim       = 1,
+                           tol        = rel.acc,
+                           absError   = 0.0001)$integral
         }))
     
     #Calculating the covariance between latent trait and latent fitness
@@ -405,16 +395,14 @@ QGmvpred <- function(mu = NULL,
     #Computing the derivative of fitness
     dW <- 
         apply(predict, 1, function(pred_i) {
-            cuhre(ndim  = d, 
-                  ncomp = d,
-                  integrand = function(x) {
-                                d.fit.func(x) * dmvnorm(x, pred_i, vcv.P)
-                              },
-                  lower = pred_i - w,
-                  upper = pred_i + w,
-                  rel.tol = rel.acc,
-                  abs.tol = 0.0001,
-                  flags = list(verbose = 0))$value
+            adaptIntegrate(f  = function(x) {
+                                    d.fit.func(x) * dmvnorm(x, pred_i, vcv.P)
+                                },
+                           lowerLimit = pred_i - w,
+                           upperLimit = pred_i + w,
+                           fDim       = d,
+                           tol        = rel.acc,
+                           absError   = 0.0001)$integral
         })
     
     #Applyign the mask if provided
