@@ -7,7 +7,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \usage{
-    QGmvpred(mu=NULL, vcv.G, vcv.P, fit.func, d.fit.func, predict=NULL, rel.acc = 0.001, 
+    QGmvpred(mu = NULL, vcv.G, vcv.P, fit.func, d.fit.func, predict = NULL, rel.acc = 0.001, 
     width = 10, verbose = TRUE, mask = NULL)
 }
 
@@ -21,14 +21,14 @@ This function uses an assumed or measured fitness function to compute evolutiona
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{verbose}{Should the function be verbose? (boolean)}
-  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 The function uses the latent fitness function (\code{fitness.func}) and latent quantitative genetics parameters to compute the expected selection differential and response on the latent scale.
 
 There is no argument to describe the model used as it is already and implicitely contained in the calculation of \code{fit.func} and \code{d.fit.func} (see Example below).
 
-If fixed effects were included during the estimation of the quantitative genetics parameters,  they can be included as marginal predicted values, i.e. predicted values excluding the random effects, which can be calculated as the matrix product \strong{Xb} where \strong{X} is the design matrix and \strong{b} is the vector of fixed effects estimates. To do so, provide the vector of marginal predicted values using the argument \code{predict}. Note this will considerably slow down the algorithm.
+If fixed effects were included during the estimation of the quantitative genetics parameters, they can be included as marginal predicted values, i.e. predicted values excluding the random effects, which can be calculated as the matrix product \strong{Xb} where \strong{X} is the design matrix and \strong{b} is the vector of fixed effects estimates. To do so, provide the vector of marginal predicted values using the argument \code{predict}. Note this will considerably slow down the algorithm.
 
 The predictions can be transposed on the observed scale by using the \code{\link{QGmvmean}} function (see Example below).
 }
@@ -51,35 +51,35 @@ Pierre de Villemereuil & Michael B. Morrissey
 }
 
 \examples{
-##Bivariate example with a binary trait and a Gaussian one
+## Bivariate example with a binary trait and a Gaussian one
 
-#Assume a bivariate GLMM with Binomial(probit)/Gaussian distributions with:
-mu=c(0,10)
-G=matrix(c(0.5,0,0,1),nrow=2)
-P=matrix(c(1,0,0,2),nrow=2) 
+# Assume a bivariate GLMM with Binomial(probit)/Gaussian distributions with:
+mu <- c(0, 10)
+G <- matrix(c(0.5, 0, 0, 1), nrow = 2)
+P <- matrix(c(1, 0, 0, 2), nrow = 2) 
 
-#Link functions
-inv.links=function(vec){c(pnorm(vec[1]),vec[2])}
+# Link functions
+inv.links = function(vec){c(pnorm(vec[1]), vec[2])}
 
-#Creating the expected fitness function
-#i.e. expected fitness given a latent trait vector l
-#Say if the binary trait is 1, then the fitness is 0.5*"the Gaussian trait"
-#But if the binary trait is 0, then the fitness is 0
+# Creating the expected fitness function
+# i.e. expected fitness given a latent trait vector l
+# Say if the binary trait is 1, then the fitness is 0.5 * "the Gaussian trait"
+# But if the binary trait is 0, then the fitness is 0
 lat.fit <- function(mat) {pnorm(mat[1, ]) * 0.5 * mat[2, ]}
-#Derivative of the above function
-#This function yields a vector which elements are the derivative according to each trait
+# Derivative of the above function
+# This function yields a vector which elements are the derivative according to each trait
 d.lat.fit <- function(mat) {matrix(c(dnorm(mat[1, ]) * 0.5 * mat[2, ], pnorm(mat[1, ]) * 0.5),
                             nrow = 2, 
-                            byrow=TRUE)}
+                            byrow = TRUE)}
 
-#Predicting the latent evolutionary response
-pred<-QGmvpred(mu=mu,vcv.P=P,vcv.G=G,fit.func=lat.fit,d.fit.func=d.lat.fit)
+# Predicting the latent evolutionary response
+pred<- QGmvpred(mu = mu, vcv.P = P, vcv.G = G, fit.func = lat.fit, d.fit.func = d.lat.fit)
 
 
-#Predicting the observed evolutionary response
-#Current observed phenotypic mean
-QGmvmean(mu=mu,vcov=P,link.inv=inv.links)
-#Predicted observed phenotypic mean after selection
-QGmvmean(mu=mu+pred$lat.resp,vcov=P,link.inv=inv.links)
+# Predicting the observed evolutionary response
+# Current observed phenotypic mean
+QGmvmean(mu = mu, vcov = P, link.inv = inv.links)
+# Predicted observed phenotypic mean after selection
+QGmvmean(mu = mu + pred$lat.resp, vcov = P, link.inv = inv.links)
 }
 

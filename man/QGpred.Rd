@@ -7,7 +7,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \usage{
-    QGpred(mu=NULL, var.a, var.p, fit.func, d.fit.func, width = 10, 
+    QGpred(mu = NULL, var.a, var.p, fit.func, d.fit.func, width = 10, 
            predict = NULL, verbose = TRUE)
 }
 
@@ -17,7 +17,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric of length 1)}
   \item{fit.func}{Function giving the expected fitness on the observed scale for a given latent trait (see Example). (function)}
   \item{d.fit.func}{Derivative of the expected fitness to the latent trait (see Example). (function)}
-  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu}-\code{width*sqrt(var.p)} to \code{mu}+\code{width*sqrt(var.p)}. The default value is 10, which should be sensible for most models. (numeric)}
+  \item{width}{Parameter for the integral computation. The integral is evaluated from \code{mu} - \code{width * sqrt(var.p)} to \code{mu} + \code{width * sqrt(var.p)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{verbose}{Should the function be verbose? (boolean)}
 }
@@ -49,29 +49,29 @@ Pierre de Villemereuil & Michael B. Morrissey
 }
 
 \examples{
-##Example with binary traits and a fitness measurement
-#Let's assume we dispose of a binary trait measurement 
-#and associated fitness of trait 0 (say 1) and trait 1 (say 1.86)
-#We further assume a GLMM with Binomial distribution and probit link with:
-mu=-0.1
-va=2
-vp=2.5  #note that the latent heritability is very high
+## Example with binary traits and a fitness measurement
+# Let's assume we dispose of a binary trait measurement 
+# and associated fitness of trait 0 (say 1) and trait 1 (say 1.86)
+# We further assume a GLMM with Binomial distribution and probit link with:
+mu <- -0.1
+va <- 2
+vp <- 2.5  # note that the latent heritability is very high
 
-#Creating the latent fitness function
-#i.e. expected fitness given a latent trait l
-#We have a trait 1 with probability pnorm(l) with fitness 1.86
-#We have a trait 0 with probability (1-pnorm(l)) with fitness 1
-lat.fit<-function(l){(1-pnorm(l))*1 + pnorm(l)*1.86}
-#Derivate of the fitnes function
-d.lat.fit<-function(l){- dnorm(l)*1 + dnorm(l)*1.86}
+# Creating the latent fitness function
+# i.e. expected fitness given a latent trait l
+# We have a trait 1 with probability pnorm(l) with fitness 1.86
+# We have a trait 0 with probability (1 - pnorm(l)) with fitness 1
+lat.fit<- function(l){(1 - pnorm(l)) * 1 + pnorm(l) * 1.86}
+# Derivate of the fitnes function
+d.lat.fit<- function(l){- dnorm(l) * 1 + dnorm(l) * 1.86}
 
-#Predicting the latent evolutionary response
-pred<-QGpred(mu=mu,var.p=vp,var.a=va,fit.func=lat.fit,d.fit.func=d.lat.fit)
+# Predicting the latent evolutionary response
+pred <- QGpred(mu = mu, var.p = vp, var.a = va, fit.func = lat.fit, d.fit.func = d.lat.fit)
 
-#Predicting the observed evolutionary response
-#Current observed phenotypic mean
-QGmean(mu=mu,var=vp,link.inv=QGlink.funcs("binom1.probit")$inv.link)
-#Predicted observed phenotypic mean after selection
-QGmean(mu=mu+pred$lat.resp,var=vp,link.inv=QGlink.funcs("binom1.probit")$inv.link)
+# Predicting the observed evolutionary response
+# Current observed phenotypic mean
+QGmean(mu = mu, var = vp, link.inv = QGlink.funcs("binom1.probit")$inv.link)
+# Predicted observed phenotypic mean after selection
+QGmean(mu = mu + pred$lat.resp, var = vp, link.inv = QGlink.funcs("binom1.probit")$inv.link)
 }
 

@@ -6,7 +6,7 @@
 This function computes a multivariate version of the parameter "Psi" which relates the additive genetic variance-covariance matrix on the latent scale to the additive genetic variance-covariance matrix on the observed scale: G.obs = Psi \%*\% G \%*\% t(Psi)
 }
 \usage{
-QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, 
+QGmvpsi(mu = NULL, vcov, d.link.inv, predict = NULL, 
         rel.acc = 0.001, width = 10, mask = NULL)
 }
 
@@ -17,7 +17,7 @@ QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL,
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
-  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 The multivariate parameter "Psi" is a diagonal matrix which elements are the average of the derivative of the inverse-link function. The additive genetic variance-covariance matrix on the latent scale G is linked to the additive genetic variance-covariance matrix on the observed scale G.obs through Psi: G.obs = Psi \%*\% G \%*\% t(Psi).
@@ -33,25 +33,25 @@ Pierre de Villemereuil & Michael B. Morrissey
 \code{\link{QGpsi}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGvcov}}, \code{\link{QGmvpsi}}
 }
 \examples{
-##Example using a bivariate model (Binary trait/Gaussian trait)
-#Parameters
-mu=c(0,1)
-G=diag(c(0.5,2))
-P=diag(c(1,4))
+## Example using a bivariate model (Binary trait/Gaussian trait)
+# Parameters
+mu <- c(0, 1)
+G <- diag(c(0.5, 2))
+P <- diag(c(1, 4))
 
-#Setting up the derivatives of the inverse-link functions
-dinvs <- function(mat) {matrix(c(dnorm(mat[1,]), rep(1, length(mat[2,]))),
+# Setting up the derivatives of the inverse-link functions
+dinvs <- function(mat) {matrix(c(dnorm(mat[1, ]), rep(1, length(mat[2, ]))),
                                nrow = 2, 
                                byrow = TRUE)}
-#The derivative of pnorm() is dnorm(), and the derivative of the identity is 1
+# The derivative of pnorm() is dnorm(), and the derivative of the identity is 1
 
-#Computing Psi
-Psi<-QGmvpsi(mu=mu,vcov=P,d.link.inv=dinvs)
-#Computing genetic additive variance-covariance matrix on the observed scale
+# Computing Psi
+Psi <- QGmvpsi(mu = mu, vcov = P, d.link.inv = dinvs)
+# Computing genetic additive variance-covariance matrix on the observed scale
 Psi
 G.obs <- Psi \%*\% G \%*\% t(Psi)
 
-QGparams(mu=0,var.a=0.5,var.p=1,model="binom1.probit")
-#Same additive variance than trait 1
-#Reminder: the results are the same here because we have no correlation between the two traits
+QGparams(mu = 0, var.a = 0.5, var.p = 1, model = "binom1.probit")
+# Same additive variance than trait 1
+# Reminder: the results are the same here because we have no correlation between the two traits
 }

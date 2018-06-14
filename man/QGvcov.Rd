@@ -1,13 +1,13 @@
 \name{QGvcov}
 \alias{QGvcov}
 
-\title{Compute the phenotypic variance-covariance matrix on the observed/expected scale}
+\title{Compute the phenotypic variance-covariance matrix on the observed / expected scale}
 \description{
 This function computes the total phenotypic variance-covariance matrix on the observed or expected scales.
 }
 \usage{
-QGvcov(mu=NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
-          predict = NULL, rel.acc = 0.001, width = 10, exp.scale = FALSE, mask = NULL)
+QGvcov(mu = NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
+       predict = NULL, rel.acc = 0.001, width = 10, exp.scale = FALSE, mask = NULL)
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
@@ -19,7 +19,7 @@ QGvcov(mu=NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{exp.scale}{Should the variance-covariance matrix be computed on the expected scale? \code{FALSE} by default, which means the variance-covariance matrix is computed on the observed scale. (boolan)}
-  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 This function needs the multivariate latent population mean (\code{mu}) or the marginal predicted values (\code{predict}) and the total latent variance-covariance matrix (\code{vcov}) to compute the phenotypic variance-covariance matrix on the observed scale (or on the expected scale if \code{exp.scale} is \code{TRUE}).
@@ -35,36 +35,36 @@ Pierre de Villemereuil & Michael B. Morrissey
 \code{\link{QGvar.exp}}, \code{\link{QGvar.dist}}, \code{\link{QGmvparams}}, \code{\link{QGlink.funcs}}, \code{\link{QGmvpsi}}
 }
 \examples{
-##Example using a bivariate model (Binary trait/Gaussian trait)
-#Parameters
-mu=c(0,1)
-P=diag(c(1,4))
+## Example using a bivariate model (Binary trait/Gaussian trait)
+# Parameters
+mu <- c(0, 1)
+P <- diag(c(1, 4))
 
-#Note: no phenotypic, nor genetic correlations, hence should be equal to univariate case!
+# Note: no phenotypic, nor genetic correlations, hence should be equal to univariate case!
 
 # Setting up the link functions
 # Note that since the use of "cubature" to compute the integrals,
 # the functions must use a matrix as input and yield a matrix as output,
 # each row corresponding to a trait
-inv.links <- function(mat) {matrix(c(pnorm(mat[1,]), mat[2,]), nrow = 2, byrow = TRUE)}
+inv.links <- function(mat) {matrix(c(pnorm(mat[1, ]), mat[2, ]), nrow = 2, byrow = TRUE)}
 
 # Setting up the distribution variance functions
-var.funcs <- function(mat) {matrix(c(pnorm(mat[1,])*(1-pnorm(mat[1,])), 0 * mat[2, ]),
+var.funcs <- function(mat) {matrix(c(pnorm(mat[1, ]) * (1 - pnorm(mat[1, ])), 0 * mat[2, ]),
                                    nrow = 2, 
                                    byrow = TRUE)}
-#The first row is p*(1-p) (variance of a binomial)
-#The second row is 0 because no extra distribution is assumed for a Gaussian trait
+# The first row is p * (1 - p) (variance of a binomial)
+# The second row is 0 because no extra distribution is assumed for a Gaussian trait
 
-#Computing the multivariate mean on observed scale
-#Phenotypic VCV matrix on observed scale
-QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs) 
-#Phenotypic VCV matrix on the expected scale
-QGvcov(mu=mu, vcov=P, link.inv=inv.links, var.func=var.funcs,exp.scale=TRUE) 
+# Computing the multivariate mean on observed scale
+# Phenotypic VCV matrix on observed scale
+QGvcov(mu = mu, vcov = P, link.inv = inv.links, var.func = var.funcs) 
+# Phenotypic VCV matrix on the expected scale
+QGvcov(mu = mu, vcov = P, link.inv = inv.links, var.func = var.funcs, exp.scale = TRUE) 
 
-QGvar.exp(mu=0,var=1,link.inv=pnorm) #Same variance on the expected scale
-QGvar.exp(mu=0,var=1,link.inv=pnorm)+
-QGvar.dist(mu=0,var=1,var.func=function(x){pnorm(x)*(1-pnorm(x))})
-#Same variance on the observed scale
-#Reminder: the results are the same here because we have no correlation between the two traits
+QGvar.exp(mu = 0, var = 1, link.inv = pnorm) # Same variance on the expected scale
+QGvar.exp(mu = 0, var = 1, link.inv = pnorm) +
+    QGvar.dist(mu = 0, var = 1, var.func = function(x){pnorm(x) * (1 - pnorm(x))})
+# Same variance on the observed scale
+# Reminder: the results are the same here because we have no correlation between the two traits
 }
 
