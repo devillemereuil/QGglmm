@@ -7,7 +7,7 @@ This function computes a multivariate version of the parameter "Psi" which relat
 }
 \usage{
 QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, 
-        rel.acc = 0.01, width = 10, mask = NULL)
+        rel.acc = 0.001, width = 10, mask = NULL)
 }
 
 \arguments{

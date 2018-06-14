@@ -7,7 +7,7 @@ This function computes the total phenotypic variance-covariance matrix on the ob
 }
 \usage{
 QGvcov(mu=NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
-          predict = NULL, rel.acc = 0.01, width = 10, exp.scale = FALSE, mask = NULL)
+          predict = NULL, rel.acc = 0.001, width = 10, exp.scale = FALSE, mask = NULL)
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}

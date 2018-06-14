@@ -6,7 +6,7 @@
 This function calculates the multivariate phenotypic mean on the observed scale from multivariate latent mean and variance-covariance matrix.
 }
 \usage{
-QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10, mask = NULL) 
+QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc = 0.001, width = 10, mask = NULL) 
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
