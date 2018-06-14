@@ -508,7 +508,7 @@ QGmvicc <- function(mu = NULL,
             apply(
                 apply(predict, 1,
                       function(pred_i) {
-                          hcubature(
+                          cubature::hcubature(
                               f  = function(x) {
                                   inv.links(x) *
                                       matrix(rep(vec_mvnorm(x, 
@@ -539,14 +539,10 @@ QGmvicc <- function(mu = NULL,
     logdet.comp <- calc_logdet(vcv.comp)
     
     #Computing the upper - triangle matrix of "expectancy of the square"
-    v <- hcubature(
+    v <- cubature::hcubature(
         f  = function(x) {
             vec_sq_uptri(cond_exp(x)) *
-            matrix(rep(vec_mvnorm(x, 
-                                  rep(0, d), 
-                                  vcv.comp, 
-                                  logdet.comp), 
-                       (d^2 + d)/2),
+            matrix(rep(vec_mvnorm(x, rep(0, d), vcv.comp, logdet.comp), (d^2 + d)/2),
                    nrow = (d^2 + d)/2,
                    byrow = TRUE)
         },

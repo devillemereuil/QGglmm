@@ -81,7 +81,7 @@ QGmvmean <- function(mu = NULL,
     #The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     mat <- apply(predict, 1, function(pred_i) {
-        hcubature(
+        cubature::hcubature(
             f  = function(x) {
                 link.inv(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
                                      nrow = d,
@@ -135,7 +135,7 @@ QGvcov <- function(mu = NULL,
     #Computing the upper-triangle matrix of "expectancy of the square"
     v <- apply(predict, 1,
                function(pred_i) {
-                   hcubature(
+                   cubature::hcubature(
                        f  = function(x) {
                            vec_sq_uptri(link.inv(x)) * 
                                matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), (d^2 + d) / 2),
@@ -181,7 +181,7 @@ QGvcov <- function(mu = NULL,
     #Adding the distribution variance if needed (if exp.scale == FALSE)
     if (!exp.scale) {
         vardist <- apply(predict, 1, function(pred_i) {
-            hcubature(
+            cubature::hcubature(
                 f  = function(x) {
                     var.func(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
                                          nrow = d,
@@ -239,7 +239,7 @@ QGmvpsi <- function(mu = NULL,
     #The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     Psi <- apply(predict, 1, function(pred_i) {
-        hcubature(
+        cubature::hcubature(
             f  = function(x) {
                 d.link.inv(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
                                        nrow = d,
@@ -437,7 +437,7 @@ QGmvpred <- function(mu = NULL,
     
     Wbar <- 
         mean(apply(predict, 1,function(pred_i) {
-            hcubature(
+            cubature::hcubature(
                 f  = function(x) {
                     fit.func(x) * vec_mvnorm(x, pred_i, vcv.P, logdet)
                 },
@@ -459,7 +459,7 @@ QGmvpred <- function(mu = NULL,
     #Computing the derivative of fitness
     dW <- 
         apply(predict, 1, function(pred_i) {
-            hcubature(
+            cubature::hcubature(
                 f  = function(x) {
                     d.fit.func(x) * matrix(rep(vec_mvnorm(x, pred_i, vcv.P, logdet), d),
                                            nrow = d,
