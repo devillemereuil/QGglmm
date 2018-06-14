@@ -7,5 +7,5 @@ Author: Pierre de Villemereuil <bonamy@horus.ens.fr>
 Maintainer: Pierre de Villemereuil <bonamy@horus.ens.fr>
 BugReports: https://github.com/devillemereuil/qgglmm/issues
 Description: Compute various quantitative genetics parameters from a Generalised Linear Mixed Model (GLMM) estimates. Especially, it yields the observed phenotypic mean, phenotypic variance and additive genetic variance.
-Imports: cubature>= 1.4
+Imports: cubature (>= 1.4)
 License: GPL-2
