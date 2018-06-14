@@ -18,6 +18,36 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+## -----------------------------Helper functions-------------------------- ##
+
+# Log-determinant of a VCV matrix
+calc_logdet <- function(Sigma) {
+    sum(log(eigen(Sigma, symmetric = TRUE, only.values = TRUE)$values))
+}
+
+# Vectorised multivariate Gaussian density function
+# Shamelessly stolen from cubature vignette (credit to Balasubramanian Narasimhan)
+# logdet = sum(log(eigen(sigma, symmetric = TRUE, only.values = TRUE)$values))
+vec_mvnorm <- function(x, mean, Sigma, logdet = NULL) {
+    # If logdet not provided, compute it
+    if (is.null(logdet)) {
+        logdet <- calc_logdet(Sigma)
+    }
+    # Compute Mahalanobis distance (corresponds to the exp. part of the density)
+    distval <- stats::mahalanobis(t(x), center = mean, cov = Sigma)
+    # Compute the vectorised MVN density
+    out <- exp(matrix(-(nrow(x) * log(2 * pi) + logdet + distval)/2, ncol = ncol(x)))
+    return(out)
+}
+
+# Vectorised function to get upper-triangle squared matrix
+vec_sq_uptri <- function(x) {
+    apply(x, 2, function(col) {
+        mat <- (col) %*% t(col)
+        return(mat[upper.tri(mat, diag = TRUE)])
+    })
+}
+
 ##  ----------------------------General functions------------------------- ##
 
 #Calculating the observed/expected scale mean (multivariate)
@@ -25,7 +55,7 @@ QGmvmean <- function(mu = NULL,
                      vcov, 
                      link.inv, 
                      predict = NULL, 
-                     rel.acc = 0.01, 
+                     rel.acc = 0.001, 
                      width = 10, 
                      mask = NULL) 
 {
@@ -44,20 +74,26 @@ QGmvmean <- function(mu = NULL,
         }
     }
     
+    # Computing the logdet of vcov
+    logdet <- calc_logdet(vcov)
+    
     #Computing the mean
     #The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     mat <- apply(predict, 1, function(pred_i) {
-        integr <- cuhre(ndim  = d, 
-                        ncomp = d,
-                        integrand = function(x) {
-                                        link.inv(x) * dmvnorm(x, pred_i, vcov)
-                                    },
-                        lower = pred_i-w, 
-                        upper = pred_i + w, 
-                        rel.tol = rel.acc, 
-                        abs.tol = 0.0001,
-                        flags = list(verbose = 0))$value
+        cubature::hcubature(
+            f  = function(x) {
+                link.inv(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
+                                     nrow = d,
+                                     byrow = TRUE)
+            },
+            lowerLimit = pred_i - w,
+            upperLimit = pred_i + w,
+            fDim       = d,
+            tol        = rel.acc,
+            absError   = 0.0001,
+            vectorInterface = TRUE
+        )$integral
     })
     
     #Applyign the mask if provided
@@ -73,7 +109,7 @@ QGvcov <- function(mu = NULL,
                    var.func,
                    mvmean.obs = NULL,
                    predict = NULL,
-                   rel.acc = 0.01, 
+                   rel.acc = 0.001, 
                    width = 10,
                    exp.scale = FALSE,
                    mask = NULL) 
@@ -93,22 +129,27 @@ QGvcov <- function(mu = NULL,
         }
     }
     
+    # Computing the logdet of vcov
+    logdet <- calc_logdet(vcov)
+    
     #Computing the upper-triangle matrix of "expectancy of the square"
     v <- apply(predict, 1,
                function(pred_i) {
-                   cuhre(ndim  = d, 
-                         ncomp = (d^2 + d) / 2,
-                         integrand = function(x) {
-                                        (link.inv(x) %*% t(link.inv(x)))[
-                                            upper.tri(x %*% t(x), diag = TRUE)
-                                        ] * dmvnorm(x, pred_i, vcov)
-                                      },
-                         lower = pred_i-w,
-                         upper = pred_i + w,
-                         rel.tol = rel.acc,
-                         abs.tol = 0.0001,
-                         flags = list(verbose = 0))$value
-    })
+                   cubature::hcubature(
+                       f  = function(x) {
+                           vec_sq_uptri(link.inv(x)) * 
+                               matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), (d^2 + d) / 2),
+                                      nrow = (d^2 + d) / 2,
+                                      byrow = TRUE)
+                       },
+                       lowerLimit = pred_i - w,
+                       upperLimit = pred_i + w,
+                       fDim       = (d^2 + d) / 2,
+                       tol        = rel.acc,
+                       absError   = 0.0001,
+                       vectorInterface = TRUE
+                   )$integral
+               })
     
     #Applying the mask if provided
     if(!is.null(mask)) {
@@ -140,16 +181,19 @@ QGvcov <- function(mu = NULL,
     #Adding the distribution variance if needed (if exp.scale == FALSE)
     if (!exp.scale) {
         vardist <- apply(predict, 1, function(pred_i) {
-            cuhre(ndim  = d, 
-                  ncomp = d,
-                  integrand = function(x) {
-                                 var.func(x) * dmvnorm(x, pred_i, vcov)
-                              },
-                  lower = pred_i - w,
-                  upper = pred_i + w,
-                  rel.tol = rel.acc,
-                  abs.tol = 0.0001,
-                  flags = list(verbose = 0))$value
+            cubature::hcubature(
+                f  = function(x) {
+                    var.func(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
+                                         nrow = d,
+                                         byrow = TRUE)
+                },
+                lowerLimit = pred_i - w,
+                upperLimit = pred_i + w,
+                fDim       = d,
+                tol        = rel.acc,
+                absError   = 0.0001,
+                vectorInterface = TRUE
+            )$integral
         })
         
         #Applyign the mask if provided
@@ -169,15 +213,18 @@ QGmvpsi <- function(mu = NULL,
                     vcov,
                     d.link.inv,
                     predict = NULL,
-                    rel.acc = 0.01,
+                    rel.acc = 0.001,
                     width = 10,
-                    mask = NULL) 
+                    mask = NULL)
 {
     #Setting the integral width according to vcov (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcov)) * width
     
     #Number of dimensions
     d <- length(w)
+    
+    # Computing the logdet of vcov
+    logdet <- calc_logdet(vcov)
     
     #If predict is not included, then use mu, and 
     if(is.null(predict)) { 
@@ -192,16 +239,19 @@ QGmvpsi <- function(mu = NULL,
     #The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     Psi <- apply(predict, 1, function(pred_i) {
-        cuhre(ndim = d, 
-              ncomp = d,
-              integrand = function(x) {
-                            d.link.inv(x) * dmvnorm(x, pred_i, vcov)
-                          },
-              lower = pred_i-w,
-              upper = pred_i + w,
-              rel.tol = rel.acc,
-              abs.tol = 0.0001,
-              flags = list(verbose = 0))$value
+        cubature::hcubature(
+            f  = function(x) {
+                d.link.inv(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
+                                       nrow = d,
+                                       byrow = TRUE)
+            },
+            lowerLimit = pred_i - w,
+            upperLimit = pred_i + w,
+            fDim       = d,
+            tol        = rel.acc,
+            absError   = 0.0001,
+            vectorInterface = TRUE
+        )$integral
     })
     
     #Applyign the mask if provided
@@ -214,14 +264,14 @@ QGmvpsi <- function(mu = NULL,
     return(Psi)
 }
 
-## -----------------Meta-function for general calculation------------------- ##
+## ----------------- Wrapper function for general calculation ------------------- ##
 
 QGmvparams <- function(mu = NULL,
                        vcv.G,
                        vcv.P,
                        models,
                        predict = NULL,
-                       rel.acc = 0.01,
+                       rel.acc = 0.001,
                        width = 10,
                        n.obs = NULL,
                        theta = NULL,
@@ -269,24 +319,24 @@ QGmvparams <- function(mu = NULL,
     }
     
     #Now we can compute the needed functions
-    inv.links <- function(x) {
-        res <- numeric(d)
+    inv.links <- function(mat) {
+        res <- mat
         for (i in 1:d) {
-            res[i] <- models[[i]]$inv.link(x[i])
+            res[i, ] <- models[[i]]$inv.link(mat[i, ])
         }
         res
     }
-    var.funcs <- function(x) {
-        res <- numeric(d)
+    var.funcs <- function(mat) {
+        res <- mat
         for (i in 1:d) {
-            res[i] <- models[[i]]$var.func(x[i])
+            res[i, ] <- models[[i]]$var.func(mat[i, ])
         }
         res
     }
-    d.inv.links <- function(x) {
-        res <- numeric(d)
+    d.inv.links <- function(mat) {
+        res <- mat
         for (i in 1:d) {
-            res[i] <- models[[i]]$d.inv.link(x[i])
+            res[i, ] <- models[[i]]$d.inv.link(mat[i, ])
         }
         res
     }
@@ -347,16 +397,19 @@ QGmvpred <- function(mu = NULL,
                      fit.func,
                      d.fit.func,
                      predict = NULL, 
-                     rel.acc = 0.01,
+                     rel.acc = 0.001,
                      width = 10,
                      verbose = TRUE,
                      mask = NULL)
 {
-    #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+    #Setting the integral width according to vcv.P (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcv.P)) * width
     
     #Number of dimensions
     d <- length(w)
+    
+    # Computing the logdet of vcv.P
+    logdet <- calc_logdet(vcv.P)
     
     #If predict is not included, then use mu, and 
     if(is.null(predict)) {
@@ -384,17 +437,18 @@ QGmvpred <- function(mu = NULL,
     
     Wbar <- 
         mean(apply(predict, 1,function(pred_i) {
-            cuhre(ndim = d,
-                  #Note that ncomp = 1 because fitness.func yields a scalar
-                  ncomp = 1,
-                  integrand = function(x) {
-                                fit.func(x) * dmvnorm(x, pred_i, vcv.P)
-                              },
-                  lower = pred_i - w,
-                  upper = pred_i + w,
-                  rel.tol = rel.acc,
-                  abs.tol = 0.0001,
-                  flags = list(verbose = 0))$value
+            cubature::hcubature(
+                f  = function(x) {
+                    fit.func(x) * vec_mvnorm(x, pred_i, vcv.P, logdet)
+                },
+                lowerLimit = pred_i - w,
+                upperLimit = pred_i + w,
+                #Note that fDim = 1 because fitness.func yields a scalar
+                fDim       = 1,
+                tol        = rel.acc,
+                absError   = 0.0001,
+                vectorInterface = TRUE
+            )$integral
         }))
     
     #Calculating the covariance between latent trait and latent fitness
@@ -405,16 +459,19 @@ QGmvpred <- function(mu = NULL,
     #Computing the derivative of fitness
     dW <- 
         apply(predict, 1, function(pred_i) {
-            cuhre(ndim  = d, 
-                  ncomp = d,
-                  integrand = function(x) {
-                                d.fit.func(x) * dmvnorm(x, pred_i, vcv.P)
-                              },
-                  lower = pred_i - w,
-                  upper = pred_i + w,
-                  rel.tol = rel.acc,
-                  abs.tol = 0.0001,
-                  flags = list(verbose = 0))$value
+            cubature::hcubature(
+                f  = function(x) {
+                    d.fit.func(x) * matrix(rep(vec_mvnorm(x, pred_i, vcv.P, logdet), d),
+                                           nrow = d,
+                                           byrow = TRUE)
+                },
+                lowerLimit = pred_i - w,
+                upperLimit = pred_i + w,
+                fDim       = d,
+                tol        = rel.acc,
+                absError   = 0.0001,
+                vectorInterface = TRUE
+            )$integral
         })
     
     #Applyign the mask if provided

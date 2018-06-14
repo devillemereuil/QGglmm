@@ -7,7 +7,7 @@ This function computes a multivariate version of the parameter "Psi" which relat
 }
 \usage{
 QGmvpsi(mu=NULL, vcov, d.link.inv, predict = NULL, 
-        rel.acc = 0.01, width = 10, mask = NULL)
+        rel.acc = 0.001, width = 10, mask = NULL)
 }
 
 \arguments{
@@ -40,7 +40,9 @@ G=diag(c(0.5,2))
 P=diag(c(1,4))
 
 #Setting up the derivatives of the inverse-link functions
-dinvs=function(vec){c(dnorm(vec[1]),1)} #probit link, identity link respectively
+dinvs <- function(mat) {matrix(c(dnorm(mat[1,]), rep(1, length(mat[2,]))),
+                               nrow = 2, 
+                               byrow = TRUE)}
 #The derivative of pnorm() is dnorm(), and the derivative of the identity is 1
 
 #Computing Psi

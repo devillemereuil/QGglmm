@@ -6,7 +6,7 @@
 This function calculates the multivariate phenotypic mean on the observed scale from multivariate latent mean and variance-covariance matrix.
 }
 \usage{
-QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc=0.01, width = 10, mask = NULL) 
+QGmvmean(mu=NULL, vcov, link.inv, predict = NULL, rel.acc = 0.001, width = 10, mask = NULL) 
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
@@ -39,8 +39,12 @@ P=diag(c(1,4))
 
 #Note: no phenotypic, nor genetic correlations, hence should be equal to univariate case!
 
-#Setting up the link functions
-inv.links=function(vec){c(pnorm(vec[1]),vec[2])} #probit link, identity link respectively
+# Setting up the link functions
+# Note that since the use of "cubature" to compute the integrals,
+# the functions must use a matrix as input and yield a matrix as output,
+# each row corresponding to a trait
+inv.links <- function(mat) {matrix(c(pnorm(mat[1,]), mat[2,]), nrow = 2, byrow = TRUE)}
+# probit link and identity link respectively
 
 #Computing the multivariate mean on observed scale
 QGmvmean(mu=mu, vcov=P, link.inv=inv.links)

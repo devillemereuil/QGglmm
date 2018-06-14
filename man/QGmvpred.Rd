@@ -7,7 +7,7 @@ This function uses an assumed or measured fitness function to compute evolutiona
 }
 
 \usage{
-    QGmvpred(mu=NULL, vcv.G, vcv.P, fit.func, d.fit.func, predict=NULL, rel.acc=0.01, 
+    QGmvpred(mu=NULL, vcv.G, vcv.P, fit.func, d.fit.func, predict=NULL, rel.acc = 0.001, 
     width = 10, verbose = TRUE, mask = NULL)
 }
 
@@ -65,14 +65,15 @@ inv.links=function(vec){c(pnorm(vec[1]),vec[2])}
 #i.e. expected fitness given a latent trait vector l
 #Say if the binary trait is 1, then the fitness is 0.5*"the Gaussian trait"
 #But if the binary trait is 0, then the fitness is 0
-lat.fit<-function(l){pnorm(l[1])*0.5*l[2]}
+lat.fit <- function(mat) {pnorm(mat[1, ]) * 0.5 * mat[2, ]}
 #Derivative of the above function
 #This function yields a vector which elements are the derivative according to each trait
-d.lat.fit<-function(l){c(dnorm(l[1])*0.5*l[2],pnorm(l[1])*0.5)}
+d.lat.fit <- function(mat) {matrix(c(dnorm(mat[1, ]) * 0.5 * mat[2, ], pnorm(mat[1, ]) * 0.5),
+                            nrow = 2, 
+                            byrow=TRUE)}
 
 #Predicting the latent evolutionary response
 pred<-QGmvpred(mu=mu,vcv.P=P,vcv.G=G,fit.func=lat.fit,d.fit.func=d.lat.fit)
-
 
 
 #Predicting the observed evolutionary response

@@ -415,7 +415,7 @@ QGmvicc <- function(mu = NULL,
                     vcv.P,
                     models,
                     predict = NULL,
-                    rel.acc = 0.01,
+                    rel.acc = 0.001,
                     width = 10, 
                     n.obs = NULL,
                     theta = NULL,
@@ -447,25 +447,26 @@ QGmvicc <- function(mu = NULL,
         tmp     <- models
         models  <- lapply(tmp, function(string) {QGlink.funcs(string)})
     }
+    
     #Now we can compute the needed functions
-    inv.links <- function(x) {
-        res <- numeric(d)
+    inv.links <- function(mat) {
+        res <- mat
         for (i in 1:d) {
-            res[i] <- models[[i]]$inv.link(x[i])
+            res[i, ] <- models[[i]]$inv.link(mat[i, ])
         }
         res
     }
-    var.funcs <- function(x){
-        res <- numeric(d)
+    var.funcs <- function(mat) {
+        res <- mat
         for (i in 1:d) {
-            res[i] <- models[[i]]$var.func(x[i])
+            res[i, ] <- models[[i]]$var.func(mat[i, ])
         }
         res
     }
-    d.inv.links <- function(x){
-        res <- numeric(d)
+    d.inv.links <- function(mat) {
+        res <- mat
         for (i in 1:d) {
-            res[i] <- models[[i]]$d.inv.link(x[i])
+            res[i, ] <- models[[i]]$d.inv.link(mat[i, ])
         }
         res
     }
@@ -498,45 +499,60 @@ QGmvicc <- function(mu = NULL,
                         exp.scale   = FALSE,
                         mask        = mask)
     
+    # Computing the logdet of vcv.P - vcv.comp
+    logdet.cond <- calc_logdet(vcv.P - vcv.comp)
+    
     #Function giving the conditional expectancy
     cond_exp <- function(t) {
-        apply(
-            apply(predict, 1,
-                  function(pred_i) {
-                      cuhre(ndim = d,
-                            ncomp = d,
-                            integrand = function(x) {
-                                            inv.links(x) *
-                                                dmvnorm(x,
-                                                        pred_i + t,
-                                                        vcv.P - vcv.comp)
-                                        },
-                            lower = pred_i + t - w1,
-                            upper = pred_i + t + w1,
-                            rel.tol = rel.acc,
-                            abs.tol= 0.001,
-                            flags = list(verbose = 0))$value
-                  }
-            ), 1, mean)
+        apply(t, 2, function(col) {
+            apply(
+                apply(predict, 1,
+                      function(pred_i) {
+                          cubature::hcubature(
+                              f  = function(x) {
+                                  inv.links(x) *
+                                      matrix(rep(vec_mvnorm(x, 
+                                                            pred_i + col, 
+                                                            vcv.P - vcv.comp, 
+                                                            logdet.cond), 
+                                                 d),
+                                             nrow = d,
+                                             byrow = TRUE)
+                              },
+                              lowerLimit = pred_i + col - w1,
+                              upperLimit = pred_i + col + w1,
+                              fDim       = d,
+                              tol        = rel.acc,
+                              absError   = 0.0001,
+                              vectorInterface = TRUE
+                          )$integral
+                      }
+                      ), 1, mean)
+        })
     }
     
     if (verbose) {
         print("Computing component variance-covariance matrix...")
     }
     
+    # Computing the logdet of vcv.comp
+    logdet.comp <- calc_logdet(vcv.comp)
+    
     #Computing the upper - triangle matrix of "expectancy of the square"
-    v <- cuhre(ndim  = d,
-               ncomp = (d^2 + d)/2,
-               integrand = function(x){
-                            (cond_exp(x) %*% t(cond_exp(x)))[
-                                upper.tri(x %*% t(x), diag = TRUE)
-                            ] * dmvnorm(x, rep(0, d), vcv.comp)
-                            },
-               lower = -w2,
-               upper = w2,
-               rel.tol = rel.acc,
-               abs.tol= 0.001,
-               flags = list(verbose = 0))$value
+    v <- cubature::hcubature(
+        f  = function(x) {
+            vec_sq_uptri(cond_exp(x)) *
+            matrix(rep(vec_mvnorm(x, rep(0, d), vcv.comp, logdet.comp), (d^2 + d)/2),
+                   nrow = (d^2 + d)/2,
+                   byrow = TRUE)
+        },
+        lowerLimit = -w2,
+        upperLimit = w2,
+        fDim       = (d^2 + d)/2,
+        tol        = rel.acc,
+        absError   = 0.0001,
+        vectorInterface = TRUE
+    )$integral
     
     #Applying the mask if provided
     if(!is.null(mask)) {

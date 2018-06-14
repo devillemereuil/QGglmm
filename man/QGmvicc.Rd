@@ -8,7 +8,7 @@
 Function to estimate the variance-covariance matrix of a variance component on the observed scale based on estimates on the latent scale. Contrary to the univariate function, this one cannot use the analytical closed forms and yields a list of paramaters instead of a data.frame.
 }
 \usage{
-    QGmvicc(mu=NULL, vcv.comp, vcv.P, models, predict = NULL, rel.acc = 0.01, 
+    QGmvicc(mu=NULL, vcv.comp, vcv.P, models, predict = NULL, rel.acc = 0.001, 
     width = 10, n.obs = NULL, theta = NULL, verbose = TRUE, mask = NULL)
 }
 
