@@ -503,7 +503,6 @@ QGmvicc <- function(mu = NULL,
     logdet.cond <- calc_logdet(vcv.P - vcv.comp)
     
     #Function giving the conditional expectancy
-    ## TODO: there are some dimensional issues here that need to be fixed
     cond_exp <- function(t) {
         apply(t, 2, function(col) {
             apply(
