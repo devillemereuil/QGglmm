@@ -39,8 +39,12 @@ P=diag(c(1,4))
 
 #Note: no phenotypic, nor genetic correlations, hence should be equal to univariate case!
 
-#Setting up the link functions
-inv.links=function(vec){c(pnorm(vec[1]),vec[2])} #probit link, identity link respectively
+# Setting up the link functions
+# Note that since the use of "cubature" to compute the integrals,
+# the functions must use a matrix as input and yield a matrix as output,
+# each row corresponding to a trait
+inv.links <- function(mat) {matrix(c(pnorm(mat[1,]), mat[2,]), nrow = 2, byrow = TRUE)}
+# probit link and identity link respectively
 
 #Computing the multivariate mean on observed scale
 QGmvmean(mu=mu, vcov=P, link.inv=inv.links)

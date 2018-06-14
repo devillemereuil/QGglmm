@@ -42,13 +42,18 @@ P=diag(c(1,4))
 
 #Note: no phenotypic, nor genetic correlations, hence should be equal to univariate case!
 
-#Setting up the link functions
-inv.links=function(vec){c(pnorm(vec[1]),vec[2])} #probit link, identity link respectively
+# Setting up the link functions
+# Note that since the use of "cubature" to compute the integrals,
+# the functions must use a matrix as input and yield a matrix as output,
+# each row corresponding to a trait
+inv.links <- function(mat) {matrix(c(pnorm(mat[1,]), mat[2,]), nrow = 2, byrow = TRUE)}
 
-#Setting up the distribution variance functions
-var.funcs=function(vec){c(pnorm(vec[1])*(1-pnorm(vec[1])),0)} #probit and identity link respectively
-#The first element of the vector is p*(1-p) (variance of a binomial)
-#The second element is 0 because the identity link does not create variance
+# Setting up the distribution variance functions
+var.funcs <- function(mat) {matrix(c(pnorm(mat[1,])*(1-pnorm(mat[1,])), 0 * mat[2, ]),
+                                   nrow = 2, 
+                                   byrow = TRUE)}
+#The first row is p*(1-p) (variance of a binomial)
+#The second row is 0 because no extra distribution is assumed for a Gaussian trait
 
 #Computing the multivariate mean on observed scale
 #Phenotypic VCV matrix on observed scale
