@@ -1,6 +1,6 @@
 % \VignetteIndexEntry{How to use QGglmm}
 
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper, 12pt]{article}
 
 %Chargement des paquets
 \usepackage[utf8]{inputenc}	%Encodage unicode UTF8 (Linux)
@@ -10,7 +10,9 @@
 \usepackage[sectionbib]{natbib}	%Gestion des citations auteur-année
 \usepackage[T1]{fontenc}	%Encodage Police T1
 \usepackage{amsmath}		%Environnements mathématiques
-\usepackage[a4paper,tmargin=2.5cm,bmargin=3cm,rmargin=2cm,lmargin=2cm]{geometry} %Gestion de la mise en page
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage[a4paper, tmargin = 2.5cm, bmargin = 3cm, rmargin = 2cm, lmargin = 2cm]{geometry} %Gestion de la mise en page
 \usepackage{amssymb}		%Symboles mathématiques
 \usepackage{sectsty}		%Style des section (voir \sectionfont)
 \usepackage{fancyhdr}		%En-tête personnalisés (voir \fancyhead)
@@ -18,16 +20,18 @@
 \usepackage{setspace}		%Gestion de l'interligne
 \usepackage{tabularx}		%Gestion améliorée des tableaux (permet tabularx ou p{20ex})
 \usepackage{multirow}		%Permet la fusion de cellules
-\usepackage{ae,aecompl}		%Police CM T1 pour PDF
+\usepackage{ae, aecompl}		%Police CM T1 pour PDF
 \usepackage{color}		%Pour les couleurs
-\usepackage{float}		%Option des figures et tables (floats)
-\usepackage[footnotesize]{caption}	%Option des légendes
+\usepackage[font={small, sf}, labelfont=bf]{caption}
+\usepackage[font={small, sf}]{floatrow}
+\floatsetup[table]{capposition = top}
 % \usepackage[left]{lineno}	%Numéro de ligne (package deb texlive-humanities)
-%\usepackage[position=bottom]{subfig}		%Sous-figures
+%\usepackage[position = bottom]{subfig}		%Sous-figures
 \usepackage{icomma}		%Pour les virgules en français
 % \usepackage{fancybox}		%Fancy framebox
-\definecolor{Liens_intra}{rgb}{0.4,0.35,0}
-\usepackage[pdftex,bookmarks=true,breaklinks=true,backref=page,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=Liens_intra,linktocpage=true,plainpages=false]{hyperref} %Paquet pour éditer proprement le PDF avec les hyperliens
+\definecolor{Liens_intra}{rgb}{0.4, 0.35, 0}
+\usepackage[pdftex, bookmarks = true, breaklinks = true, backref = page, colorlinks = true, linkcolor = blue, urlcolor = blue, citecolor = Liens_intra, linktocpage = true, plainpages = false]{hyperref} %Paquet pour éditer proprement le PDF avec les hyperliens
+\urlstyle{sf}
 \usepackage{doi}
 \usepackage{wrapfig}
 \usepackage{bm}
@@ -36,7 +40,7 @@
 \newcommand{\xmark}{\ding{55}}%
 \usepackage{bigcenter}
 \usepackage{booktabs}
-\usepackage[svgnames,table]{xcolor}
+\usepackage[svgnames, table]{xcolor}
 \colorlet{tableheadcolor}{gray!35} % Table header colour = 25% gray
 \newcommand{\headcol}{\rowcolor{tableheadcolor}} %
 \usepackage{tikz}
@@ -44,8 +48,19 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
 \usetikzlibrary{shapes}
-\usetikzlibrary{automata,positioning}
+\usetikzlibrary{automata, positioning}
 
+\usepackage{titling}
+\usepackage{titlesec}
+\titleformat*{\section}{\LARGE\sffamily\bfseries\raggedright}
+\titleformat*{\subsection}{\Large\sffamily\bfseries\raggedright}
+\titleformat*{\subsubsection}{\large\sffamily\bfseries\raggedright}
+\titleformat*{\paragraph}{\sffamily\bfseries}
+\setlength{\droptitle}{-5em}
+\renewcommand{\maketitlehooka}{\sffamily\scshape\bfseries}
+\usepackage{authblk} % for authors and affiliations
+\renewcommand\Authfont{\normalfont\sffamily}
+\renewcommand\Affilfont{\normalfont\sffamily\slshape\small}
 
 %Style des numérotations
 \renewcommand{\thesection}{\arabic{section}}
@@ -70,18 +85,18 @@
 \subsectionfont{\large}
 
 %Quelques couleurs
-\definecolor{Grisclair}{rgb}{0.85,0.85,0.85}
+\definecolor{Grisclair}{rgb}{0.85, 0.85, 0.85}
 
 %Environnements de code R
-\definecolor{comments}{rgb}{0.4,0.4,0.4}
-\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom = {\color[rgb]{0.8,0.2,0.2}}, frame=leftline, framesep=5pt, rulecolor=\color{black}, baselinestretch=1,commandchars=\\\{\}}
-\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom = {\color[rgb]{0.1,0.4,0.1}}, frame=leftline, framesep=5pt, rulecolor=\color{black}, baselinestretch=1,commandchars=\\\{\}}
+\definecolor{comments}{rgb}{0.4, 0.4, 0.4}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom = {\color[rgb]{0.8, 0.2, 0.2}}, frame = leftline, framesep = 5pt, rulecolor = \color{black}, baselinestretch = 1, commandchars = \\\{\}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom = {\color[rgb]{0.1, 0.4, 0.1}}, frame = leftline, framesep = 5pt, rulecolor = \color{black}, baselinestretch = 1, commandchars = \\\{\}}
 
 
 %Ophelins et veuves
 \raggedbottom
-\widowpenalty=10000
-\clubpenalty=10000
+\widowpenalty = 10000
+\clubpenalty = 10000
 
 %À écrire devant les ``backrefs''
 \renewcommand*{\backref}{Cited page(s): }
@@ -121,7 +136,7 @@ This ``How-to'' is destined for people having performed a quantitative analysis 
 \subsection{Quantitative genetics and linear mixed models}
 
 \paragraph{}
-Nowadays, the reference kind of model for performing quantitative genetics analysis is the linear mixed model (LMM), and especially a particular form of called the animal model \citep{henderson_estimation_1950,henderson_simple_1976,kruuk_estimating_2004}, whereby the additive genetic variance of the trait is estimated using relatedness information between individuals.
+Nowadays, the reference kind of model for performing quantitative genetics analysis is the linear mixed model (LMM), and especially a particular form of called the animal model \citep{henderson_estimation_1950, henderson_simple_1976, kruuk_estimating_2004}, whereby the additive genetic variance of the trait is estimated using relatedness information between individuals.
 Mathematically, a linear mixed model of a phenotypic trait $\mathbf{z}$\footnote{$\mathbf{z}$ is a vector containing the trait value for each individual, hence its length is equal to the number of individuals in the study.} is of the following shape:
 \begin{equation}\label{eq_LMM}
 \mathbf{z}= \mu + \mathbf{X}\mathbf{b} + \mathbf{Z_a}\mathbf{a} + \mathbf{Z_1}\mathbf{u_{1}} + ... + \mathbf{Z}_k\mathbf{u_{k}} + \mathbf{e},
@@ -134,16 +149,16 @@ There are several key assumptions in a LMM, among which are:
 \begin{itemize}
  \item The residual $\mathbf{e}$ follows a Normal distribution with independent effects between individuals:
  \begin{equation}
-  \mathbf{e} \sim \mathcal{N}(\mathbf{0},\mathbf{I}V_{\text{R}})
+  \mathbf{e} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}V_{\text{R}})
  \end{equation}
 where $\mathbf{I}$ is the identity matrix and $V_{\text{R}}$ is the residual variance.
 
 \item The additive genetic component (the ``breeding values'') are normally distributed with a variance-covariance matrix $\mathbf{A}$ being composed of the relatedness between individuals:
  \begin{equation}
-\mathbf{a} \sim N\left(\mathbf{0}, \mathbf{A}V_{\text{A},\ell} \right),
+\mathbf{a} \sim N\left(\mathbf{0}, \mathbf{A}V_{\text{A}, \ell} \right),
 \label{eq_animalTerm}
 \end{equation}
-where $V_{\text{A},\ell}$ is the additive genetic variance.
+where $V_{\text{A}, \ell}$ is the additive genetic variance.
 
 \item All random effects are independent from each other and from the fixed effects.
 \end{itemize}
@@ -161,28 +176,31 @@ GLMM allows for the use of many different kind of distributions by using a hiera
 This structure consists of three ``scales'' depicted in Fig. \ref{fig_3scale} and which can be written using the following equations:
 \begin{subequations}\label{eq_GLMM}
 \begin{equation}\label{eq_GLMM1}
-\bm{\ell}=\mu+\mathbf{X}\mathbf{b}+ \mathbf{Z_a}\mathbf{a} + \mathbf{Z_1}\mathbf{u_{1}} + ... + \mathbf{Z}_k\mathbf{u_{k}} + \mathbf{o},
+\bm{\ell} = \mu+\mathbf{X}\mathbf{b}+ \mathbf{Z_a}\mathbf{a} + \mathbf{Z_1}\mathbf{u_{1}} + ... + \mathbf{Z}_k\mathbf{u_{k}} + \mathbf{o},
 \end{equation}
 \begin{equation}\label{eq_GLMM2}
 \bm{\eta} = g^{-1}(\bm{\ell}),
 \end{equation}
 \begin{equation}\label{eq_GLMM3}
-\mathbf{z} \sim \mathcal{D}(\bm{\eta},\bm{\theta}),
+\mathbf{z} \sim \mathcal{D}(\bm{\eta}, \bm{\theta}),
 \end{equation}
 \end{subequations}
 Eq.~\ref{eq_GLMM1} refers to the latent trait $\bm{\ell}$.
-
-\begin{wrapfigure}[28]{l}{0.3\textwidth}
- \centering
- \includegraphics[width=0.3\textwidth]{Figs/3scales.pdf}
- \caption{The three scales of the Generalised Linear Mixed Model (here using Poisson with a log link function as an example). The error terms are normally distributed on the latent scale, but follows a Poisson distribution on the observed data scale (conditionnally on the latent scale).}
- \label{fig_3scale}
-\end{wrapfigure}
 
 \paragraph{}
 By comparing it to Eq.~\ref{eq_LMM}, we can see that the same assumptions are made for $\bm{\ell}$ as in any LMM. 
 To reflect the fact that the ``error'' on the latent trait is not the residual error of the model, we changed the notation of the residual $\mathbf{e}$ to $\mathbf{o}$. 
 The term $\mathbf{o}$ is still normally distributed and stands for the additive over-dispersion of the model \citep{nakagawa_repeatability_2010}. Accordingly, we will note the variance associated to $\mathbf{o}$ as $V_{\text{O}}$.\\
+
+
+\begin{wrapfigure}[25]{l}{0.3\textwidth}
+  \centering
+  \includegraphics[width = \textwidth]{Figs/3scales.pdf}
+  \caption{The three scales of the Generalised Linear Mixed Model (here using Poisson with a log link function as an example). The error terms are normally distributed on the latent scale, but follows a Poisson distribution on the observed data scale (conditionnally on the latent scale).}
+  \label{fig_3scale}
+\end{wrapfigure}
+
+
 In \citet{de_villemereuil_general_2016}, Eq.~\ref{eq_GLMM2} is said to refer to the ``expected data scale''. 
 This is because the term $\bm{\eta}$ is the individual expectation around which the observed data are realised (see example below). The transition from the latent scale to the expected data scale is preformed by the inverse of the link-function $g$. 
 The link function is ``mapping'' the variations on the latent scale to variations compatible for the distribution used. For example, whereas the latent trait varies between $-\infty$ to $\infty$, a binomial distribution can only use values between 0 and 1, hence the use of logit or probit link-function which match these input and output realms.\\
@@ -190,7 +208,7 @@ Finally, Eq.~\ref{eq_GLMM3} models the ``observed data scale'' by adding, to the
 given non-Normal distribution (here noted $\mathcal{D}$), which can accept additional parameters $\bm{\theta}$.
 
 \paragraph{}
-It is very important to realise that most (and very often, all) parameters are inferred on the latent scale, and \textit{not} on the observed data scale. All parameters commonly interpreted in quantitative genetics (population mean $\mu$, additive genetic variance $V_{\text{A},\ell}$ and all other variance components) are thus related to a hypothetical latent trait, and hence not directly to the phenotypic trait of interest (see more about this in section \ref{subsec_QGandGLMM}).
+It is very important to realise that most (and very often, all) parameters are inferred on the latent scale, and \textit{not} on the observed data scale. All parameters commonly interpreted in quantitative genetics (population mean $\mu$, additive genetic variance $V_{\text{A}, \ell}$ and all other variance components) are thus related to a hypothetical latent trait, and hence not directly to the phenotypic trait of interest (see more about this in section \ref{subsec_QGandGLMM}).
 
 \subsection{An illustrative example}
 
@@ -201,7 +219,7 @@ All the statistical soup above might seem difficult to digest to some readers. I
 Let's consider a very simple model for now, with no fixed effects and no random effects except for the additive genetic one. Following Eqs.~\ref{eq_GLMM}, we can write the model as:
 \begin{subequations}\label{eq_Poisson}
 \begin{equation}\label{eq_Poisson1}
-\bm{\ell}=\mu + \mathbf{Z_a}\mathbf{a} + \mathbf{o},
+\bm{\ell} = \mu + \mathbf{Z_a}\mathbf{a} + \mathbf{o},
 \end{equation}
 \begin{equation}\label{eq_Poisson2}
 \bm{\eta} = \exp(\bm{\ell}),
@@ -212,28 +230,33 @@ Let's consider a very simple model for now, with no fixed effects and no random 
 \end{subequations}
 Note that, because we use the inverse of the log link-function, we use, well, the inverse of the logarithm, which is an exponential. Note that a Poisson can only use positive real number as input and that exponential only yields positive real numbers, so the ``matching'' performed by the link-function is quite obvious here.
 
-\begin{wrapfigure}[6]{l}{0.4\textwidth}
+\begin{wrapfigure}[4]{l}{0.4\textwidth}
  \centering
  \vspace{-0.8cm}
- \includegraphics[width=0.4\textwidth]{Figs/latent.pdf}
+ \includegraphics[width = \textwidth]{Figs/latent.pdf}
  \caption{Distribution of the simulated latent trait.}
  \label{fig_latent}
 \end{wrapfigure}
 
 \paragraph{}
-So, our model has three parameters: the intercept $\mu$, the additive genetic variance $V_{\text{A},\ell}$ and the over-dispersion variance $V_{\text{O}}$. Let's define some values for them:
+So, our model has three parameters: the intercept $\mu$, the additive genetic variance $V_{\text{A}, \ell}$ and the over-dispersion variance $V_{\text{O}}$. Let's define some values for them:
 \begin{Schunk}
  \begin{Sinput}
-mu=0     #Value for the intercept mu
-Va=0.3   #Value for the additive genetic variance
-Vo=0.3   #Value for the over-dispersion variance
-N=1000   #Number of individuals
+# Value for the intercept mu
+mu <- 0
+# Additive genetic variance
+Va <- 0.3
+# Over-dispersion variance
+Vo <- 0.3
+# Number of individuals
+N  <- 1000
  \end{Sinput}
 \end{Schunk}
+~\\[1cm]
 Using these parameters, we can simulate the latent trait:
 \begin{Schunk}
  \begin{Sinput}
-l = mu + rnorm(N,0,sqrt(Va)) + rnorm(N,0,sqrt(Vo))
+l <- mu + rnorm(N, 0, sqrt(Va)) + rnorm(N, 0, sqrt(Vo))
  \end{Sinput}
 \end{Schunk}
 The distribution of the simulated latent trait is illustrated in Fig.~\ref{fig_latent}\footnote{Note that because we do not have fixed effects, the distribution is clearly Gaussian, but when fixed effects are included, there is no expectation for the distribution of $\bm{\ell}$ to be Gaussian (only the residual is, i.e. when all effects have been ``removed'').}. 
@@ -242,7 +265,7 @@ The distribution of the simulated latent trait is illustrated in Fig.~\ref{fig_l
 Now that we have constructed our latent trait, we can use the inverse of the link-function to compute the values on the expected data scale (a.k.a. $\bm{\eta}$):
 \begin{Schunk}
  \begin{Sinput}
-  eta = exp(l)
+eta <- exp(l)
  \end{Sinput}
 \end{Schunk}
 Yes, it's that simple. The distribution of $\bm{\eta}$ is illustrated in Fig.~\ref{fig_expected}. 
@@ -252,7 +275,7 @@ This is all good and well, but doesn't quite really illustrate what $\bm{\eta}$ 
 \begin{wrapfigure}[9]{r}{0.4\textwidth}
  \centering 
  \vspace{-0.8cm}
- \includegraphics[width=0.4\textwidth]{Figs/expected.pdf}
+ \includegraphics[width = \textwidth]{Figs/expected.pdf}
  \caption{Distribution of the simulated $\bm{\eta}$ values.}
  \label{fig_expected}
 \end{wrapfigure}
@@ -261,7 +284,7 @@ This is all good and well, but doesn't quite really illustrate what $\bm{\eta}$ 
 The observed phenotypic trait $\mathbf{z}$ is the realisation around the individual expectation $\bm{\eta}$ according to the chosen distribution $\mathcal{D}$. In our case, what this means is that for individual $i$, its phenotype $z_{i}$ is drawn from a Poisson distribution with a mean (i.e. the famous $\lambda$ parameter of the Poisson distribution) $\eta_{i}$:
 \begin{Schunk}
  \begin{Sinput}
-  z = rpois(N,lambda=eta)
+z <- rpois(N, lambda = eta)
  \end{Sinput}
 \end{Schunk}
 Now, the distribution of our simulated phenotypic trait is illustrated in Fig.~\ref{fig_observed}. We can see that this distribution is heavily non-Gaussian\footnote{At this point, we need to remind the reader that we are authorised to look at the overall shape of the different scales directly because our simulations did not have any fixed effects. A variable can totally have a weird distribution, but a normally distributed error term if the correct covariate is used as a fixed effect.}, with a lot of 0 and a few large values (again up to slightly above 20). 
@@ -269,7 +292,7 @@ Now, the distribution of our simulated phenotypic trait is illustrated in Fig.~\
 \begin{wrapfigure}[6]{r}{0.4\textwidth}
  \centering
  \vspace{-1cm}
- \includegraphics[width=0.4\textwidth]{Figs/observed.pdf}
+ \includegraphics[width = \textwidth]{Figs/observed.pdf}
  \caption{Distribution of the simulated $\mathbf{z}$ values.}
  \label{fig_observed}
 \end{wrapfigure}
@@ -278,21 +301,21 @@ Now, the distribution of our simulated phenotypic trait is illustrated in Fig.~\
 To fully realise the meaning of the different scales, it can be interesting to ``follow'' the values for a particular individual, say the 101th. First, we can have a look at its latent value:
 \begin{Schunk}
  \begin{Sinput}
-  l[101]
-  eta[101]
-  z[101]
+l[101]
+eta[101]
+z[101]
  \end{Sinput}
  \begin{Soutput}
-  1.225813
-  3.406933
-  4
+1.225813
+3.406933
+4
  \end{Soutput}
 \end{Schunk}
 So, this individual have a latent trait value of 1.23. This value can be directly compared to our value of the population latent mean $\mu$, which was 0. This individual's latent component tends thus toward bigger values than the average. As a result, its expected value is of 3.4. Let's say that our trait is the mating success of a population of male. This means that this individual is expected, according to its latent (i.e. in part, according to its genetics), to mate with 3.4. Now, we all know that it's impossible to mate with 3.4 females: we can only observe integer values of mating success. This is the observed value, which, in our case was 4, but could have been anything e.g. between 1 and 7:
 \begin{Schunk}
  \begin{Sinput}
-qpois(0.05,lambda=3.4)
-qpois(0.95,lambda=3.4)
+qpois(0.05, lambda = 3.4)
+qpois(0.95, lambda = 3.4)
  \end{Sinput}
  \begin{Soutput}
 1
@@ -347,50 +370,50 @@ The first parameters to compute are the population phenotypic mean and variance 
 \paragraph{Population mean}
 The last layer, going from Eq.~\ref{eq_GLMM2} to Eq.~\ref{eq_GLMM3} just adds noise around some expected values (computed as $g^{-1}(\ell)$). Hence, the population mean is the average of these expected values:
 \begin{equation}\label{eq_mean}
-\bar{z} = \int  g^{-1}(\ell)f_{\mathcal{N}}(\ell,\mu,V_{\text{P},\ell})\text{d}\ell,
+\bar{z} = \int  g^{-1}(\ell)f_{\mathcal{N}}(\ell, \mu, V_{\text{P}, \ell})\text{d}\ell,
 \end{equation}
-where $f_{\mathcal{N}}(\ell,\mu,V_{\text{P},\ell})$ is the probability density of a Normal distribution with mean $\mu$ and variance $V_{\text{P},\ell}$ evaluated at $\ell$. Note that $V_{\text{P},\ell}$ is the sum of all variance components (i.e. $V_{\text{A},\ell}$, $V_{\text{O},\ell}$ and random effect variances) on the latent scale. In other words, it is the ``phenotypic variance'' of the latent trait.
+where $f_{\mathcal{N}}(\ell, \mu, V_{\text{P}, \ell})$ is the probability density of a Normal distribution with mean $\mu$ and variance $V_{\text{P}, \ell}$ evaluated at $\ell$. Note that $V_{\text{P}, \ell}$ is the sum of all variance components (i.e. $V_{\text{A}, \ell}$, $V_{\text{O}, \ell}$ and random effect variances) on the latent scale. In other words, it is the ``phenotypic variance'' of the latent trait.
 
 \paragraph{Variance on the expected data scale}
 The variance on the expected data scale is simply the variance of the above-mentioned expected values around the population mean:
 \begin{equation}\label{eq_phenvar_eds}
-V_{\text{P},\text{exp}} = \int  \left( g^{-1}(\ell) - \bar{z} \right)^2 f_{\mathcal{N}}(\ell,\mu,V_{\text{P},\ell}) \text{d}\ell.
+V_{\text{P}, \text{exp}} = \int  \left( g^{-1}(\ell) - \bar{z} \right)^2 f_{\mathcal{N}}(\ell, \mu, V_{\text{P}, \ell}) \text{d}\ell.
 \end{equation}
 
 \paragraph{Variance on the observed data scale}
-To compute the variance of the observed data scale, we need to the noise arising when going from  Eq.~\ref{eq_GLMM2} to Eq.~\ref{eq_GLMM3}. We call this variance the ``distribution variance'' and it depends on a variance function $v(\ell,\bm{\theta})$ that describe the variance of the distribution $\mathcal{D}$ used\footnote{For a Binomial distribution, for example, it is equal to $g^{-1}(\ell) \left(1-g^{-1}(\ell)\right)$, similar to the classical $p(1-p)$.}:
+To compute the variance of the observed data scale, we need to the noise arising when going from  Eq.~\ref{eq_GLMM2} to Eq.~\ref{eq_GLMM3}. We call this variance the ``distribution variance'' and it depends on a variance function $v(\ell, \bm{\theta})$ that describe the variance of the distribution $\mathcal{D}$ used\footnote{For a Binomial distribution, for example, it is equal to $g^{-1}(\ell) \left(1-g^{-1}(\ell)\right)$, similar to the classical $p (1-p)$.}:
 \begin{equation}\label{eq_vardist}
-V_{\text{dist}} = \int v(\ell,\bm{\theta})f_{\mathcal{N}}(\ell,\mu,V_{\text{P},\ell})\text{d}\ell.
+V_{\text{dist}} = \int v(\ell, \bm{\theta})f_{\mathcal{N}}(\ell, \mu, V_{\text{P}, \ell})\text{d}\ell.
 \end{equation}
 To compute the phenotypic variance on the observed data scale, we simply need to add Eqs.~\ref{eq_phenvar_eds} and \ref{eq_vardist}:
 \begin{equation}\label{eq_phenvar_obs}
-V_{\text{P},\text{obs}} = V_{\text{P},\text{exp}} + V_{\text{dist}}.
+V_{\text{P}, \text{obs}} = V_{\text{P}, \text{exp}} + V_{\text{dist}}.
 \end{equation}
-We mentioned earlier that GLMM were quite noisy models. We can see here why: on the observed data scale, we have variance arising from the latent scale that went through the link function ($V_{\text{P},\text{exp}}$) to which we further add the distribution variance ($V_{\text{dist}}$).
+We mentioned earlier that GLMM were quite noisy models. We can see here why: on the observed data scale, we have variance arising from the latent scale that went through the link function ($V_{\text{P}, \text{exp}}$) to which we further add the distribution variance ($V_{\text{dist}}$).
 
 \subsection{Computing the additive genetic variance and related parameters}
 
 \paragraph{}
-To compute the additive genetic variance on the observed data scale $V_{\text{A},\text{obs}}$  from the latent scale, two things are needed: the latent additive genetic variance $V_{\text{A},\ell}$ and a parameter called $\Psi$\footnote{This parameter can be considered as the slope of the linear regression from the latent breeding values to the breeding values on the observed data scale. For more details, see \citet{de_villemereuil_general_2016}}.
+To compute the additive genetic variance on the observed data scale $V_{\text{A}, \text{obs}}$  from the latent scale, two things are needed: the latent additive genetic variance $V_{\text{A}, \ell}$ and a parameter called $\Psi$\footnote{This parameter can be considered as the slope of the linear regression from the latent breeding values to the breeding values on the observed data scale. For more details, see \citet{de_villemereuil_general_2016}}.
 The details of $\Psi$ computation can be omitted here, but what is important to note is that, as all computations above, it depends on the whole distribution of the latent trait $\ell$.
-$V_{\text{A},\text{obs}}$ can then be computed as:
+$V_{\text{A}, \text{obs}}$ can then be computed as:
 \begin{equation}\label{eq_va_obs}
- V_{\text{A},\text{obs}} = \Psi^2 V_{\text{A},\ell}
+ V_{\text{A}, \text{obs}} = \Psi^2 V_{\text{A}, \ell}
 \end{equation}
 Simple enough (if you have $\Psi$!).
 
 \paragraph{}
-Once the value for $V_{\text{A},\text{obs}}$ and all the other parameters have been obtained, it is pretty straightforward to compute other related parameters on the observed data scale, such as the heritability:
+Once the value for $V_{\text{A}, \text{obs}}$ and all the other parameters have been obtained, it is pretty straightforward to compute other related parameters on the observed data scale, such as the heritability:
 \begin{equation}\label{eq_herit_glmm_obs}
- h^{2}_{\text{obs}} = \dfrac{V_{\text{A},\text{obs}}}{V_{\text{P},\text{obs}}},
+ h^{2}_{\text{obs}} = \dfrac{V_{\text{A}, \text{obs}}}{V_{\text{P}, \text{obs}}},
 \end{equation}
 or the coefficient of variation:
 \begin{equation}
- \text{CV}_{\text{A},\text{obs}} = 100\dfrac{\sqrt{V_{\text{A},\text{obs}}}}{\bar{z}},
+ \text{CV}_{\text{A}, \text{obs}} = 100\dfrac{\sqrt{V_{\text{A}, \text{obs}}}}{\bar{z}},
 \end{equation}
 or even the closely-related evolvability:
 \begin{equation}
- \text{I}_{\text{A},\text{obs}} =\dfrac{V_{\text{A},\text{obs}}}{\bar{z}^{2}}.
+ \text{I}_{\text{A}, \text{obs}} =\dfrac{V_{\text{A}, \text{obs}}}{\bar{z}^{2}}.
 \end{equation}
 
 
@@ -427,14 +450,15 @@ As an illustration, we will however see how to extract estimate values from diff
 Imagine we have an animal model fitted with MCMCglmm to analyse count data using a Poisson distribution. The model would be fitted using, for example, the following command:
 \begin{Schunk}
  \begin{Sinput}
-model <- MCMCglmm(phen~1,random=~animal,pedigree=pedigree,
-	 data=data,prior=prior,family="poisson")
+model <- MCMCglmm(phen ~ 1, random = ~animal,
+                  pedigree = pedigree, data = data,
+                  prior = prior, family = "poisson")
  \end{Sinput}
 \end{Schunk}
 Now, all we need is to extract, from the \texttt{model} object, the latent population mean (here, the intercept of the model), additive genetic variance and phenotypic variance:
 \begin{Sinput}
-mu <- mean(model[["Sol"]][,"(Intercept)"])
-va <- mean(model[["VCV"]][,"animal"])
+mu <- mean(model[["Sol"]][ , "(Intercept)"])
+va <- mean(model[["VCV"]][ , "animal"])
 vp <- mean(rowSums(model[["VCV"]]))
 \end{Sinput}
 And that's everything that will be needed by QGglmm. For binary traits, it is not needed to add 1 (for probit link) or $\pi^{2}/3$ (for logit link)
@@ -443,22 +467,31 @@ And that's everything that will be needed by QGglmm. For binary traits, it is no
 Now, what if we wanted to fit a multivariate animal model rather than a univariate one? Something like this:
 \begin{Schunk}
  \begin{Sinput}
-model <- MCMCglmm(cbind(phen1,phen2)~trait-1,random=~us(trait):animal,
-	 rcov=~us(trait):units,family=c("ordinal","gaussian"),prior=prior,data=data)
+model <- MCMCglmm(cbind(phen1, phen2) ~ trait - 1, 
+                  random = ~ us(trait):animal,
+                  rcov = ~us(trait):units, 
+                  data = data, pedigree = pedigree,
+                  family = c("ordinal", "gaussian"), 
+                  prior = prior)
  \end{Sinput}
 \end{Schunk}
 Extracting the parameters from the \texttt{model} object is a bit more tedious here, because most of them are actually matrices and need to be re-formatted as such:
 \begin{Schunk}
  \begin{Sinput}
-mu <-  c(mean(model[["Sol"]][,"traitphen1"]),mean(model[["Sol"]][,"traitphen2"]))
-G <- matrix(c(mean(model[["VCV"]][,"traitphen1:traitphen1.animal"]),
-     mean(model[["VCV"]][,"traitphen1:traitphen2.animal"]),
-     mean(model[["VCV"]][,"traitphen1:traitphen2.animal"]),
-     mean(model[["VCV"]][,"traitphen2:traitphen2.animal"])),ncol=2)
-R <- matrix(c(mean(model[["VCV"]][,"traitphen1:traitphen1.units"]),
-     mean(model[["VCV"]][,"traitphen1:traitphen2.units"]),
-     mean(model[["VCV"]][,"traitphen1:traitphen2.units"]),
-     mean(model[["VCV"]][,"traitphen2:traitphen2.units"])),ncol=2)
+mu <-  c(mean(model[["Sol"]][ , "traitphen1"]),
+         mean(model[["Sol"]][ , "traitphen2"]))
+G <- 
+  matrix(c(mean(model[["VCV"]][ , "traitphen1:traitphen1.animal"]),
+           mean(model[["VCV"]][ , "traitphen1:traitphen2.animal"]),
+           mean(model[["VCV"]][ , "traitphen1:traitphen2.animal"]),
+           mean(model[["VCV"]][ , "traitphen2:traitphen2.animal"])),
+         ncol = 2)
+R <- 
+  matrix(c(mean(model[["VCV"]][ , "traitphen1:traitphen1.units"]),
+           mean(model[["VCV"]][ , "traitphen1:traitphen2.units"]),
+           mean(model[["VCV"]][ , "traitphen1:traitphen2.units"]),
+           mean(model[["VCV"]][ , "traitphen2:traitphen2.units"])),
+         ncol = 2)
 P <- G + R
  \end{Sinput}
 \end{Schunk}
@@ -471,13 +504,13 @@ Imagine now we have a sire/dam model fitted with lme4 to analyse binary data\foo
 \begin{Schunk}
  \begin{Sinput}
 model <- glmer(phen ~ 1 + (1|sire) + (1|dam), 
-	 data=data, family=binomial(link="probit"))
+	 data = data, family = binomial(link = "probit"))
  \end{Sinput}
 \end{Schunk}
 What we would like is to extract the intercept and variance components from the \texttt{model} object. This can be done using the following commands:
 \begin{Schunk}
  \begin{Sinput}
-vars <- as.data.frame(VarCorr(model))[,c('grp','vcov')]
+vars <- as.data.frame(VarCorr(model))[ , c('grp', 'vcov')]
 intercept <- fixef(model)['(Intercept)']
  \end{Sinput}
 \end{Schunk}
@@ -490,8 +523,8 @@ mu <- intercept
 The additive genetic variance of the model is four times the sire variance and the latent phenotypic variance on the latent scale is simply the sum of the variance components:
 \begin{Schunk}
  \begin{Sinput}
-va <- 4*vars[vars\$grp=="sire","vcov"]
-vp <- sum(vars[,"vcov"])
+va <- 4 * vars[vars[["grp"]] == "sire", "vcov"]
+vp <- sum(vars[, "vcov"])
  \end{Sinput}
 \end{Schunk}
 And just like that, we have everything required to use QGglmm!
@@ -512,7 +545,7 @@ mu <- 0.89
 We can use these parameters and our knowledge of the model (here a Poisson model with a log link) to compute the quantitative genetics parameters on the observed data scale using the simple following command:
 \begin{Schunk}
  \begin{Sinput}
-QGparams(mu=mu,var.a=va,var.p=vp,model="Poisson.log")
+QGparams(mu = mu, var.a = va, var.p = vp, model = "Poisson.log")
  \end{Sinput}
  \begin{Soutput}
 [1] "Using the closed forms for a Poisson-log model."
@@ -541,7 +574,8 @@ Though the absolute difference can vary depending on the data and model, \texttt
 Because the Poisson/log model has a closed-form solution to our framework, the computation is very quick. Some common models (e.g. binomial with logit link) do not have such solution (yet?) and for them computation is slower. You can see whether \texttt{QGparams} is using the closed forms through its verbose output:
 \begin{Schunk}
  \begin{Sinput}
-QGparams(mu=mu,var.a=va,var.p=vp,model="Poisson.log",closed.form=FALSE)
+QGparams(mu = mu, var.a = va, var.p = vp, 
+         model = "Poisson.log", closed.form = FALSE)
  \end{Sinput}
  \begin{Soutput}
 [1] "Computing observed mean..."
@@ -585,7 +619,7 @@ There are quite a bunch of models that are implemented in QGglmm, for which we h
 What should be done if the model you used is not in this list? Well, that means that using QGglmm is still possible but will require somewhat more efforts from \textit{your} part. Of course, if you don't need to implement your own model, you can skip this rather technical part\footnote{Though I would recommend readers to read it, as it explains how \texttt{QGparams} works ``under the hood''.}. Three things are needed:
 \begin{description}
  \item[\texttt{inv.link}] The inverse function of the link function your model, i.e. if you model uses a link function $g$, you need to impute $g^{-1}$.
- \item[\texttt{var.func}] The ``variance function'' $v(\ell,\bm{\theta})$ (see Eq.~\ref{eq_vardist}), which is the function giving the variance to expect around a value for the latent trait $\ell$ given some (possibly empty!) parameter $\bm{\theta}$, assuming your custom distribution $\mathcal{D}$.
+ \item[\texttt{var.func}] The ``variance function'' $v(\ell, \bm{\theta})$ (see Eq.~\ref{eq_vardist}), which is the function giving the variance to expect around a value for the latent trait $\ell$ given some (possibly empty!) parameter $\bm{\theta}$, assuming your custom distribution $\mathcal{D}$.
  \item[\texttt{d.inv.link}] Derivative of the inverse-link function \texttt{inv.link}, this should require little mathematical work since link functions are often relatively simple.
 \end{description}
 To illustrate how to compute and use those things, we will ``manually'' implement the binomial/logit model. So, the first thing is to know what the link function looks like. \href{https://en.wikipedia.org/wiki/Logit}{Wikipedia} tells us that a logit function looks like this:
@@ -616,30 +650,34 @@ So, \texttt{d.inv.link} is:
 d.inv.link <- function(x)\{exp(x)/((1+exp(x))^2)\}
  \end{Sinput}
 \end{Schunk}
-Now, the last bit requires more thinking. The function $v(x,\bm{\theta})$ gives us the variance of the values on the observed data scale for a given latent value $x$. So, for a given latent value $x$, Eq.~\ref{eq_GLMM} tells that the distribution of the values will be:
+Now, the last bit requires more thinking. The function $v(x, \bm{\theta})$ gives us the variance of the values on the observed data scale for a given latent value $x$. So, for a given latent value $x$, Eq.~\ref{eq_GLMM} tells that the distribution of the values will be:
 \begin{equation}
- z|x \sim \mathcal{B}(g^{-1}(x),1)
+ z|x \sim \mathcal{B}(g^{-1}(x), 1)
 \end{equation}
-where $\mathcal{B}(p,N)$ is the binomial distribution with probability of success $p$ and number of trials $N$ (here $N=1$ is our general parameter $\bm{\theta}$). We know that the variance of this distribution is generally $N p (1-p)$, so in our case:
+where $\mathcal{B}(p, N)$ is the binomial distribution with probability of success $p$ and number of trials $N$ (here $N = 1$ is our general parameter $\bm{\theta}$). We know that the variance of this distribution is generally $N p (1-p)$, so in our case:
 \begin{equation}
- v(x,\bm{\theta}) = g^{-1}(x) (1 - g^{-1}(x))
+ v(x, \bm{\theta}) = g^{-1}(x) (1 - g^{-1}(x))
 \end{equation}
 So, we finally have \texttt{var.func}:
 \begin{Schunk}
  \begin{Sinput}
-  var.func <- function(x)\{(exp(x)/(1+exp(x))) * (1 - (exp(x)/(1+exp(x))))\}
+var.func <- function(x)\{(exp(x)/(1+exp(x))) *
+                        (1 - (exp(x)/(1+exp(x))))\}
  \end{Sinput}
 \end{Schunk}
 QGglmm requires that these functions are provided using a named list:
 \begin{Schunk}
  \begin{Sinput}
-custom.functions <- list(inv.link=inv.link,var.func=var.func,d.inv.link=d.inv.link)
+custom.functions <- list(inv.link = inv.link,
+                         var.func = var.func, 
+                         d.inv.link = d.inv.link)
  \end{Sinput}
 \end{Schunk}
 Now, we can use our ``custom'' model in QGparams:
 \begin{Schunk}
  \begin{Sinput}
-QGparams(mu=0.5,var.a=0.5,var.p=1,custom.model=custom.functions)
+QGparams(mu = 0.5, var.a = 0.5, var.p = 1,
+         custom.model = custom.functions)
  \end{Sinput}
  \begin{Soutput}
 [1] "Computing observed mean..."
@@ -652,7 +690,7 @@ QGparams(mu=0.5,var.a=0.5,var.p=1,custom.model=custom.functions)
 which gives exactly the same output as the built-in model:
 \begin{Schunk}
  \begin{Sinput}
-QGparams(mu=0.5,var.a=0.5,var.p=1,model="binom1.logit")
+QGparams(mu = 0.5, var.a = 0.5, var.p = 1, model = "binom1.logit")
  \end{Sinput}
  \begin{Soutput}
 [1] "Computing observed mean..."
@@ -672,9 +710,9 @@ Let's assume we just performed a large multivariate quantitative genetics analys
 We obtained the following parameters:
 \begin{Schunk}
  \begin{Sinput}
-G <- matrix(c(0.5,0.4,0,0.4,2,0,0,0,0.1),nrow=3)
-P <- matrix(c(1,0.4,0,0.4,5,0,0,0,0.5),nrow=3)
-mu <- c(-0.5,10,1)
+G <- matrix(c(0.5, 0.4, 0, 0.4, 2, 0, 0, 0, 0.1), nrow = 3)
+P <- matrix(c(1, 0.4, 0, 0.4, 5, 0, 0, 0, 0.5), nrow = 3)
+mu <- c(-0.5, 10, 1)
  \end{Sinput}
 \end{Schunk}
 By looking at G, we can that the two first traits are genetically correlated, but the last one is independent from the others (on the latent scale!):
@@ -683,10 +721,10 @@ By looking at G, we can that the two first traits are genetically correlated, bu
 G
  \end{Sinput}
  \begin{Soutput}
-     [,1] [,2] [,3]
-[1,]  0.5  0.4  0.0
-[2,]  0.4  2.0  0.0
-[3,]  0.0  0.0  0.1
+     [, 1] [, 2] [, 3]
+[1, ]  0.5  0.4  0.0
+[2, ]  0.4  2.0  0.0
+[3, ]  0.0  0.0  0.1
  \end{Soutput}
 \end{Schunk}
 All the phenotypic covariance is of phenotypic origin though:
@@ -695,10 +733,10 @@ All the phenotypic covariance is of phenotypic origin though:
   P - G
  \end{Sinput}
  \begin{Soutput}
-     [,1] [,2] [,3]
-[1,]  0.5    0  0.0
-[2,]  0.0    3  0.0
-[3,]  0.0    0  0.4
+     [, 1] [, 2] [, 3]
+[1, ]  0.5    0  0.0
+[2, ]  0.0    3  0.0
+[3, ]  0.0    0  0.4
  \end{Soutput}
 \end{Schunk}
 If only real estimates could be that clean!
@@ -707,7 +745,8 @@ If only real estimates could be that clean!
 The function \texttt{QGmvparams} behave mostly the same as \texttt{QGparams}, but has a modified arguments and output to adapt to the multivariate case. For example, it requires not simply variances, but variance-covariance matrices and a vector of intercept for \texttt{mu}. It also requires that all the models used for the trait are given (as a vector):
 \begin{Schunk}
  \begin{Sinput}
-QGmvparams(mu=mu,vcv.G=G,vcv.P=P,model=c("binom1.probit","Gaussian","Poisson.log"))
+QGmvparams(mu = mu, vcv.G = G, vcv.P = P,
+           model = c("binom1.probit", "Gaussian", "Poisson.log"))
  \end{Sinput}
  \begin{Soutput}
 [1] "Computing observed mean..."
@@ -717,48 +756,47 @@ QGmvparams(mu=mu,vcv.G=G,vcv.P=P,model=c("binom1.probit","Gaussian","Poisson.log
 [1]  0.361887 10.000149  3.490865
 
 \$vcv.P.obs
-              [,1]      [,2]          [,3]
-[1,]  0.2308944225 0.1056209 -0.0002702066
-[2,]  0.1056208909 5.2382325  0.0577576973
-[3,] -0.0002702066 0.0577577 11.3775643645
+              [, 1]      [, 2]          [, 3]
+[1, ]  0.2308944225 0.1056209 -0.0002702066
+[2, ]  0.1056208909 5.2382325  0.0577576973
+[3, ] -0.0002702066 0.0577577 11.3775643645
 
 \$vcv.G.obs
-           [,1]      [,2]     [,3]
-[1,] 0.03511883 0.1063377 0.000000
-[2,] 0.10633770 2.0124007 0.000000
-[3,] 0.00000000 0.0000000 1.225777
+           [, 1]      [, 2]     [, 3]
+[1, ] 0.03511883 0.1063377 0.000000
+[2, ] 0.10633770 2.0124007 0.000000
+[3, ] 0.00000000 0.0000000 1.225777
  \end{Soutput}
 \end{Schunk}
 A few things ought to be noted here regarding this output. First, you can see that the output has substantially changed. It is not a \texttt{data.frame} any more, but a \texttt{list} object. Not as easily stackable as \texttt{data.frame}, but much more convenient to store matrices! 
 Second, despite the fact that all models used here have a closed form (see Table \ref{tab_models}), \texttt{QGmvparams} seems to be doing the integral computation (see the verbose output on the three first lines).
 This is because the computation for each model are not independent, so using closed forms would require to solve this particular case (binomial/probit + Gaussian + Poisson/log). 
-This is much more complex than univariate models and there are so many possibilities that using closed forms for the multivariate is practically impossible. Hence \texttt{QGmvparams} \textit{always} resort to integral computations (using the \href{https://cran.r-project.org/web/packages/R2Cuba/index.html}{R2Cuba} package).\\
-You will probably also have noted that the computation was substantially slower than in the univariate case!
+This is much more complex than univariate models and there are so many possibilities that using closed forms for the multivariate is practically impossible. Hence \texttt{QGmvparams} \textit{always} resort to integral computations (using the \href{https://cran.r-project.org/web/packages/cubature/index.html}{cubature} package)\footnote{In previous versions, QGglmm was using R2Cuba which has been deprecated. The switch to cubature, however, allowed for using its ``vectorised'' approach which considerably improved the speed of the package: up to 50x for QGmvparams and up to x300 faster for QGmvicc!!}.\\
 
 \paragraph{Looking closer at the estimates}
 This example is interesting because it allows to see some of the peculiar stuff happening when converting from the latent to the observed data scale. Let's save the output of \texttt{QGmvparams} to study it further:
 \begin{Schunk}
  \begin{Sinput}
-out <- QGmvparams(mu=mu,vcv.G=G,vcv.P=P,
-       model=c("binom1.probit","Gaussian","Poisson.log"))
+out <- QGmvparams(mu = mu, vcv.G = G, vcv.P = P,
+       model = c("binom1.probit", "Gaussian", "Poisson.log"))
  \end{Sinput}
 \end{Schunk}
 One interesting thing is to compare the additive genetic variance on the latent scale and on the observed data scale:
 \begin{Schunk}
  \begin{Sinput}
 G
-out\$vcv.G.obs
+out[["vcv.G.obs"]]
  \end{Sinput}
  \begin{Soutput}
-     [,1] [,2] [,3]
-[1,]  0.5  0.4  0.0
-[2,]  0.4  2.0  0.0
-[3,]  0.0  0.0  0.1
+     [, 1] [, 2] [, 3]
+[1, ]  0.5  0.4  0.0
+[2, ]  0.4  2.0  0.0
+[3, ]  0.0  0.0  0.1
 
-           [,1]      [,2]     [,3]
-[1,] 0.03511883 0.1063377 0.000000
-[2,] 0.10633770 2.0124007 0.000000
-[3,] 0.00000000 0.0000000 1.225777
+           [, 1]      [, 2]     [, 3]
+[1, ] 0.03511883 0.1063377 0.000000
+[2, ] 0.10633770 2.0124007 0.000000
+[3, ] 0.00000000 0.0000000 1.225777
  \end{Soutput}
 \end{Schunk}
 You can see that some of the structure was kept during the transformation. For example, the last trait is still genetically independent from the others. The estimates regarding the Gaussian haven't changed much (this is because the Gaussian trait is not really ``transformed'', it is pretty much kept the same). Yet, the variances of the non-Gaussian traits changed: the first one was reduced, while the third one was increased.\\
@@ -766,18 +804,18 @@ The changes about the non-genetic part are more striking:
 \begin{Schunk}
  \begin{Sinput}
 P
-out\$vcv.P.obs
+out[["vcv.P.obs"]]
  \end{Sinput}
  \begin{Soutput}
-     [,1] [,2] [,3]
-[1,]  0.5    0  0.0
-[2,]  0.0    3  0.0
-[3,]  0.0    0  0.4
+     [, 1] [, 2] [, 3]
+[1, ]  0.5    0  0.0
+[2, ]  0.0    3  0.0
+[3, ]  0.0    0  0.4
 
-              [,1]          [,2]          [,3]
-[1,]  0.1957755888 -0.0007168094 -0.0002702066
-[2,] -0.0007168094  3.2258318034  0.0577576973
-[3,] -0.0002702066  0.0577576973 10.1517870576
+              [, 1]          [, 2]          [, 3]
+[1, ]  0.1957755888 -0.0007168094 -0.0002702066
+[2, ] -0.0007168094  3.2258318034  0.0577576973
+[3, ] -0.0002702066  0.0577576973 10.1517870576
  \end{Soutput}
 \end{Schunk}
 whereas the variance-covariance of the non-genetic part on the latent scale is completely diagonal, this is not the case any more on the observed data scale: the second and third traits now slightly covariate whereas they were independent on the latent and are not even genetically correlated.\\
@@ -792,7 +830,7 @@ Yet, contrary to what happens for Gaussian traits, heritability of non-Gaussian 
 \paragraph{How does it work?}
 The starting point of the approach is to have fitness information for each phenotypic category (non-Gaussian traits are most often categorical traits: dichotomies, counts, ordinal traits, etc...), or a fitness model which allows to compute the expected fitness given a latent value $\ell$:
 \begin{equation}\label{eq_fit_lat}
- W_{\text{exp}}(\ell) = \sum_{k} W_{P}(k) P(Z=k|\ell),
+ W_{\text{exp}}(\ell) = \sum_{k} W_{P}(k) P(Z = k|\ell),
 \end{equation}
 The LHS term is the sum fitness value for each possible category $k$, weighted by the probability of this category given a latent value $\ell$. Let's use a tangible example: imagine that in a population of bird composed of dispersers and non-dispersers, we are interested in the evolution of dispersal. 
 We measure a fitness value (say life-time reproductive success, LRS) for each category of birds: dispersers have a LRS of 2.5 and non-dispersers have a LRS of 2.
@@ -834,7 +872,8 @@ d.fit <- function(x)\{2.5 * dnorm(x) - 2 * dnorm(x)\}
 Now, we have everything we need to run \texttt{QGpred}\footnote{One might be surprised that the model (distribution + link function) assumed is not required as an argument by \texttt{QGpred}. In fact, all the information about the model is already accounted for when we wrote \texttt{fit} and \texttt{d.fit}, nothing else about the distribution is needed.}:
 \begin{Schunk}
  \begin{Sinput}
-QGpred(mu=mu,var.a=va,var.p=vp,fit.func=fit,d.fit.func=d.fit)
+QGpred(mu = mu, var.a = va, var.p = vp,
+       fit.func = fit, d.fit.func = d.fit)
  \end{Sinput}
  \begin{Soutput}
 [1] "Computing mean fitness..."
@@ -847,9 +886,12 @@ The function yields different information: \texttt{mean.lat.fit} is the mean lat
 Obtaining the response to selection on the observed data scale from there is quite straightforward using the function \texttt{QGmean} provided by the package\footnote{The \texttt{QGmean} fu}:
 \begin{Schunk}
  \begin{Sinput}
-delta.mu <- QGpred(mu=mu,var.a=va,var.p=vp,fit.func=fit,d.fit.func=d.fit)\$lat.resp
-QGmean(mu=mu, var=vp,link.inv=QGlink.funcs("binom1.probit")\$inv.link)
-QGmean(mu=mu+delta.mu, var=vp,link.inv=QGlink.funcs("binom1.probit")\$inv.link)
+delta.mu <- QGpred(mu = mu, var.a = va, var.p = vp,
+                   fit.func = fit, d.fit.func = d.fit)[["lat.resp"]]
+QGmean(mu = mu, var = vp,
+       link.inv = QGlink.funcs("binom1.probit")[["inv.link"]])
+QGmean(mu = mu+delta.mu, var = vp, 
+       link.inv = QGlink.funcs("binom1.probit")[["inv.link"]])
  \end{Sinput}
  \begin{Soutput}
 0.3817207
@@ -873,8 +915,9 @@ Fortunately, QGglmm has a way to deal with fixed effects by averaging over them:
 Using the example above, we ran an animal model in MCMCglmm like this:
 \begin{Schunk}
  \begin{Sinput}
-model <- MCMCglmm(phen~nutr,random=~animal,pedigree=pedigree,
-	 data=data,prior=prior,family="ordinal")
+model <- MCMCglmm(phen ~ nutr, random = ~animal, 
+                  pedigree = pedigree, data = data,
+                  prior = prior, family = "ordinal")
  \end{Sinput}
 \end{Schunk}
 where \texttt{nutr} is the nutrient intake fixed effect. To account for fixed effects in \texttt{QGparams}, we need the \textit{marginal} predicted values of the model. What this means is that predicted values must be computed using only the fixed-effect part of the model, not the random part (e.g. not including the breeding values!). 
@@ -882,18 +925,19 @@ Most implementation of \texttt{predict} in R defaults to marginal prediction, an
 What we also need is for predictions to be computed on the latent scale, not on the observed/expected data scale. Here, the default for \texttt{predict.MCMCglmm} does not suit us and we need to custom it a bit:
 \begin{Schunk}
  \begin{Sinput}
-yhat <- predict(model,type="terms")
+yhat <- predict(model, type = "terms")
  \end{Sinput}
 \end{Schunk}
-The argument \texttt{type="terms"} tells \texttt{predict.MCMCglmm} to compute predictions on the latent scale. This is, of course, just an example: depending on the software you are using, getting the predicted values might be totally different. The important thing is to check they are marginally computed and on the latent scale.
+The argument \texttt{type = "terms"} tells \texttt{predict.MCMCglmm} to compute predictions on the latent scale. This is, of course, just an example: depending on the software you are using, getting the predicted values might be totally different. The important thing is to check they are marginally computed and on the latent scale.
 
 \paragraph{Running QGparams with fixed effects}
 Once these values are obtained, running \texttt{QGparams} is pretty straightforward:
 \begin{Schunk}
  \begin{Sinput}
-va <- mean(model[["VCV"]][,"animal"])
+va <- mean(model[["VCV"]][, "animal"])
 vp <- mean(rowSums(model[["VCV"]]))
-QGparams(predict=yhat,var.a=va, var.p=vp,model="binom1.probit")
+QGparams(predict = yhat, var.a = va, var.p = vp,
+         model = "binom1.probit")
  \end{Sinput}
  \begin{Soutput}
 [1] "Using the closed forms for a Binomial1-probit model."
@@ -905,8 +949,8 @@ Note that \texttt{mu} being already accounted for in \texttt{predict}, it is not
 The difference with the output, shouldn't we have used the \texttt{predict} argument is quite striking:
 \begin{Schunk}
  \begin{Sinput}
-mu <-  mean(model[["Sol"]][,"(Intercept)"])
-QGparams(mu=mu,var.a=va, var.p=vp,model="binom1.probit")
+mu <- mean(model[["Sol"]][, "(Intercept)"])
+QGparams(mu = mu, var.a = va, var.p = vp, model = "binom1.probit")
  \end{Sinput}
  \begin{Soutput}
 [1] "Using the closed forms for a Binomial1-probit model."
@@ -951,12 +995,12 @@ Now, what we would like to know is, how are measures repeatable on the observed 
 Running \texttt{QGicc} is very similar to running \texttt{QGparams}:
 \begin{Schunk}
  \begin{Sinput}
-QGicc(mu=mu,var.comp=vi,var.p=vp,model="Poisson.log")
+QGicc(mu = mu, var.comp = vi + va, var.p = vp, model = "Poisson.log")
  \end{Sinput}
  \begin{Soutput}
 [1] "Using the closed forms for a Poisson-log model."
   mean.obs var.obs var.comp.obs   icc.obs
-1 4.481689 38.9943     13.02992 0.3341492
+1 4.481689 38.9943     24.61565 0.6312627
  \end{Soutput}
 \end{Schunk}
 Just as \texttt{QGparams}, \texttt{QGicc} returns the population mean and phenotypic variance that helps to put estimates in context. The parameter \texttt{var.comp.obs} is the component variance (here the individual-effect variance) on the observed data scale and \texttt{icc.obs} is the ratio of this variance component to the phenotypic variance on the observed data scale.
@@ -964,7 +1008,7 @@ Just as \texttt{QGparams}, \texttt{QGicc} returns the population mean and phenot
 \paragraph{Some characteristics and other features}
 As said above, computing variance component on the observed data scale is a bit complex. In general, it requires the use of a double integrate, which can sometimes take times. Closed forms are available only for Poisson/log and Negative-Binomial/log models. 
 Binomial/probit models uses a semi-closed form, meaning that a close-form is known for one of the integral, but not the other, so the computation is much faster than we using a double integral, but still slower than when using a fully closed-form.
-Basically, \texttt{QGicc} has all the features \texttt{QGparams} has: fixed-effects can be accounted for using the \texttt{predict} function and it has a multivariate counter-part \texttt{QGmvicc} which yields variance-covariance matrix on the observed data scale. Note that this multivariate function, like \texttt{QGmvparams} never uses closed forms. As a consequence, because of the double integration, it can be quite slow and painfully slow when fixed effects are included!\\
+Basically, \texttt{QGicc} has all the features \texttt{QGparams} has: fixed-effects can be accounted for using the \texttt{predict} function and it has a multivariate counter-part \texttt{QGmvicc} which yields variance-covariance matrix on the observed data scale. Note that this multivariate function, like \texttt{QGmvparams} never uses closed forms. As a consequence, because of the double integration, it is the slowest function of the package\footnote{Note that when QGglmm switched to cubature, the speed of this function was increased by more than x300, meaning a computation of 25 minutes in the old version now takes... 4 seconds. If you were annoyed by its slugginess, I encourage you to give it another try now!}!\\
 Finally, note that the ``ordinal'' model cannot be used with \texttt{QGicc} due to its complexity and lack of closed forms for ICC.
 
 
@@ -976,7 +1020,7 @@ When using a Bayesian implementation of a GLMM (e.g. MCMCglmm), we obtain poster
 The nice thing about posterior distributions is that they convey a very complex information and yet are quite easy to handle for further transformation of the inference (especially with sampling algorithms such as MCMC). For example, the posterior distribution of heritability is easily computed from a MCMCglmm output as:
 \begin{Schunk}
  \begin{Sinput}
-h2.post <- model[["VCV"]][,"animal"] / rowSums(model[["VCV"]])
+h2.post <- model[["VCV"]][, "animal"] / rowSums(model[["VCV"]])
  \end{Sinput}
 \end{Schunk}
 We can then study directly the shape of \texttt{h2.post}, e.g. to determine whether it is different from 0 or not.
@@ -985,8 +1029,9 @@ We can then study directly the shape of \texttt{h2.post}, e.g. to determine whet
 Absolutely. Recall that the output of \texttt{QGparams} is a row of a \texttt{data.frame}, which are easily stackable. The only tricky part is to create a \texttt{data.frame} to stock our model output, because it's easier to deal with:
 \begin{Schunk}
  \begin{Sinput}
-df <- data.frame(mu=as.vector(model[["Sol"]][,"(Intercept)"]),
-      va=as.vector(model[["VCV"]][,"animal"]),vp=rowSums(model[["VCV"]]))
+df <- data.frame(mu = as.vector(model[["Sol"]][, "(Intercept)"]),
+                 va = as.vector(model[["VCV"]][, "animal"]),
+                 vp = rowSums(model[["VCV"]]))
 head(df)
  \end{Sinput}
  \begin{Soutput}
@@ -999,13 +1044,15 @@ head(df)
 6 0.4433023 1.448746 2.448746
  \end{Soutput}
 \end{Schunk}
-Then, we use \texttt{apply} to go through this \texttt{data.frame} and ``stack'' our output as one \texttt{data.frame} with \texttt{do.call("rbind",...)}:
+Then, we use \texttt{apply} to go through this \texttt{data.frame} and ``stack'' our output as one \texttt{data.frame} with \texttt{do.call("rbind", ...)}:
 \begin{Schunk}
  \begin{Sinput}
-post <- do.call("rbind",apply(df,1,function(row)\{
-	  QGparams(mu=row["mu"],var.a=row["va"],var.p=row["vp"],
-		 model="binom1.probit",verbose=FALSE)
-	\}))
+post <- do.call("rbind", apply(df, 1, function(row)\{
+            QGparams(mu = row[["mu"],
+                     var.a = row[["va"]],
+                     var.p = row[["vp"]],
+                     model = "binom1.probit", verbose = FALSE)
+        \}))
 head(post)
  \end{Sinput}
  \begin{Soutput}
@@ -1024,27 +1071,29 @@ Now, you have the posterior distribution of all the parameters on the observed d
 Absolutely. But it does require a bit more work. The best way to go about it\footnote{At least from the top of my head, but you can have your own --possibly better-- strategy of course!} is to create a large data.frame for which each element corresponds to one iteration, and which will contain all latent parameters:
 \begin{Schunk}
  \begin{Sinput}
-df <- cbind(mu1=model[["Sol"]][,"traitphen1"],
-      mu2=model[["Sol"]][,"traitphen2"],model[["VCV"]])
+df <- cbind(mu1 = model[["Sol"]][, "traitphen1"],
+            mu2 = model[["Sol"]][, "traitphen2"], 
+            model[["VCV"]])
  \end{Sinput}
 \end{Schunk}
 Now, all we need to do is construct the matrix ``on the fly'' before calling \texttt{QGmvparams}:
 \begin{Schunk}
  \begin{Sinput}
-post <- apply(df,1,function(row)\{
-  mu <- c(row["mu1"],row["mu2"])
+post <- apply(df, 1, function(row) \{
+  mu <- c(row["mu1"], row["mu2"])
   G <- matrix(c(row["traitphen1:traitphen1.animal"],
-		row["traitphen1:traitphen2.animal"],
-		row["traitphen1:traitphen2.animal"],
-		row["traitphen2:traitphen2.animal"]),
-		ncol=2)
-  P <- matrix(c(row["traitphen1:traitphen1.units"],
-		row["traitphen1:traitphen2.units"],
-		row["traitphen1:traitphen2.units"],
-		row["traitphen2:traitphen2.units"]),
-		ncol=2)
-  QGmvparams(mu=mu,vcv.G=G,vcv.P=P,
-       model=c("binom1.probit","Gaussian"),verbose=FALSE)
+                row["traitphen1:traitphen2.animal"],
+                row["traitphen1:traitphen2.animal"],
+                row["traitphen2:traitphen2.animal"]),
+                ncol = 2)
+  R <- matrix(c(row["traitphen1:traitphen1.units"],
+                row["traitphen1:traitphen2.units"],
+                row["traitphen1:traitphen2.units"],
+                row["traitphen2:traitphen2.units"]),
+                ncol = 2)
+  P <- G + R
+  QGmvparams(mu = mu, vcv.G = G, vcv.P = P,
+       model = c("binom1.probit", "Gaussian"), verbose = FALSE)
 \})
  \end{Sinput}
 \end{Schunk}
@@ -1061,7 +1110,7 @@ The most common mod	el to study those traits in quantitative genetics is called 
 
 \begin{figure}
  \centering
- \includegraphics[width=0.8\textwidth]{Figs/threshold.pdf}
+ \includegraphics[width = 0.8\textwidth]{Figs/threshold.pdf}
  \caption{A schematic representation of the multiple threshold model using the example of the ``small'', ``intermediate'' and ``large'' categories. The area under the curve shows the relative proportions of each category: here ``small'' would be the rarest one.}
  \label{fig_threshold}
 \end{figure}
@@ -1091,7 +1140,7 @@ Let's assume you have a phenotypic trait with 3 categories (small, intermediate,
 mu <- 1.5
 va <- 0.5
 vp <- 1
-cp <- c(0,2)	#Estimated cut-points
+cp <- c(0, 2) # Estimated cut-points
  \end{Sinput}
 \end{Schunk}
 
@@ -1099,14 +1148,16 @@ cp <- c(0,2)	#Estimated cut-points
 To fully understand the model and what these parameters stand for, let's simulate a few data point according to them. First, let's fix a few things:
 \begin{Schunk}
  \begin{Sinput}
-N <- 10		    #Number of simulated individuals
-g <- c(-Inf,cp,Inf)	#All cut-points including the infinite extremes
+# Number of simulated individuals
+N <- 10
+# All cut-points including the infinite extremes
+g <- c(-Inf, cp, Inf)
  \end{Sinput}
 \end{Schunk}
 Now, we can proceed. The latent values are pretty straightforward, as always:
 \begin{Schunk}
  \begin{Sinput}
-l <- mu + rnorm(N,0,sqrt(va)) + rnorm(N,0,sqrt(vp-va))
+l <- mu + rnorm(N, 0, sqrt(va)) + rnorm(N, 0, sqrt(vp-va))
 l
  \end{Sinput}
  \begin{Soutput}
@@ -1117,27 +1168,27 @@ l
 As we can see, \texttt{l} is just a vector containing 10 values (one for each simulated individual). Now, the complicated part is to use the ``sliced'' probit:
 \begin{Schunk}
  \begin{Sinput}
-p = matrix(0,ncol=N,nrow=3)
-for (i in 1:3) {
-  p[i,] =  pnorm(g[i+1] - l) - pnorm(g[i] - l)
-}
+p = matrix(0, ncol = N, nrow = 3)
+for (i in 1:3) \{
+  p[i, ] =  pnorm(g[i + 1] - l) - pnorm(g[i] - l)
+\}
 p
  \end{Sinput}
  \begin{Soutput}
-           [,1]       [,2]       [,3]      [,4]       [,5]      [,6]
-[1,] 0.08088423 0.06855641 0.03805934 0.1624119 0.09656718 0.0620356
-[2,] 0.64514632 0.62759767 0.55147046 0.6826321 0.66104348 0.6159569
-[3,] 0.27396945 0.30384592 0.41047020 0.1549561 0.24238933 0.3220075
-            [,7]      [,8]      [,9]        [,10]
-[1,] 0.000327817 0.2262897 0.3102334 0.0004071008
-[2,] 0.079313308 0.6678555 0.6235802 0.0884347631
-[3,] 0.920358875 0.1058548 0.0661863 0.9111581361
+      [, 1]       [, 2]       [, 3]      [, 4]       [, 5]      [, 6]
+[1, ] 0.08088423 0.06855641 0.03805934 0.1624119 0.09656718 0.0620356
+[2, ] 0.64514632 0.62759767 0.55147046 0.6826321 0.66104348 0.6159569
+[3, ] 0.27396945 0.30384592 0.41047020 0.1549561 0.24238933 0.3220075
+      [, 7]      [, 8]      [, 9]        [, 10]
+[1, ] 0.000327817 0.2262897 0.3102334 0.0004071008
+[2, ] 0.079313308 0.6678555 0.6235802 0.0884347631
+[3, ] 0.920358875 0.1058548 0.0661863 0.9111581361
  \end{Soutput}
 \end{Schunk}
 We can see that for each of the ten individuals, we obtain the probabilities to belong to each of the category (first row is small, etc.). We can also see the relationship between the latent values \texttt{l} and the probabilities in \texttt{p}. For example, the 7th and 10th values in \texttt{l} are quite large:
 \begin{Schunk}
  \begin{Sinput}
-l[c(7,10)]
+l[c(7, 10)]
  \end{Sinput}
  \begin{Soutput}
 [1] 3.407490 3.347921
@@ -1146,26 +1197,29 @@ l[c(7,10)]
 leading to very strong probabilities to belong to the last category:
 \begin{Schunk}
  \begin{Sinput}
-p[,c(7,10)]
+p[, c(7, 10)]
  \end{Sinput}
  \begin{Soutput}
-            [,1]         [,2]
-[1,] 0.000327817 0.0004071008
-[2,] 0.079313308 0.0884347631
-[3,] 0.920358875 0.9111581361
+            [, 1]         [, 2]
+[1, ] 0.000327817 0.0004071008
+[2, ] 0.079313308 0.0884347631
+[3, ] 0.920358875 0.9111581361
  \end{Soutput}
 \end{Schunk}
 Finally, we can use the multinomial distribution to sample the actual phenotypic category of the individuals given these probabilities:
 \begin{Schunk}
  \begin{Sinput}
-z<-apply(p,2,function(vec){vec<-as.vector(vec);rmultinom(1,size=1,prob=vec)})
+z <- apply(p, 2, function(vec) \{
+  vec <- as.vector(vec)
+  rmultinom(1, size = 1, prob = vec)
+\})
 z
  \end{Sinput}
  \begin{Soutput}
-     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-[1,]    0    0    0    0    0    0    0    0    0     0
-[2,]    0    0    0    1    1    0    0    1    1     0
-[3,]    1    1    1    0    0    1    1    0    0     1
+     [, 1] [, 2] [, 3] [, 4] [, 5] [, 6] [, 7] [, 8] [, 9] [, 10]
+[1, ]    0    0    0    0    0    0    0    0    0     0
+[2, ]    0    0    0    1    1    0    0    1    1     0
+[3, ]    1    1    1    0    0    1    1    0    0     1
  \end{Soutput}
 \end{Schunk}
 Individuals with 1 on row 1 (here none) have a phenotype ``small'', those with 1 on row 2 have a phenotype ``intermediate'' and those with 1 on row 3 have a phenotype ``large''.
@@ -1174,7 +1228,8 @@ Individuals with 1 on row 1 (here none) have a phenotype ``small'', those with 1
 Running \texttt{QGparams} for ordinal is actually quite easy, yet the output can be surprising:
 \begin{Schunk}
  \begin{Sinput}
-out <- QGparams(mu=mu,var.a=va,var.p=vp,model="ordinal",cut.points=c(-Inf,cp,Inf))
+out <- QGparams(mu = mu, var.a = va, var.p = vp,
+                model = "ordinal", cut.points = c(-Inf, cp, Inf))
 out
  \end{Sinput}
  \begin{Soutput}
@@ -1182,16 +1237,16 @@ out
 [1] 0.1444222 0.4937410 0.3618368
 
 \$vcv.P.obs
-            [,1]        [,2]        [,3]
-[1,]  0.12356442 -0.07130715 -0.05225726
-[2,] -0.07130715  0.24996083 -0.17865367
-[3,] -0.05225726 -0.17865367  0.23091093
+            [, 1]        [, 2]        [, 3]
+[1, ]  0.12356442 -0.07130715 -0.05225726
+[2, ] -0.07130715  0.24996083 -0.17865367
+[3, ] -0.05225726 -0.17865367  0.23091093
 
 \$vcv.G.obs
-             [,1]         [,2]        [,3]
-[1,]  0.012917511  0.008379864 -0.02129738
-[2,]  0.008379864  0.005436196 -0.01381606
-[3,] -0.021297376 -0.013816061  0.03511344
+             [, 1]         [, 2]        [, 3]
+[1, ]  0.012917511  0.008379864 -0.02129738
+[2, ]  0.008379864  0.005436196 -0.01381606
+[3, ] -0.021297376 -0.013816061  0.03511344
 
 \$h2.obs
 [1] 0.10454071 0.02174819 0.15206485
@@ -1201,7 +1256,8 @@ Despite being a univariate analysis, the output is a multivariate one. It is a \
 Importantly, the G-matrix on the observed data scale is a $K \times K$ matrix, but has only one axis of variation:
 \begin{Schunk}
  \begin{Sinput}
-eigen(cov2cor(out[["vcv.G.obs"]]))\$values	#Only 1 non-null eigen value
+# Only 1 non-null eigen value
+eigen(cov2cor(out[["vcv.G.obs"]]))[["values"]]
  \end{Sinput}
  \begin{Soutput}
 [1] 3.000000e+00 8.881784e-16 0.000000e+00
