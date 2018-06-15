@@ -17,6 +17,10 @@ Due to its removal from CRAN, QGglmm dropped R2Cuba as a dependency to solve mul
 
 * The source, the code in the man pages and the code in the vignette has been reformatted to follow a leaner, more consistent style of coding.
 
+### Note
+
+Updated to 0.7.1 after complaints from CRAN checks.
+
 ## Version beta 0.6 (2017-10-09)
 
 ### New features
