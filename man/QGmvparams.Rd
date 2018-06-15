@@ -94,6 +94,5 @@ n <- 100
 p <- matrix(c(runif(n), runif(n)), ncol = 2)
 # Note that p has as many as columns as we have traits (i.e. two)
 # Multivariate analysis with predicted values
-\dontrun{QGmvparams(predict = p, vcv.G = G, vcv.P = P, models = c("binom1.probit", "Gaussian"))}
-# Commented out as computing will take some time...
+QGmvparams(predict = p, vcv.G = G, vcv.P = P, models = c("binom1.probit", "Gaussian"))
 }
