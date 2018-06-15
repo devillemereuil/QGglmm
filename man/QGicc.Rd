@@ -70,7 +70,10 @@ vm <- 0.2  # Maternal effect
 vp <- 1
 
 # Simulating data l = mu + a + e
-lat <- mu + rnorm(1000, 0, sqrt(va)) + rnorm(1000, 0, sqrt(vm)) + rnorm(1000, 0, sqrt(vp - (va + vm)))
+lat <- mu + 
+       rnorm(1000, 0, sqrt(va)) + 
+       rnorm(1000, 0, sqrt(vm)) +
+       rnorm(1000, 0, sqrt(vp - (va + vm)))
 y   <- rpois(1000, exp(lat))
 
 # Computing the broad - sense heritability

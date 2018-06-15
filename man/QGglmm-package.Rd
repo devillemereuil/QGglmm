@@ -26,6 +26,6 @@ For some distribution/link models (e.g. Binomial/probit and Poisson and Negative
 Maintainer: \packageMaintainer{QGglmm}
 }
 \references{
-de Villemereuil, P., Schielzeth, H., Nakagawa, S., and Morrissey, M.B. (2016). General methods for evolutionary quantitative genetic inference from generalised mixed models. Genetics 204, 1281–1294.
+de Villemereuil, P., Schielzeth, H., Nakagawa, S., and Morrissey, M.B. (2016). General methods for evolutionary quantitative genetic inference from generalised mixed models. Genetics 204, 1281-1294.
 }
 
