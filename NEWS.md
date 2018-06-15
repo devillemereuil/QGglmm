@@ -2,7 +2,7 @@
 
 ### Important
 
-Due to its removal from CRAN, QGglmm dropped R2Cuba as a dependency to solve multivariate integrals. It is now using the package cubature. By taking advantage of the ["vectorised"](https://cran.r-project.org/web/packages/cubature/vignettes/cubature.html) version of the algorithm, the multivariate computations of QGglmm (QGmvparams, QGvcov, QGmvmean, QGmvpsi, QGmvicc, QGmvpred) are considerably faster. Most functions are 10x-50x faster, but especially QGmvicc is 100x-500x faster. A comparison between the old and new version of the example of the man page of QGmvicc showed a decreased in computation from 25 minutes to... 4 seconds!
+Due to its removal from CRAN, QGglmm dropped R2Cuba as a dependency to solve multivariate integrals. It is now using the package cubature. By taking advantage of the ["vectorised"](https://CRAN.R-project.org/package=cubature/vignettes/cubature.html) version of the algorithm, the multivariate computations of QGglmm (QGmvparams, QGvcov, QGmvmean, QGmvpsi, QGmvicc, QGmvpred) are considerably faster. Most functions are 10x-50x faster, but especially QGmvicc is 100x-500x faster. A comparison between the old and new version of the example of the man page of QGmvicc showed a decreased in computation from 25 minutes to... 4 seconds!
 
 ### New features
 

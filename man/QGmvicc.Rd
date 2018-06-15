@@ -70,9 +70,9 @@ M <- diag(c(0.2, 1))  # Maternal effect VCV matrix
 P <- diag(c(1, 4))
 
 # Broad - sense "G-matrix" on observed data scale
-QGmvicc(mu = mu, vcv.comp = G, vcv.P = P, models = c("binom1.probit", "Gaussian"))
+\dontrun{QGmvicc(mu = mu, vcv.comp = G, vcv.P = P, models = c("binom1.probit", "Gaussian"))}
 # Maternal effect VCV matrix on observed data scale
-QGmvicc(mu = mu, vcv.comp = M, vcv.P = P, models = c("binom1.probit", "Gaussian"))
+\dontrun{QGmvicc(mu = mu, vcv.comp = M, vcv.P = P, models = c("binom1.probit", "Gaussian"))}
 # Reminder: the results are the same here because we have no correlation between the two traits
 
 # Defining the model "by hand" using the list
