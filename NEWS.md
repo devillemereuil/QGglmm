@@ -1,22 +1,41 @@
+## Version 0.7 (2018-06-15)
+
+### Important
+
+Due to its removal from CRAN, QGglmm dropped R2Cuba as a dependency to solve multivariate integrals. It is now using the package cubature. By taking advantage of the ["vectorised"](https://cran.r-project.org/web/packages/cubature/vignettes/cubature.html) version of the algorithm, the multivariate computations of QGglmm (QGmvparams, QGvcov, QGmvmean, QGmvpsi, QGmvicc, QGmvpred) are considerably faster. Most functions are 10x-50x faster, but especially QGmvicc is 100x-500x faster. A comparison between the old and new version of the example of the man page of QGmvicc showed a decreased in computation from 25 minutes to... 4 seconds!
+
+### New features
+
+* Much faster computation of multivariate functions with cubature
+
+### Bug fixes
+
+* Fixed a bug in QGicc when var.comp == var.p
+* Fixed package meta-data to avoid unsync with DESCRIPTION, e.g. for version and date
+
+### Misc
+
+* The source, the code in the man pages and the code in the vignette has been reformatted to follow a leaner, more consistent style of coding.
+
 ## Version beta 0.6 (2017-10-09)
 
-New features:
+### New features
 
 * Mask argument for e.g. sex-based bivariate models where some predicted values do not exists in the population (i.e. individuals are either males/trait1 or females/trait2)
 
-Bug fixes:
+### Bug fixes
 
-* Fixed some types in the vignette
+* Fixed some typos in the vignette
 * Added dimensions checks for multivariate functions
 
-Misc:
+### Misc
 
 * Improved formatting in some parts of the code (work ongoing)
 * Updated CITATION to the Genetics paper
 
 ## Version beta 0.5 (2016-09-28)
 
-Add a bunch of new features:
+### Add a bunch of new features
 
 * New model "ordinal" for QGparams to compute heritabilities from ordinal traits (i.e. multiple threshold)
 * New functions QGicc and QGmvicc to compute Intra-Class Correlation (ICC) on the observed data scale for univariate and multivariate analyses
