@@ -6,7 +6,6 @@
 \usepackage[utf8]{inputenc}	%Encodage unicode UTF8 (Linux)
 \usepackage[pdftex]{graphicx}	%Gestion des figure pour PDF
 \usepackage{microtype}
-\usepackage{Sweave}		%Permet l'utilisation de Sweave pour le code R
 \usepackage[sectionbib]{natbib}	%Gestion des citations auteur-année
 \usepackage[T1]{fontenc}	%Encodage Police T1
 \usepackage{amsmath}		%Environnements mathématiques
@@ -29,7 +28,10 @@
 %\usepackage[position = bottom]{subfig}		%Sous-figures
 \usepackage{icomma}		%Pour les virgules en français
 % \usepackage{fancybox}		%Fancy framebox
+\usepackage[svgnames, table]{xcolor}
+\usepackage{Sweave}		%Permet l'utilisation de Sweave pour le code R
 \definecolor{Liens_intra}{rgb}{0.4, 0.35, 0}
+
 \usepackage[pdftex, bookmarks = true, breaklinks = true, backref = page, colorlinks = true, linkcolor = blue, urlcolor = blue, citecolor = Liens_intra, linktocpage = true, plainpages = false]{hyperref} %Paquet pour éditer proprement le PDF avec les hyperliens
 \urlstyle{sf}
 \usepackage{doi}
@@ -40,7 +42,6 @@
 \newcommand{\xmark}{\ding{55}}%
 \usepackage{bigcenter}
 \usepackage{booktabs}
-\usepackage[svgnames, table]{xcolor}
 \colorlet{tableheadcolor}{gray!35} % Table header colour = 25% gray
 \newcommand{\headcol}{\rowcolor{tableheadcolor}} %
 \usepackage{tikz}

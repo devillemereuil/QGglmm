@@ -1,80 +1,80 @@
 \contentsline {section}{\numberline {1}Summary and aim of the package}{2}{section.1}
-\contentsline {paragraph}{}{2}{section*.2}
-\contentsline {paragraph}{}{2}{section*.3}
-\contentsline {paragraph}{}{2}{section*.4}
+\contentsline {paragraph}{}{2}{section.1}
+\contentsline {paragraph}{}{2}{section.1}
+\contentsline {paragraph}{}{2}{section.1}
 \contentsline {section}{\numberline {2}Overview of the theory}{2}{section.2}
 \contentsline {subsection}{\numberline {2.1}Quantitative genetics and linear mixed models}{2}{subsection.2.1}
-\contentsline {paragraph}{}{2}{section*.5}
-\contentsline {paragraph}{}{2}{section*.6}
+\contentsline {paragraph}{}{2}{subsection.2.1}
+\contentsline {paragraph}{}{3}{equation.2.1}
 \contentsline {subsection}{\numberline {2.2}Generalised linear mixed model}{3}{subsection.2.2}
-\contentsline {paragraph}{}{3}{section*.7}
-\contentsline {paragraph}{}{3}{section*.8}
-\contentsline {paragraph}{}{4}{section*.10}
-\contentsline {paragraph}{}{4}{section*.11}
+\contentsline {paragraph}{}{3}{subsection.2.2}
+\contentsline {paragraph}{}{3}{subsection.2.2}
+\contentsline {paragraph}{}{3}{equation.2.4c}
+\contentsline {paragraph}{}{4}{figure.caption.1}
 \contentsline {subsection}{\numberline {2.3}An illustrative example}{4}{subsection.2.3}
-\contentsline {paragraph}{}{4}{section*.12}
-\contentsline {paragraph}{}{5}{section*.13}
-\contentsline {paragraph}{}{5}{section*.15}
-\contentsline {paragraph}{}{5}{section*.16}
-\contentsline {paragraph}{}{6}{section*.18}
-\contentsline {paragraph}{}{6}{section*.20}
-\contentsline {paragraph}{}{7}{section*.21}
-\contentsline {paragraph}{}{7}{section*.22}
+\contentsline {paragraph}{}{4}{subsection.2.3}
+\contentsline {paragraph}{}{4}{subsection.2.3}
+\contentsline {paragraph}{}{5}{figure.caption.2}
+\contentsline {paragraph}{}{5}{figure.caption.2}
+\contentsline {paragraph}{}{5}{figure.caption.3}
+\contentsline {paragraph}{}{6}{figure.caption.4}
+\contentsline {paragraph}{}{7}{figure.caption.4}
+\contentsline {paragraph}{}{7}{figure.caption.4}
 \contentsline {subsection}{\numberline {2.4}Quantitative genetics and GLMM}{7}{subsection.2.4}
-\contentsline {paragraph}{}{7}{section*.23}
-\contentsline {paragraph}{}{7}{section*.24}
-\contentsline {paragraph}{}{8}{section*.25}
-\contentsline {paragraph}{}{8}{section*.26}
+\contentsline {paragraph}{}{7}{subsection.2.4}
+\contentsline {paragraph}{}{7}{subsection.2.4}
+\contentsline {paragraph}{}{8}{subsection.2.4}
+\contentsline {paragraph}{}{8}{subsection.2.4}
 \contentsline {section}{\numberline {3}The framework behind QGglmm}{9}{section.3}
 \contentsline {subsection}{\numberline {3.1}Computing the phenotypic mean and variance}{9}{subsection.3.1}
-\contentsline {paragraph}{Population mean}{9}{section*.27}
-\contentsline {paragraph}{Variance on the expected data scale}{9}{section*.28}
-\contentsline {paragraph}{Variance on the observed data scale}{9}{section*.29}
+\contentsline {paragraph}{Population mean}{9}{subsection.3.1}
+\contentsline {paragraph}{Variance on the expected data scale}{9}{equation.3.6}
+\contentsline {paragraph}{Variance on the observed data scale}{9}{equation.3.7}
 \contentsline {subsection}{\numberline {3.2}Computing the additive genetic variance and related parameters}{10}{subsection.3.2}
-\contentsline {paragraph}{}{10}{section*.30}
-\contentsline {paragraph}{}{10}{section*.31}
+\contentsline {paragraph}{}{10}{subsection.3.2}
+\contentsline {paragraph}{}{10}{equation.3.10}
 \contentsline {subsection}{\numberline {3.3}The issue of fixed effects}{11}{subsection.3.3}
-\contentsline {paragraph}{}{11}{section*.32}
-\contentsline {paragraph}{}{11}{section*.33}
+\contentsline {paragraph}{}{11}{subsection.3.3}
+\contentsline {paragraph}{}{11}{subsection.3.3}
 \contentsline {section}{\numberline {4}Using QGglmm}{11}{section.4}
 \contentsline {subsection}{\numberline {4.1}Extracting information from the models}{11}{subsection.4.1}
-\contentsline {paragraph}{}{11}{section*.34}
-\contentsline {paragraph}{}{11}{section*.35}
-\contentsline {paragraph}{Animal model with MCMCglmm}{12}{section*.36}
-\contentsline {paragraph}{Multivariate animal model with MCMCglmm}{12}{section*.37}
-\contentsline {paragraph}{Sire/dam model with lme4}{13}{section*.38}
+\contentsline {paragraph}{}{11}{subsection.4.1}
+\contentsline {paragraph}{}{11}{subsection.4.1}
+\contentsline {paragraph}{Animal model with MCMCglmm}{12}{subsection.4.1}
+\contentsline {paragraph}{Multivariate animal model with MCMCglmm}{12}{subsection.4.1}
+\contentsline {paragraph}{Sire/dam model with lme4}{13}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Using QGparams to obtain parameters on the observed data scale}{13}{subsection.4.2}
-\contentsline {paragraph}{Getting some parameters to play with}{13}{section*.39}
-\contentsline {paragraph}{Running QGparams (the easy way)}{13}{section*.40}
-\contentsline {paragraph}{List of available models}{15}{section*.41}
-\contentsline {paragraph}{Running QGglmm (the custom way)}{15}{section*.43}
+\contentsline {paragraph}{Getting some parameters to play with}{13}{subsection.4.2}
+\contentsline {paragraph}{Running QGparams (the easy way)}{14}{subsection.4.2}
+\contentsline {paragraph}{List of available models}{15}{subsection.4.2}
+\contentsline {paragraph}{Running QGglmm (the custom way)}{15}{table.caption.5}
 \contentsline {subsection}{\numberline {4.3}Using QGmvparams to obtain multivariate parameters on the observed data scale}{17}{subsection.4.3}
-\contentsline {paragraph}{Getting some parameters to play with}{17}{section*.44}
-\contentsline {paragraph}{Running QGmvparams}{18}{section*.45}
-\contentsline {paragraph}{Looking closer at the estimates}{19}{section*.46}
+\contentsline {paragraph}{Getting some parameters to play with}{17}{subsection.4.3}
+\contentsline {paragraph}{Running QGmvparams}{18}{subsection.4.3}
+\contentsline {paragraph}{Looking closer at the estimates}{19}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}Using QGpredict to obtain evolutionary prediction}{20}{subsection.4.4}
-\contentsline {paragraph}{Why use QGpredict?}{20}{section*.47}
-\contentsline {paragraph}{How does it work?}{20}{section*.48}
-\contentsline {paragraph}{Running QGpred}{21}{section*.49}
+\contentsline {paragraph}{Why use QGpredict?}{20}{subsection.4.4}
+\contentsline {paragraph}{How does it work?}{20}{subsection.4.4}
+\contentsline {paragraph}{Running QGpred}{21}{equation.4.23}
 \contentsline {section}{\numberline {5}Particular cases}{22}{section.5}
 \contentsline {subsection}{\numberline {5.1}Including fixed effects}{22}{subsection.5.1}
-\contentsline {paragraph}{Case study}{22}{section*.50}
-\contentsline {paragraph}{Getting the predicted values}{22}{section*.51}
-\contentsline {paragraph}{Running QGparams with fixed effects}{22}{section*.52}
-\contentsline {subsection}{\numberline {5.2}Obtaining intra-class correlation (ICC) coefficients}{23}{subsection.5.2}
-\contentsline {paragraph}{What are intra-class correlation coefficients?}{23}{section*.53}
-\contentsline {paragraph}{What about GLMM?}{23}{section*.54}
-\contentsline {paragraph}{Case study}{24}{section*.55}
-\contentsline {paragraph}{Running QGicc}{24}{section*.56}
-\contentsline {paragraph}{Some characteristics and other features}{24}{section*.57}
+\contentsline {paragraph}{Case study}{22}{subsection.5.1}
+\contentsline {paragraph}{Getting the predicted values}{23}{subsection.5.1}
+\contentsline {paragraph}{Running QGparams with fixed effects}{23}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Obtaining intra-class correlation (ICC) coefficients}{24}{subsection.5.2}
+\contentsline {paragraph}{What are intra-class correlation coefficients?}{24}{subsection.5.2}
+\contentsline {paragraph}{What about GLMM?}{24}{equation.5.24}
+\contentsline {paragraph}{Case study}{24}{equation.5.24}
+\contentsline {paragraph}{Running QGicc}{24}{equation.5.24}
+\contentsline {paragraph}{Some characteristics and other features}{25}{equation.5.24}
 \contentsline {subsection}{\numberline {5.3}Integrating over a posterior prediction}{25}{subsection.5.3}
-\contentsline {paragraph}{Why integrate over a posterior distribution?}{25}{section*.58}
-\contentsline {paragraph}{Can this be done with QGparams?}{25}{section*.59}
-\contentsline {paragraph}{Can this be done with QGmvparams?}{26}{section*.60}
-\contentsline {subsection}{\numberline {5.4}The special case of ordinal data}{26}{subsection.5.4}
-\contentsline {paragraph}{What is an ordinal trait?}{26}{section*.61}
-\contentsline {paragraph}{How are these traits studied?}{26}{section*.62}
-\contentsline {paragraph}{The GLMM specification}{26}{section*.64}
-\contentsline {paragraph}{Case study}{27}{section*.65}
-\contentsline {paragraph}{An illustrative simulation}{27}{section*.66}
-\contentsline {paragraph}{Running QGparams for ordinal traits}{29}{section*.67}
+\contentsline {paragraph}{Why integrate over a posterior distribution?}{25}{subsection.5.3}
+\contentsline {paragraph}{Can this be done with QGparams?}{25}{subsection.5.3}
+\contentsline {paragraph}{Can this be done with QGmvparams?}{26}{subsection.5.3}
+\contentsline {subsection}{\numberline {5.4}The special case of ordinal data}{27}{subsection.5.4}
+\contentsline {paragraph}{What is an ordinal trait?}{27}{subsection.5.4}
+\contentsline {paragraph}{How are these traits studied?}{27}{subsection.5.4}
+\contentsline {paragraph}{The GLMM specification}{27}{figure.caption.6}
+\contentsline {paragraph}{Case study}{28}{equation.5.25c}
+\contentsline {paragraph}{An illustrative simulation}{28}{equation.5.25c}
+\contentsline {paragraph}{Running QGparams for ordinal traits}{30}{equation.5.25c}
