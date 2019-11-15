@@ -700,7 +700,7 @@ QGparams <- function(mu = NULL,
                    var.obs      = var_obs,
                    var.a.obs    = (Psi^2) * var.a,
                    h2.obs       = ((Psi^2) * var.a) / var_obs)
-}
+    }
 }
 
 ## -----------Function to calculate the evolutive prediction--------------- ##
