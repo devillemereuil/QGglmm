@@ -314,8 +314,33 @@ QGmvparams <- function(mu = NULL,
     #Defining the link/distribution functions
     #If a vector of names were given
     if (!(is.list(models))) {
-        tmp <- models
-        models <- lapply(tmp, function(string) {QGlink.funcs(string)})
+        if (!is.character(models)) {
+            stop("models should be either a list or a vector of characters")
+        }
+        
+        # Need to account for n.obs
+        binN <- grepl("binomN", models)
+        if (any(binN) & length(n.obs) != sum(binN)) {
+            stop("Please provide a number of n.obs equal to the number binomN models.")
+        }
+        list.n.obs <- rep(list(NULL), length(models))
+        list.n.obs[binN] <- n.obs
+        
+        # Need to account for theta
+        negbin <- grepl("negbin", models)
+        if (any(negbin) & length(theta) != sum(negbin)) {
+            stop("Please provide a number of theta equal to the number binomN models.")
+        }
+        list.theta <- rep(list(NULL), length(models))
+        list.theta[negbin] <- theta
+        
+        models <- mapply(function(name, n.obs, theta) {
+                            QGlink.funcs(name = name, n.obs = n.obs, theta = theta)
+                         },
+                         name       = models,
+                         n.obs      = list.n.obs,
+                         theta      = list.theta,
+                         SIMPLIFY   = FALSE)
     }
     
     #Now we can compute the needed functions

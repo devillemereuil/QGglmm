@@ -32,8 +32,8 @@
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
-  \item{n.obs}{Number of "trials" for the "binomN" distribution. (numeric)}
-  \item{theta}{Dispersion parameter for the Negative Binomial distribution. The parameter \code{theta} should be such as the variance of the distribution is \code{mean + mean^2 / theta}. (numeric)}
+  \item{n.obs}{Number of "trials" for the "binomN" distribution. (numeric, length equal to the number of "negbin" models)}
+  \item{theta}{Dispersion parameter for the Negative Binomial distribution. The parameter \code{theta} should be such as the variance of the distribution is \code{mean + mean^2 / theta}. (numeric, length equal to the number of "negbin" models)}
   \item{verbose}{Should the function be verbose? (boolean)}
   \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
