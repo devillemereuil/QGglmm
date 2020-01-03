@@ -9,10 +9,10 @@
 \usepackage[sectionbib]{natbib}	%Gestion des citations auteur-année
 \usepackage[T1]{fontenc}	%Encodage Police T1
 \usepackage{amsmath}		%Environnements mathématiques
+\usepackage{amssymb}		%Symboles mathématiques
 \usepackage{libertine}
 \usepackage[libertine]{newtxmath}
 \usepackage[a4paper, tmargin = 2.5cm, bmargin = 3cm, rmargin = 2cm, lmargin = 2cm]{geometry} %Gestion de la mise en page
-\usepackage{amssymb}		%Symboles mathématiques
 \usepackage{sectsty}		%Style des section (voir \sectionfont)
 \usepackage{fancyhdr}		%En-tête personnalisés (voir \fancyhead)
 \usepackage{textcomp}		%Symboles pour le texte
