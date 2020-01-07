@@ -85,7 +85,7 @@ list.models = list(
               var.func = function(x){0})
 )
 # Running the same analysis than above
-QGmvicc(mu = mu, vcv.comp = M, vcv.P = P, models = list.models)
+\dontrun{QGmvicc(mu = mu, vcv.comp = M, vcv.P = P, models = list.models)}
 
 # Using predicted values
 # Say we have 100  individuals
