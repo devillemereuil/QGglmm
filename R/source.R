@@ -223,6 +223,19 @@ QGlink.funcs <- function(name,
         inv.link    <- function(x) {x^2}
         var.func    <- function(x) {(x^2) + ((x^4) / theta)}
         d.inv.link  <- function(x) {2 * x}
+    } else if (name == "ZIPoisson.log.logit") {
+        inv.link    <- function(x) {
+            exp(x[1, ]) / (1 + exp(x[2, ]))
+        }
+        var.func    <- function(x) {
+            exp(x[1, ]) * (exp(x[2, ]) + exp(x[1, ] + x[2, ]) + 1) / ((1 + exp(x[2, ]))^2)
+        }
+        d.inv.link  <- function(x) {
+            rbind(
+                exp(x[1, ]) / (1 + exp(x[2, ])),
+                -exp(x[1, ] + x[2, ]) / ((1 + exp(x[2, ]))^2)
+            )
+        }
     } else if (name == "HuPoisson.log.logit") {
         inv.link    <- function(x) {
             exp(x[1, ]) / ((1 + exp(x[2, ])) * ( 1 - exp(-exp(x[1, ]))))
