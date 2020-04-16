@@ -223,6 +223,22 @@ QGlink.funcs <- function(name,
         inv.link    <- function(x) {x^2}
         var.func    <- function(x) {(x^2) + ((x^4) / theta)}
         d.inv.link  <- function(x) {2 * x}
+    } else if (name == "HuPoisson.log.logit") {
+        inv.link    <- function(x) {
+            exp(x[1, ]) / ((1 + exp(x[2, ])) * ( 1 - exp(-exp(x[1, ]))))
+        }
+        var.func    <- function(x) {
+            m <- exp(x[1, ]) / ((1 + exp(x[2, ])) * ( 1 - exp(-exp(x[1, ]))))
+            m * (exp(x[1, ]) + 1 - m)
+        }
+        d.inv.link  <- function(x) {
+            rbind(
+                (1 / (1 + exp(x[2, ]))) * 
+                    (exp(x[1, ]) * ((1 - exp(-exp(x[1, ]))) - exp(x[1, ] - exp(x[1, ]))) /
+                     (1 - exp(-exp(x[1, ])))^2),
+                -exp(x[1, ] + x[2, ]) / (((1 + exp(x[2, ]))^2) * (1 - exp(-exp(x[1, ]))))
+            )
+        }
     } else {
         stop("Invalid model name. 
              Use a valid model name or enter a custom model specification.")
