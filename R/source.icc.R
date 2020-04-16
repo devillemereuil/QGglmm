@@ -38,7 +38,7 @@ qg.Gaussian.icc <- function(mu = NULL,
         }
     }
     
-    #Nothing to be done, except averaging over predict
+    # Nothing to be done, except averaging over predict
     if (length(predict) == 1) {
         var_fixed <- 0
     } else {
@@ -69,13 +69,13 @@ qg.binom1.probit.icc <- function(mu = NULL,
         }
     }
     
-    #Observed mean
+    # Observed mean
     p <- mean(1 - pnorm(0, predict, sqrt(var.p + 1)))
     
-    #Observed variance
+    # Observed variance
     var_obs <- p * (1 - p)
     
-    #Component variance
+    # Component variance
     var_comp_obs <-
         integrate(f = function(x){
                         sapply(x, function(x_i) {
@@ -111,10 +111,10 @@ qg.binomN.probit.icc <- function(mu = NULL,
         }
     }
     
-    #Observed mean
+    # Observed mean
     p <- n.obs * mean(1 - pnorm(0, predict, sqrt(var.p + 1)))
     
-    #Observed variance
+    # Observed variance
     prob.sq.int <-
         mean(
             sapply(predict, 
@@ -132,7 +132,7 @@ qg.binomN.probit.icc <- function(mu = NULL,
     
     var_obs <- ((n.obs^2) - n.obs) * prob.sq.int - p^2 +p
     
-    #Component variance
+    # Component variance
     var_comp_obs <- 
         integrate(f = function(x){
                         sapply(x, 
@@ -170,13 +170,13 @@ qg.Poisson.log.icc <- function(mu = NULL,
         }
     }
     
-    #Observed mean
+    # Observed mean
     lambda <- mean(exp(predict + (var.p/2)))
-    #Mean of lambda square, needed for the following
+    # Mean of lambda square, needed for the following
     lambda_sq <- mean(exp(2 * (predict + var.p/2)))
-    #Observed variance
+    # Observed variance
     var_obs <- lambda_sq * exp(var.p) - lambda^2 + lambda
-    #Component variance
+    # Component variance
     var_comp_obs <- exp(var.comp + var.p) * (mean(exp(predict))^2) - (lambda^2)
     data.frame(mean.obs     = lambda,
                var.obs      = var_obs,
@@ -202,19 +202,19 @@ qg.negbin.log.icc <- function(mu = NULL,
         }
     }
     
-    #Observed mean
+    # Observed mean
     lambda <- mean(exp(predict + (var.p/2)))
     
-    #Mean of lambda square, needed for the following
+    # Mean of lambda square, needed for the following
     lambda_sq <- mean(exp(2 * (predict + var.p/2)))
     
-    #Observed variance
+    # Observed variance
     var_obs <- lambda_sq * exp(var.p) - 
                lambda^2 + 
                lambda + 
                (mean(exp(2 * (predict + var.p)))/theta)
     
-    #Component variance
+    # Component variance
     var_comp_obs <- exp(var.comp + var.p) * (mean(exp(predict))^2) - (lambda^2)
     data.frame(mean.obs     = lambda,
                var.obs      = var_obs,
@@ -236,7 +236,7 @@ QGicc <- function(mu = NULL,
                   theta = NULL,
                   verbose = TRUE)
 {
-    #Error if ordinal is used (multivariate code not available yet)
+    # Error if ordinal is used (multivariate code not available yet)
     if ("ordinal" %in% model) {
         stop("ICC computations are not able to address ordinal traits (yet?).")
     }
@@ -253,7 +253,7 @@ QGicc <- function(mu = NULL,
         }
     }
     
-    #Using analytical solutions if possible (and asked for, see closed.form arg)
+    # Using analytical solutions if possible (and asked for, see closed.form arg)
     if (model == "Gaussian" & closed.form) {
         if (verbose) {
             print("Using the closed forms for a Gaussian model
@@ -279,7 +279,7 @@ QGicc <- function(mu = NULL,
                              width      = width)
         
     } else if (model == "binomN.probit" & closed.form) {
-        #Binomial - not - binary model
+        # Binomial - not - binary model
         if (is.null(n.obs)) {
             stop("binomN.probit model used, 
                  but no observation number (n.obs) defined.")
@@ -310,7 +310,7 @@ QGicc <- function(mu = NULL,
                            predict  = predict)
         
     } else if (model == "negbin.log" & closed.form){
-        #NegBin - log model
+        # NegBin - log model
         if (is.null(theta)) {
             stop("negbin model used, but theta not defined.")
         }
@@ -325,7 +325,7 @@ QGicc <- function(mu = NULL,
         
     } else {
         
-        #Use a custom model if defined, otherwise look into the "Dictionary"
+        # Use a custom model if defined, otherwise look into the "Dictionary"
         if (is.null(custom.model)) {
             if (model == "") {
                 stop("The function requires either model or custom.model.")
@@ -336,7 +336,7 @@ QGicc <- function(mu = NULL,
             funcs <- custom.model
         }
         
-        #Observed mean computation
+        # Observed mean computation
         if (verbose) {
             print("Computing observed mean...")
         }
@@ -346,7 +346,7 @@ QGicc <- function(mu = NULL,
                         width       = width,
                         predict     = predict)
         
-        #Phenotypic variances computation
+        # Phenotypic variances computation
         if (verbose) {
             print("Computing phenotypic variance...")
         }
@@ -363,10 +363,10 @@ QGicc <- function(mu = NULL,
                                predict  = predict)
         var_obs <- var_exp + var_dist
         
-        #Computing conditional variance (i.e. without var.comp)
+        # Computing conditional variance (i.e. without var.comp)
         var.cond <- var.p - var.comp
         
-        #Function giving the conditional expectancy
+        # Function giving the conditional expectancy
         cond_exp <- function(t) {
             sapply(t, function(t_i) {
                 mean(sapply(predict, function(pred_i) {
@@ -388,8 +388,8 @@ QGicc <- function(mu = NULL,
             }
         }
         
-        #Computing variance of component on the observed data scale
-        #Note: Using Koenig's formula
+        # Computing variance of component on the observed data scale
+        # Note: Using Koenig's formula
         if (verbose) {
             print("Computing component variance...")
         }
@@ -401,7 +401,7 @@ QGicc <- function(mu = NULL,
                                   upper = width * sqrt(var.comp)
                         )$value
         
-        #Return a data.frame with the calculated components
+        # Return a data.frame with the calculated components
         data.frame(mean.obs     = z_bar,
                    var.obs      = var_obs,
                    var.comp.obs = var_comp_obs,
@@ -422,27 +422,27 @@ QGmvicc <- function(mu = NULL,
                     verbose = TRUE,
                     mask = NULL) 
 {
-    #Error if ordinal is used (multivariate code not available yet)
+    # Error if ordinal is used (multivariate code not available yet)
     if ("ordinal" %in% models) {
         stop("Multivariate functions of QGglmm are 
              not able to address ordinal traits (yet?).")
     }
     
-    #Setting the integral width according to vcov 
+    # Setting the integral width according to vcov 
     #(lower mean - w, upper mean + w)
     w1 <- sqrt(diag(vcv.P - vcv.comp)) * width
     w2 <- sqrt(diag(vcv.comp)) * width
     
-    #Number of dimensions
+    # Number of dimensions
     d <- length(w1)
     
-    #If no fixed effects were included in the model
+    # If no fixed effects were included in the model
     if (is.null(predict)) {
         predict <- matrix(mu, nrow = 1)
     }
     
-    #Defining the link/distribution functions
-    #If a vector of names were given
+    # Defining the link/distribution functions
+    # If a vector of names were given
     if (!(is.list(models))) {
         if (!is.character(models)) {
             stop("models should be either a list or a vector of characters")
@@ -473,7 +473,7 @@ QGmvicc <- function(mu = NULL,
                          SIMPLIFY   = FALSE)
     }
     
-    #Now we can compute the needed functions
+    # Now we can compute the needed functions
     inv.links <- function(mat) {
         res <- mat
         for (i in 1:d) {
@@ -496,7 +496,7 @@ QGmvicc <- function(mu = NULL,
         res
     }
     
-    #Computing the observed mean
+    # Computing the observed mean
     if (verbose) {
         print("Computing observed mean...")
     }
@@ -509,7 +509,7 @@ QGmvicc <- function(mu = NULL,
                       width     = width,
                       mask      = mask)
     
-    #Computing the variance-covariance matrix
+    # Computing the variance-covariance matrix
     if (verbose) {
         print("Computing phenotypic variance-covariance matrix...")
     }
@@ -527,7 +527,7 @@ QGmvicc <- function(mu = NULL,
     # Computing the logdet of vcv.P - vcv.comp
     logdet.cond <- calc_logdet(vcv.P - vcv.comp)
     
-    #Function giving the conditional expectancy
+    # Function giving the conditional expectancy
     cond_exp <- function(t) {
         apply(t, 2, function(col) {
             apply(
@@ -563,7 +563,7 @@ QGmvicc <- function(mu = NULL,
     # Computing the logdet of vcv.comp
     logdet.comp <- calc_logdet(vcv.comp)
     
-    #Computing the upper - triangle matrix of "expectancy of the square"
+    # Computing the upper - triangle matrix of "expectancy of the square"
     v <- cubature::hcubature(
         f  = function(x) {
             vec_sq_uptri(cond_exp(x)) *
@@ -579,22 +579,22 @@ QGmvicc <- function(mu = NULL,
         vectorInterface = TRUE
     )$integral
     
-    #Applying the mask if provided
+    # Applying the mask if provided
     if(!is.null(mask)) {
         mask2 <- matrix(FALSE, ncol = ncol(v), nrow = nrow(v))
         mask2[((1:d) * ((1:d) + 1)) / 2, ] <- t(mask)
         v[mask2] <- NA
     }
     
-    #Creating the VCV matrix
+    # Creating the VCV matrix
     vcv <- matrix(NA, d, d)
     vcv[upper.tri(vcv, diag = TRUE)] <- v
     vcv[lower.tri(vcv)] <- vcv[upper.tri(vcv)]
     
-    #Computing the VCV matrix using Keonig's formuka
+    # Computing the VCV matrix using Keonig's formuka
     vcv <- vcv - z_bar %*% t(z_bar)
       
-    #Return a list of QG parameters on the observed scale
+    # Return a list of QG parameters on the observed scale
     list(mean.obs       = z_bar,
          vcv.P.obs      = vcv.P.obs,
          vcv.comp.obs   = vcv)

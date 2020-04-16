@@ -77,15 +77,15 @@ QGmvmean <- function(mu = NULL,
     # Computing the logdet of vcov
     logdet <- calc_logdet(vcov)
     
-    #Computing the mean
-    #The double apply is needed to compute the mean for all "predict" values,
-    #then average over them
+    # Computing the mean
+    # The apply is needed to compute the mean for all "predict" values,
+    # then average over them
     mat <- apply(predict, 1, function(pred_i) {
         cubature::hcubature(
             f  = function(x) {
                 link.inv(x) * matrix(rep(vec_mvnorm(x, pred_i, vcov, logdet), d),
-                                     nrow = d,
-                                     byrow = TRUE)
+                                       nrow = d,
+                                       byrow = TRUE)
             },
             lowerLimit = pred_i - w,
             upperLimit = pred_i + w,
@@ -132,7 +132,7 @@ QGvcov <- function(mu = NULL,
     # Computing the logdet of vcov
     logdet <- calc_logdet(vcov)
     
-    #Computing the upper-triangle matrix of "expectancy of the square"
+    # Computing the upper-triangle matrix of "expectancy of the square"
     v <- apply(predict, 1,
                function(pred_i) {
                    cubature::hcubature(
@@ -235,8 +235,8 @@ QGmvpsi <- function(mu = NULL,
         }
     }
     
-    #Computing the mean
-    #The double apply is needed to compute the mean for all "predict" values,
+    # Computing the mean
+    # The double apply is needed to compute the mean for all "predict" values,
     #then average over them
     Psi <- apply(predict, 1, function(pred_i) {
         cubature::hcubature(
@@ -427,16 +427,16 @@ QGmvpred <- function(mu = NULL,
                      verbose = TRUE,
                      mask = NULL)
 {
-    #Setting the integral width according to vcv.P (lower mean-w, upper mean+w)
+    # Setting the integral width according to vcv.P (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcv.P)) * width
     
-    #Number of dimensions
+    # Number of dimensions
     d <- length(w)
     
     # Computing the logdet of vcv.P
     logdet <- calc_logdet(vcv.P)
     
-    #If predict is not included, then use mu, and 
+    # If predict is not included, then use mu, and 
     if(is.null(predict)) {
         if(is.null(mu)) {
             stop("Please provide either mu or predict.")
@@ -445,7 +445,7 @@ QGmvpred <- function(mu = NULL,
         }
     }
     
-    #Dimensions checks
+    # Dimensions checks
     if (nrow(vcv.G) != d |
         ncol(vcv.G) != d | 
         nrow(vcv.P) != d | 
@@ -455,7 +455,7 @@ QGmvpred <- function(mu = NULL,
              please check the dimensions of the input.")
     }
     
-    #Calculating the latent mean fitness
+    # Calculating the latent mean fitness
     if (verbose) {
         print("Computing mean fitness...")     
     }
@@ -468,7 +468,7 @@ QGmvpred <- function(mu = NULL,
                 },
                 lowerLimit = pred_i - w,
                 upperLimit = pred_i + w,
-                #Note that fDim = 1 because fitness.func yields a scalar
+                # Note that fDim = 1 because fitness.func yields a scalar
                 fDim       = 1,
                 tol        = rel.acc,
                 absError   = 0.0001,
@@ -476,12 +476,12 @@ QGmvpred <- function(mu = NULL,
             )$integral
         }))
     
-    #Calculating the covariance between latent trait and latent fitness
+    # Calculating the covariance between latent trait and latent fitness
     if (verbose) {
         print("Computing the latent selection and response...")
     }
     
-    #Computing the derivative of fitness
+    # Computing the derivative of fitness
     dW <- 
         apply(predict, 1, function(pred_i) {
             cubature::hcubature(
@@ -499,22 +499,22 @@ QGmvpred <- function(mu = NULL,
             )$integral
         })
     
-    #Applyign the mask if provided
+    # Applying the mask if provided
     if (!is.null(mask)) {dW[t(mask)] <- NA}
     
     dW <- apply(dW, 1, mean)
     
-    #Computing the selection
+    # Computing the selection
     if (dim(predict)[1] > 1) {
         sel <- as.vector(((vcv.P + var(predict)) %*% dW) / Wbar) 
     } else {
         sel <- as.vector((vcv.P %*% dW) / Wbar)
     }
     
-    #Computing the evolutionary response
+    # Computing the evolutionary response
     resp <- as.vector((vcv.G %*% dW) / Wbar)
     
-    #Returning the results on the latent scale
+    # Returning the results on the latent scale
     return(list(mean.lat.fit = Wbar, 
                 lat.grad = dW / Wbar,
                 lat.sel = sel,
