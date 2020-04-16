@@ -355,7 +355,7 @@ QGmvparams <- function(mu = NULL,
     }
     
     # Setting the integral width according to vcov (lower mean-w, upper mean+w)
-    w <- sqrt(diag(vcov)) * width
+    w <- sqrt(diag(vcv.P)) * width
     
     # If predict is not included, then use mu, and 
     if(is.null(predict)) {
