@@ -16,19 +16,7 @@
   \item{mu}{Latent intercept estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric of length 1)}
   \item{var.comp}{Latent variance component for which ICC needs to be computed, estimated from a GLMM. (numeric of length 1)}
   \item{var.p}{Latent total phenotypic variance estimated from a GLMM. Usually, the sum of the estimated variances of the random effects, plus the "residual" variance. (numeric of length 1)}
-  \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. (character) Available models are :
-    \itemize{
-      \item{"Gaussian"} Gaussian distribution with identity link (e.g. LMM)
-      \item{"binom1.probit"} Binomial with 1 trial (binary data) with a probit link
-      \item{"binomN.probit"} Binomial with N tria with a probit link (require the parameter \code{n.obs})
-      \item{"binom1.logit"} Binomial with 1 trial (binary) with a logit link
-      \item{"binomN.logit"} Binomial with N trial with a logit link (require the parameter \code{n.obs})
-      \item{"Poisson.log"} Poisson distribution wiht a log link
-      \item{"Poisson.sqrt"} Poisson distribution with a square - root link
-      \item{"negbin.log"} Negative - Binomial distribution wiht a log link (require the parameter \code{theta})
-      \item{"negbin.sqrt"} Negative - Binomial distribution with a square - root link (require the parameter \code{theta})
-    }
-  }
+  \item{model}{Name of the used model, i.e. distribution.link. Ignored if \code{custom.model} is not NULL. See \code{\link{QGlink.funcs}} for a complete list of model available. (character)}
   \item{width}{Parameter for the integral computation. The integral is evaluated from -\code{width * sqrt(var.comp)} to \code{width * sqrt(var.comp)}. The default value is 10, which should be sensible for most models. (numeric)}
   \item{predict}{Optional vector of predicted values on the latent scale (i.e. matrix product \bold{Xb}). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{closed.form}{When available, should closed forms be used instead of integral computations? (boolean)}

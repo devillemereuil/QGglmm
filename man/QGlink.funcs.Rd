@@ -8,9 +8,20 @@ Function yielding different functions (inverse-link, variance function, derivati
 \usage{
 QGlink.funcs(name, n.obs = NULL, theta = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{name}{Name of the distribution.link couple. See \code{\link{QGparams}} for a complete list of model available. (character)}
+  \item{name}{Name of the distribution.link couple. (character) Available models are :
+    \itemize{
+      \item{"Gaussian"} Gaussian distribution with identity link (e.g. LMM)
+      \item{"binom1.probit"} Binomial with 1 trial (binary data) with a probit link
+      \item{"binomN.probit"} Binomial with N tria with a probit link (require the parameter \code{n.obs})
+      \item{"binom1.logit"} Binomial with 1 trial (binary) with a logit link
+      \item{"binomN.logit"} Binomial with N trial with a logit link (require the parameter \code{n.obs})
+      \item{"Poisson.log"} Poisson distribution with a log link
+      \item{"Poisson.sqrt"} Poisson distribution with a square-root link
+      \item{"negbin.log"} Negative - Binomial distribution wiht a log link (require the parameter \code{theta})
+      \item{"negbin.sqrt"} Negative - Binomial distribution with a square-root link (require the parameter \code{theta})
+      \item{"ordinal"} Multiple threshold model for ordinal categorical traits (require the parameter \code{cut.points})
+    }}
   \item{n.obs}{Optional parameter required for "binomN" distributions (number of "trials"). See \code{\link{QGparams}}. (numeric)}
   \item{theta}{Optional parameter required for "negbin" distributions (dispersion parameter). See \code{\link{QGparams}}. (numeric)}
 }
