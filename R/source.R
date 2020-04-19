@@ -547,6 +547,10 @@ QGparams <- function(mu = NULL,
             predict <- mu
         }
     }
+    # If a compound distribution was used, redirect toward QGmvparams
+    if (model %in% c("ZIPoisson.log.logit", "HuPoisson.log.logit")) {
+        stop("Compound distributions such as ZI or hurdle Poisson require using QGmvparams")
+    }
     
     ## Using analytical solutions if possible (and asked for: see closed.form)
     if (model == "Gaussian" & closed.form) {   
