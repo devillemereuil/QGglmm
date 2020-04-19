@@ -36,6 +36,8 @@ Some distributions require extra-arguments. This is the case for "binomN", which
 
 If fixed effects (apart from the intercept) have been included in the GLMM, they can be included as marginal predicted values, i.e. predicted values excluding the random effects, which can be calculated as the matrix product \strong{Xb} where \strong{X} is the design matrix and \strong{b} is the vector of fixed effects estimates. To do so, provide the vector of marginal predicted values using the argument \code{predict}. Note this can considerably slow down the algorithm, especially when no closed form is used.
 
+"Compound" distributions such as zero-inflated and hurdle Poisson cannot be used with \code{QGparams}, but should be used with \code{\link{QGmvparams}} instead, because they are multivariate.
+
 Ordinal model is different from the other models, because it yields multivariate inference on the observed data scale, even though the latent scale is not multivariate. As a consequence, this model can only be accessed using the function \code{QGparams} and has an output similar to the one of \code{QGmvparams}.
 }
 
