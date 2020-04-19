@@ -17,7 +17,7 @@ QGmvmean(mu = NULL, vcov, link.inv, predict = NULL,
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). (integer of length 2, or list of such vectors)}
-  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 
 \details{

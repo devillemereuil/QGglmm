@@ -24,7 +24,7 @@
   \item{theta}{Dispersion parameter for the Negative Binomial distribution. The parameter \code{theta} should be such as the variance of the distribution is \code{mean + mean^2 / theta}. (numeric, length equal to the number of "negbin" models)}
   \item{verbose}{Should the function be verbose? (boolean)}
   \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). Ignored if \code{models} is a character vector. (integer of length 2, or list of such vectors)}
-  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 The function typically uses integral numerical approximation provided by the R2Cuba package to compute multivariate quantitative genetics parameters on the observed scale, from latent estimates yielded by a GLMM. It cannot use closed form solutions.

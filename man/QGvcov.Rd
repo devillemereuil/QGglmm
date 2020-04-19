@@ -21,7 +21,7 @@ QGvcov(mu = NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{exp.scale}{Should the variance-covariance matrix be computed on the expected scale? \code{FALSE} by default, which means the variance-covariance matrix is computed on the observed scale. (boolan)}
   \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). (integer of length 2, or list of such vectors)}
-  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex - based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
+  \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
 This function needs the multivariate latent population mean (\code{mu}) or the marginal predicted values (\code{predict}) and the total latent variance-covariance matrix (\code{vcov}) to compute the phenotypic variance-covariance matrix on the observed scale (or on the expected scale if \code{exp.scale} is \code{TRUE}).
