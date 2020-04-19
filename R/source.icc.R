@@ -437,8 +437,12 @@ QGmvicc <- function(mu = NULL,
     d <- length(w1)
     
     # If no fixed effects were included in the model
-    if (is.null(predict)) {
-        predict <- matrix(mu, nrow = 1)
+    if(is.null(predict)) {
+        if(is.null(mu)) {
+            stop("Please provide either mu or predict.")
+        } else {
+            predict <- matrix(mu, nrow = 1)
+        }
     }
     
     # Defining the link/distribution functions
