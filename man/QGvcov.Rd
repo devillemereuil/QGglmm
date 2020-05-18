@@ -20,7 +20,7 @@ QGvcov(mu = NULL, vcov, link.inv, var.func, mvmean.obs = NULL,
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
   \item{exp.scale}{Should the variance-covariance matrix be computed on the expected scale? \code{FALSE} by default, which means the variance-covariance matrix is computed on the observed scale. (boolan)}
-  \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). (integer of length 2, or list of such vectors)}
+  \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). The input must be ordered so that the first component (1 and 4 in the example above) is the latent trait for positive values and the second (2 and 5 in the example above) is the latent trait for the zero-component. (integer of length 2, or list of such vectors)}
   \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{

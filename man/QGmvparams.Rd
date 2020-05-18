@@ -23,7 +23,7 @@
   \item{n.obs}{Number of "trials" for the "binomN" distribution. (numeric, length equal to the number of "negbin" models)}
   \item{theta}{Dispersion parameter for the Negative Binomial distribution. The parameter \code{theta} should be such as the variance of the distribution is \code{mean + mean^2 / theta}. (numeric, length equal to the number of "negbin" models)}
   \item{verbose}{Should the function be verbose? (boolean)}
-  \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). Ignored if \code{models} is a character vector. (integer of length 2, or list of such vectors)}
+  \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). The input must be ordered so that the first component (1 and 4 in the example above) is the latent trait for positive values and the second (2 and 5 in the example above) is the latent trait for the zero-component. Ignored if \code{models} is a character vector. (integer of length 2, or list of such vectors)}
   \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 \details{
@@ -35,7 +35,7 @@ Some distributions require extra-arguments. This is the case for "binomN", which
 
 If fixed effects (apart from the intercept) have been included in the GLMM, they can be included through the argument \code{predict} as a matrix of the marginal predicted values, i.e. predicted values excluding the random effects, for each trait (one trait per column of the matrix, see Example below).Note this can considerably slow down the algorithm, especially when no closed form is used.
 
-Note that if "compound" distributions are included (such as \code{"ZIPoisson.log.logit"} or by using the \code{compound} argument), the output will be of lesser dimension than the input.
+Note that if "compound" distributions are included (such as \code{"ZIPoisson.log.logit"} or by using the \code{compound} argument), the output will be of lesser dimension than the input and the input must be ordered so that the first component is the latent trait for positive values and the second is the latent trait for the zero-component.
 }
 
 \value{
