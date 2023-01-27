@@ -1049,7 +1049,7 @@ Then, we use \texttt{apply} to go through this \texttt{data.frame} and ``stack''
 \begin{Schunk}
  \begin{Sinput}
 post <- do.call("rbind", apply(df, 1, function(row)\{
-            QGparams(mu = row[["mu"],
+            QGparams(mu = row[["mu"]],
                      var.a = row[["va"]],
                      var.p = row[["vp"]],
                      model = "binom1.probit", verbose = FALSE)
