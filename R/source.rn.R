@@ -181,6 +181,38 @@ rn_va_e <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
 
 ##  ---------------------------- General functions ------------------------- ##
 
+## Utilitary function (exposed to the user) to compute a derivative automatically
+# Args: - expr: expression from which the derivative needs to the computed (expression)
+#       - dpars: the parameters wrt which we need to compute the derivative (character)
+#       - allpars: list of all the parameters (character)
+# Value: A function that can be used to compute V_A using QGrn_va()
+QGrn_generate_derivative <- function(expr, dpars, allpars) {
+    # Generating the new parameter "names" for the function to provide QGglmm
+    matpars <- str_c("pars[",1:length(allpars),", ]")
+    names(matpars) <- allpars
+    
+    # Computing the derivative
+    deriv <- 
+        lapply(dpars, \(p) D(expr, p)) |>
+        as.character() |>
+        str_replace_all(matpars)
+    
+    # Constructing the body of the function
+    body <- parse(text = str_c(c("matrix(c(",
+                                          str_c(deriv, collapse = ","),
+                                          "), nrow = 2, byrow = TRUE)"),
+                                        collapse = ""))
+    
+    # Generating the list of arguments without defaults
+    args <- list()
+    args[["x"]] <- alist(x=)$x
+    args[["pars"]] <- alist(pars=)$pars
+    
+    # Return the function to provide QGglmm
+    eval(call("function", as.pairlist(args), body[[1]]), parent.frame())
+}
+
+
 ## Compute the mean phenotype by environment
 # Args: - env: the environmental values over which the model has been estimated
 #       - shape: the function of the reaction norm fitted by the model
