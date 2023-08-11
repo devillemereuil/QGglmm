@@ -258,7 +258,7 @@ QGrn_va <- function(env, d_shape, theta, G_theta, width = 10, fixed = NA, averag
     # Computing V_A for each environment
     out <-
         sapply(env,
-            \(e) rn_va_e(e = e, shape = d_shape, theta = theta, G_theta = G_theta,
+            \(e) rn_va_e(e = e, d_shape = d_shape, theta = theta, G_theta = G_theta,
                               width = width, fixed = fixed))
 
     # Averaging if requested (default)
