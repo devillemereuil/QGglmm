@@ -109,7 +109,7 @@ rn_vg_e <- function(e, shape, theta, G_theta, width = 10, fixed = NA) {
     logdet <- calc_logdet(G_theta)
 
     # Average
-    avg <- rn_avg_e(e, shape, theta, G_theta, width = 10, fixed = NA)
+    avg <- rn_avg_e(e, shape, theta, G_theta, width = 10, fixed = fixed)
 
     # Computing the integral
     cubature::hcubature(
