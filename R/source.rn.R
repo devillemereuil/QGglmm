@@ -23,7 +23,7 @@
 ## Non-Bessel-corrected variance
 var_nocorrect <- function(vec) {
     N <- length(vec)
-    
+
     ((N - 1) / N) * var(vec)
 }
 
@@ -135,7 +135,7 @@ rn_vg_e <- function(e, shape, theta, G_theta, width = 10, fixed = NA) {
 #       - width: the width over which the integral must be computed (10 is a generally a good value)
 #       - fixed: which part of the parameters are fixed (no genetic variation)
 # Value: The value for V_A_e (numeric)
-rn_va_e <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
+rn_psi <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
     # Handling when some terms are fixed
     if (!any(is.na(fixed))) {
         var       <- setdiff(1:length(theta), fixed)
@@ -159,7 +159,7 @@ rn_va_e <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
     logdet <- calc_logdet(G_theta)
 
     # Computing the integral for Psi
-    Psi <- cubature::hcubature(
+    psi <- cubature::hcubature(
         f  = function(x) {
             full_x      <- matrix(full_theta, nrow = length(full_theta), ncol = ncol(x))
             if (!any(is.na(fixed))) { full_x[var, ] <- x } else { full_x <- x }
@@ -175,8 +175,11 @@ rn_va_e <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
         vectorInterface = TRUE
     )$integral
 
+    # Naming the vector if names are available
+    names(psi) <- names(theta[-fixed])
+
     # Now, computing V_A_e
-    return(t(Psi) %*% G_theta %*% Psi)
+    return(psi)
 }
 
 ##  ---------------------------- General functions ------------------------- ##
@@ -190,24 +193,24 @@ QGrn_generate_derivative <- function(expr, dpars, allpars) {
     # Generating the new parameter "names" for the function to provide QGglmm
     matpars <- str_c("pars[",1:length(allpars),", ]")
     names(matpars) <- allpars
-    
+
     # Computing the derivative
-    deriv <- 
+    deriv <-
         lapply(dpars, \(p) D(expr, p)) |>
         as.character() |>
         str_replace_all(matpars)
-    
+
     # Constructing the body of the function
     body <- parse(text = str_c(c("matrix(c(",
                                           str_c(deriv, collapse = ","),
                                           "), nrow = 2, byrow = TRUE)"),
                                         collapse = ""))
-    
+
     # Generating the list of arguments without defaults
     args <- list()
     args[["x"]] <- alist(x=)$x
     args[["pars"]] <- alist(pars=)$pars
-    
+
     # Return the function to provide QGglmm
     eval(call("function", as.pairlist(args), body[[1]]), parent.frame())
 }
@@ -243,7 +246,7 @@ QGrn_vplas <- function(env, shape, theta, G_theta, width = 10, fixed = NA, corre
     } else {
         var_func <- var_nocorrect
     }
-    
+
     # Compute the average for each environment, then take the variance
     sapply(env,
             \(e) rn_avg_e(e = e, shape = shape, theta = theta, G_theta = G_theta,
@@ -262,7 +265,7 @@ QGrn_vplas <- function(env, shape, theta, G_theta, width = 10, fixed = NA, corre
 #                  If FALSE, return the variance for each environmental value
 # Value: The value for V_gen (numeric)
 QGrn_vgen <- function(shape, theta, G_theta, env, width = 10, fixed = NA, average = TRUE) {
-    
+
     # Computing V_gen for each environment
     out <-
         sapply(env,
@@ -284,17 +287,56 @@ QGrn_vgen <- function(shape, theta, G_theta, env, width = 10, fixed = NA, averag
 #       - fixed: which part of the parameters are fixed (no genetic variation)
 #       - average: should the average of variances be returned?
 #                  If FALSE, return the variance for each environmental value
-# Value: The value for V_A (numeric)
+# Value: The value for V_A and Gamma-decomposition as a data.frame for each environment or averaged
 QGrn_va <- function(env, d_shape, theta, G_theta, width = 10, fixed = NA, average = TRUE) {
-    
+
+    # Computing psi for each environment
+    psi <-
+        lapply(env,
+               \(e) {rn_psi(e = e, d_shape = d_shape, theta = theta, G_theta = G_theta,
+                           width = width, fixed = fixed)})
+    psi <- do.call("rbind", psi)
+
     # Computing V_A for each environment
+    v_a <- apply(psi, 1, \(psi_) t(psi_) %*% G_theta %*% psi_)
+
+    # Computing the gamma-decomposition of V_A
+    gamma_i <- t(apply(psi, 1, \(psi_) psi_^2 * diag(G_theta)))
+    colnames(gamma_i) <- paste0("Gamma:",colnames(gamma_i))
+
+    gamma_ij <- apply(psi, 1, simplify = FALSE, FUN = \(psi_) {
+        out <- numeric(sum(upper.tri(G_theta)))
+        names_out <- character(sum(upper.tri(G_theta)))
+        k   <- 1
+        for (i in 1:(length(psi_) - 1)) {
+            for (j in (i+1):length(psi_)) {
+                out[k] <- 2 * psi_[i] * psi_[2] * G_theta[i, j]
+                names_out[k] <- paste(names(psi_)[i], names(psi_)[j], sep = "-")
+                k <- k + 1
+            }
+        }
+        names(out) <- names_out
+        return(out)
+    })
+    gamma_ij <- do.call("rbind", gamma_ij)
+    colnames(gamma_ij) <- paste0("Gamma:",colnames(gamma_ij))
+
     out <-
-        sapply(env,
-            \(e) rn_va_e(e = e, d_shape = d_shape, theta = theta, G_theta = G_theta,
-                              width = width, fixed = fixed))
+        cbind(
+            gamma_i,
+            gamma_ij
+        )
 
     # Averaging if requested (default)
-    if (average) { out <- mean(out) }
+    if (average) {
+        v_a <- mean(v_a)
+        out <- colMeans(out) / v_a
+        out <- cbind(data.frame(V_A = v_a), t(as.data.frame(out)))
+        rownames(out) <- NULL
+    } else {
+        out <- out / v_a
+        out <- cbind(data.frame(Env = env, V_A = v_a), out)
+    }
 
     return(out)
 }
