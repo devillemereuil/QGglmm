@@ -184,15 +184,43 @@ rn_psi <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
 
 ##  ---------------------------- General functions ------------------------- ##
 
-## Utilitary function (exposed to the user) to compute a derivative automatically
-# Args: - expr: expression from which the derivative needs to the computed (expression)
+## Utilitary function (exposed to the user) to format a shape function automatically
+# Args: - expr: expression from which the gradient needs to the computed (expression)
 #       - dpars: the parameters wrt which we need to compute the derivative (character)
 #       - allpars: list of all the parameters (character)
 # Value: A function that can be used to compute V_A using QGrn_va()
-QGrn_generate_derivative <- function(expr, dpars, allpars) {
+QGrn_generate_shape <- function(expr, pars) {
+    # Generating the new parameter "names" for the function to provide QGglmm
+    matpars <- str_c("pars[",1:length(pars),", ]")
+    names(matpars) <- str_c("(?<![:alnum:])", pars, "(?![:alnum:])")
+
+    # Computing the derivative
+    expr2 <-
+        expr |>
+        as.character() |>
+        str_replace_all(matpars)
+
+    # Constructing the body of the function
+    body <- parse(text = expr2)
+
+    # Generating the list of arguments without defaults
+    args <- list()
+    args[["x"]] <- alist(x=)$x
+    args[["pars"]] <- alist(pars=)$pars
+
+    # Return the function to provide QGglmm
+    eval(call("function", as.pairlist(args), body[[1]]), parent.frame())
+}
+
+## Utilitary function (exposed to the user) to compute a gradient automatically
+# Args: - expr: expression from which the gradient needs to the computed (expression)
+#       - dpars: the parameters wrt which we need to compute the derivative (character)
+#       - allpars: list of all the parameters (character)
+# Value: A function that can be used to compute V_A using QGrn_va()
+QGrn_generate_gradient <- function(expr, dpars, allpars) {
     # Generating the new parameter "names" for the function to provide QGglmm
     matpars <- str_c("pars[",1:length(allpars),", ]")
-    names(matpars) <- allpars
+    names(matpars) <- str_c("(?<![:alnum:])", allpars, "(?![:alnum:])")
 
     # Computing the derivative
     deriv <-
