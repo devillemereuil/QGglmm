@@ -316,6 +316,11 @@ QGrn_vgen <- function(shape, theta, G_theta, env, width = 10, fixed = NA, averag
 #                  If FALSE, return the variance for each environmental value
 # Value: The value for V_A and Gamma-decomposition as a data.frame for each environment or averaged
 QGrn_va <- function(env, d_shape, theta, G_theta, width = 10, fixed = NA, average = TRUE) {
+    
+    # Naming the parameters if theta is unnamed
+    if (is.null(names(theta)) & is.null(colnames(G_theta))) {
+        names(theta) <- paste0("Param", 1:length(theta))
+    }
 
     # Computing psi for each environment
     psi <-
