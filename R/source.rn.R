@@ -178,7 +178,6 @@ rn_psi <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
     # Naming the vector if names are available
     names(psi) <- names(theta[-fixed])
 
-    # Now, computing V_A_e
     return(psi)
 }
 
