@@ -176,7 +176,7 @@ rn_psi <- function(e, d_shape, theta, G_theta, width = 10, fixed = NA) {
     )$integral
 
     # Naming the vector if names are available
-    names(psi) <- names(theta[-fixed])
+    names(psi) <- names(var_theta)
 
     return(psi)
 }
