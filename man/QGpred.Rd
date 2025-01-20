@@ -32,12 +32,10 @@ The predictions can be transposed on the observed scale by using the \code{\link
 }
 \value{
 The function yields a data.frame containing:
-  \itemize{
-    \item{\code{mean.lat.fitness}}{Average latent fitness. (numeric)}
-    \item{\code{lat.grad}}{Latent selection gradient. (numeric)}
-    \item{\code{lat.sel}}{Latent selection differential. (numeric)}
-    \item{\code{lat.resp}}{Latent evolutionary response to selection. (numeric)}
-  }
+    \item{mean.lat.fitness}{Average latent fitness. (numeric)}
+    \item{lat.grad}{Latent selection gradient. (numeric)}
+    \item{lat.sel}{Latent selection differential. (numeric)}
+    \item{lat.resp}{Latent evolutionary response to selection. (numeric)}
 }
 
 \author{

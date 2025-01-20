@@ -39,11 +39,9 @@ For some distributions, such as "binomN" and "negbin", some extra-parameters are
 }
 \value{
 This function yields a list of function:
-  \itemize{
-    \item{\code{inv.link}}{Inverse function of the link function. (function)}
-    \item{\code{var.func}}{Distribution variance function. (function)}
-    \item{\code{inv.link}}{Derivative of the inverse-link function. (function)}
-  }
+  \item{inv.link}{Inverse function of the link function. (function)}
+  \item{var.func}{Distribution variance function. (function)}
+  \item{inv.link}{Derivative of the inverse-link function. (function)}
 }
 
 \author{
