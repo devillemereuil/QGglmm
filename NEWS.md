@@ -1,3 +1,13 @@
+## Version 0.8 (2025-01-20)
+
+### New features
+
+* Adding "compound" distributions (ZI-Poisson, hurdle-Poisson) to QGglmm
+
+### Bug fixes
+
+* Fixed various typos and issues in the doc
+
 ## Version 0.7 (2018-06-15)
 
 ### Important
