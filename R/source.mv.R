@@ -42,6 +42,9 @@ vec_mvnorm <- function(x, mean, Sigma, logdet = NULL) {
 
 # Vectorised function to get upper-triangle squared matrix
 vec_sq_uptri <- function(x) {
+    if (is.null(dim(x))) {
+        x <- matrix(x, nrow = 1, byrow = TRUE)
+    }
     apply(x, 2, function(col) {
         mat <- (col) %*% t(col)
         return(mat[upper.tri(mat, diag = TRUE)])
@@ -50,22 +53,33 @@ vec_sq_uptri <- function(x) {
 
 ##  ----------------------------General functions------------------------- ##
 
-#Calculating the observed/expected scale mean (multivariate)
+# Calculating the observed/expected scale mean (multivariate)
 QGmvmean <- function(mu = NULL,
                      vcov, 
                      link.inv, 
                      predict = NULL, 
                      rel.acc = 0.001, 
-                     width = 10, 
+                     width = 10,
+                     compound = NULL,
                      mask = NULL) 
 {
-    #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+    # Setting the integral width according to vcov (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcov)) * width
     
-    #Number of dimensions
-    d <- length(w)
+    # Setting up compound if needed
+    if (!is.null(compound)) {
+        if (!is.list(compound)) {
+            compound <- list(compound)
+        }
+    }
     
-    #If predict is not included, then use mu, and 
+    # Number of dimensions
+    d <- length(w)
+    if (!is.null(compound)) {
+        d <- d - length(compound)
+    }
+    
+    # If predict is not included, then use mu, and 
     if(is.null(predict)) {
         if(is.null(mu)) {
             stop("Please provide either mu or predict.")
@@ -95,14 +109,15 @@ QGmvmean <- function(mu = NULL,
             vectorInterface = TRUE
         )$integral
     })
+    mat <- matrix(mat, nrow = d)   # Needed for only one compound trait
     
-    #Applyign the mask if provided
+    # Applying the mask if provided
     if (!is.null(mask)) {mat[t(mask)] <- NA}
     
     return(apply(mat, 1, mean, na.rm = TRUE))
 }
 
-#Calculating the expected scale variance-covariance matrix
+# Calculating the expected scale variance-covariance matrix
 QGvcov <- function(mu = NULL, 
                    vcov,
                    link.inv,
@@ -112,15 +127,26 @@ QGvcov <- function(mu = NULL,
                    rel.acc = 0.001, 
                    width = 10,
                    exp.scale = FALSE,
+                   compound = NULL,
                    mask = NULL) 
 {
-    #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+    # Setting the integral width according to vcov (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcov)) * width
     
-    #Number of dimensions
-    d <- length(w)
+    # Setting up compound if needed
+    if (!is.null(compound)) {
+        if (!is.list(compound)) {
+            compound <- list(compound)
+        }
+    }
     
-    #If no fixed effects were included in the model
+    # Number of dimensions
+    d <- length(w)
+    if (!is.null(compound)) {
+        d <- d - length(compound)
+    }
+    
+    # If no fixed effects were included in the model
     if(is.null(predict)) { 
         if(is.null(mu)) {
             stop("Please provide either mu or predict.")
@@ -150,8 +176,9 @@ QGvcov <- function(mu = NULL,
                        vectorInterface = TRUE
                    )$integral
                })
+    v <- matrix(v, nrow = (d^2 + d) / 2)   # Needed for only one compound trait
     
-    #Applying the mask if provided
+    # Applying the mask if provided
     if(!is.null(mask)) {
         mask2 <- matrix(FALSE, ncol = ncol(v), nrow = nrow(v))
         mask2[((1:d) * ((1:d) + 1)) / 2, ] <- t(mask)
@@ -159,26 +186,27 @@ QGvcov <- function(mu = NULL,
     }
     v <- apply(v, 1, mean, na.rm = TRUE)
     
-    #Creating the VCV matrix
+    # Creating the VCV matrix
     vcv <- matrix(NA, d, d)
     vcv[upper.tri(vcv, diag = TRUE)] <- v
     vcv[lower.tri(vcv)] <- vcv[upper.tri(vcv)]
     
-    #If necessary, computing the observed multivariate mean
+    # If necessary, computing the observed multivariate mean
     if (is.null(mvmean.obs)) {
         mvmean.obs <- 
-            QGmvmean(mu,
-                     vcov,
-                     link.inv,
-                     predict = predict,
-                     rel.acc = rel.acc,
-                     width = width)
+            QGmvmean(mu         = mu,
+                     vcov       = vcov,
+                     link.inv   = link.inv,
+                     predict    = predict,
+                     rel.acc    = rel.acc,
+                     compound   = compound,
+                     width      = width)
     }
     
-    #Computing the VCV matrix using Keonig's formuka
+    # Computing the VCV matrix using Keonig's formuka
     vcv <- vcv - mvmean.obs %*% t(mvmean.obs)
     
-    #Adding the distribution variance if needed (if exp.scale == FALSE)
+    # Adding the distribution variance if needed (if exp.scale == FALSE)
     if (!exp.scale) {
         vardist <- apply(predict, 1, function(pred_i) {
             cubature::hcubature(
@@ -195,38 +223,52 @@ QGvcov <- function(mu = NULL,
                 vectorInterface = TRUE
             )$integral
         })
+        vardist <- matrix(vardist, nrow = d)   # Needed for only one compound trait
         
-        #Applyign the mask if provided
+        # Applying the mask if provided
         if (!is.null(mask)) {vardist[t(mask)] <- NA}
         
         vardist <- apply(vardist, 1, mean, na.rm = TRUE)
         
-        vcv <- vcv + diag(vardist)
+        # If only a compound trait was used vardist is of length 1 and diag(vardist) = 1...
+        if (length(vardist) == 1) {
+            vcv <- vcv + vardist
+        } else {
+            vcv <- vcv + diag(vardist)
+        }
     }
     
-    #Printing the result
+    # Printing the result
     return(vcv)
 }
 
-#Computing the Psi vector
+# Computing the Psi vector
 QGmvpsi <- function(mu = NULL, 
                     vcov,
                     d.link.inv,
                     predict = NULL,
                     rel.acc = 0.001,
                     width = 10,
+                    compound = NULL,
                     mask = NULL)
 {
-    #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+    # Setting the integral width according to vcov (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcov)) * width
     
-    #Number of dimensions
+    # Setting up compound if needed
+    if (!is.null(compound)) {
+        if (!is.list(compound)) {
+            compound <- list(compound)
+        }
+    }
+    
+    # Number of dimensions
     d <- length(w)
     
     # Computing the logdet of vcov
     logdet <- calc_logdet(vcov)
     
-    #If predict is not included, then use mu, and 
+    # If predict is not included, then use mu, and 
     if(is.null(predict)) { 
         if(is.null(mu)) {
             stop("Please provide either mu or predict.")
@@ -254,12 +296,39 @@ QGmvpsi <- function(mu = NULL,
         )$integral
     })
     
-    #Applyign the mask if provided
+    # Applying the mask if provided
     if (!is.null(mask)) {Psi[t(mask)] <- NA}
     
     Psi <- apply(Psi, 1, mean, na.rm = TRUE)
-    #Make Psi a matrix
-    Psi <- diag(Psi)
+    
+    # Need to format Psi correctly in the case we have compound traits
+    if (!is.null(compound)) {
+        if (is.unsorted(unlist(compound))) {
+            stop("Please sort the elements provided to 'compound'.")
+        }
+        
+        d_out   <- d - length(compound)                 # Dimensions out (number of rows)
+        tmp     <- matrix(0, nrow = d_out, ncol = d)    # tmp will become Psi matrix
+        i       <- 1                                    # Row of tmp
+        j       <- 1                                    # Column of tmp
+        c       <- 1                                    # Index of compound
+        for (i in 1:d_out) {
+            if(j %in% unlist(compound)) {
+                tmp[i, compound[[c]]] <- Psi[compound[[c]]]
+                j <- j + length(compound[[c]])
+                c <- c + 1
+            } else {
+                tmp[i, j] <- Psi[j]
+                j <- j + 1
+            }
+            i <- i + 1
+        }
+        Psi <- tmp
+    } else {
+        # Make Psi a diagonal matrix
+        Psi <- diag(Psi)
+    }    
+    
     #print Psi
     return(Psi)
 }
@@ -276,21 +345,19 @@ QGmvparams <- function(mu = NULL,
                        n.obs = NULL,
                        theta = NULL,
                        verbose = TRUE,
+                       compound = NULL,
                        mask = NULL)
 {
-    #Error if ordinal is used (multivariate code not available yet)
+    # Error if ordinal is used (multivariate code not available yet)
     if ("ordinal" %in% models) {
         stop("Multivariate functions of QGglmm are 
              not able to address ordinal traits (yet?).")
     }
     
-    #Setting the integral width according to vcov (lower mean-w, upper mean+w)
+    # Setting the integral width according to vcov (lower mean-w, upper mean+w)
     w <- sqrt(diag(vcv.P)) * width
     
-    #Number of dimensions
-    d <- length(w)
-    
-    #If predict is not included, then use mu, and 
+    # If predict is not included, then use mu, and 
     if(is.null(predict)) {
         if(is.null(mu)) {
             stop("Please provide either mu or predict.")
@@ -299,20 +366,8 @@ QGmvparams <- function(mu = NULL,
         }
     }
     
-    #Dimensions checks
-    if (length(models) != d | 
-        nrow(vcv.G) != d | 
-        ncol(vcv.G) != d | 
-        nrow(vcv.P) != d | 
-        ncol(vcv.P) != d | 
-        ncol(predict) != d) 
-    {
-        stop("Dimensions are incompatible, 
-             please check the dimensions of the input.")
-    }
-    
-    #Defining the link/distribution functions
-    #If a vector of names were given
+    # Defining the link/distribution functions
+    # If a vector of names were given
     if (!(is.list(models))) {
         if (!is.character(models)) {
             stop("models should be either a list or a vector of characters")
@@ -334,6 +389,15 @@ QGmvparams <- function(mu = NULL,
         list.theta <- rep(list(NULL), length(models))
         list.theta[negbin] <- theta
         
+        # Need to account for compound models
+        comp_models <- models %in% c("ZIPoisson.log.logit", "HuPoisson.log.logit")
+        if (any(comp_models)) {
+            # Complicated way to compute the places of each 2-dimensional compound trait
+            # (add one dim each time a compound trait is added, starts with 0 obviously)
+            comp_models <- which(comp_models) + seq(length.out = sum(comp_models)) - 1
+            compound <- lapply(comp_models, function(i) {c(i, i + 1)})
+        }
+        
         models <- mapply(function(name, n.obs, theta) {
                             QGlink.funcs(name = name, n.obs = n.obs, theta = theta)
                          },
@@ -343,30 +407,71 @@ QGmvparams <- function(mu = NULL,
                          SIMPLIFY   = FALSE)
     }
     
-    #Now we can compute the needed functions
+    # Setting up compound if needed 
+    # (ignored if compound already set up using model names above)
+    if (!is.null(compound)) {
+        if (!is.list(compound)) {
+            compound <- list(compound)
+        }
+    }
+    
+    # Number of dimensions
+    d_in <- length(w)
+    d_out <- d_in - length(compound)
+    
+    # Dimensions checks
+    if (length(models) != d_out |
+        nrow(vcv.G) != d_in | 
+        ncol(vcv.G) != d_in | 
+        nrow(vcv.P) != d_in | 
+        ncol(vcv.P) != d_in | 
+        ncol(predict) != d_in) 
+    {
+        stop("Dimensions are incompatible, 
+             please check the dimensions of the input.")
+    }
+    
+    # Now we can compute the needed functions
+    if (!is.null(compound)) {
+        c <- 1
+        i <- 1
+        mod_indices <- list()
+        while (i <= d_in) {
+            if (i %in% unlist(compound)) {
+                mod_indices <- c(mod_indices, compound[c])
+                i <- i + length(compound[[c]])
+                c <- c + 1
+            } else {
+                mod_indices <- c(mod_indices, list(i))
+                i <- i + 1
+            }
+        }
+    } else {
+        mod_indices <- as.list(seq(1, length(models)))
+    }
     inv.links <- function(mat) {
-        res <- mat
-        for (i in 1:d) {
-            res[i, ] <- models[[i]]$inv.link(mat[i, ])
+        res <- matrix(0, nrow = d_out, ncol = ncol(mat))
+        for (i in 1:d_out) {
+            res[i, ] <- models[[i]]$inv.link(mat[mod_indices[[i]], , drop = FALSE])
         }
         res
     }
     var.funcs <- function(mat) {
-        res <- mat
-        for (i in 1:d) {
-            res[i, ] <- models[[i]]$var.func(mat[i, ])
+        res <- matrix(0, nrow = d_out, ncol = ncol(mat))
+        for (i in 1:d_out) {
+            res[i, ] <- models[[i]]$var.func(mat[mod_indices[[i]], , drop = FALSE])
         }
         res
     }
     d.inv.links <- function(mat) {
-        res <- mat
-        for (i in 1:d) {
-            res[i, ] <- models[[i]]$d.inv.link(mat[i, ])
+        res <- matrix(0, nrow = d_in, ncol = ncol(mat))
+        for (i in 1:d_out) {
+            res[mod_indices[[i]], ] <- models[[i]]$d.inv.link(mat[mod_indices[[i]], , drop = FALSE])
         }
         res
     }
     
-    #Computing the observed mean
+    # Computing the observed mean
     if (verbose) {
         print("Computing observed mean...")
     }
@@ -376,9 +481,10 @@ QGmvparams <- function(mu = NULL,
                       predict   = predict,
                       rel.acc   = rel.acc,
                       width     = width,
+                      compound  = compound,
                       mask      = mask)
     
-    #Computing the variance-covariance matrix
+    # Computing the variance-covariance matrix
     if (verbose) {
         print("Computing variance-covariance matrix...")
     }
@@ -391,6 +497,7 @@ QGmvparams <- function(mu = NULL,
                         rel.acc     = rel.acc,
                         width       = width,
                         exp.scale   = FALSE,
+                        compound    = compound,
                         mask        = mask)
     
     if (verbose) {
@@ -402,13 +509,14 @@ QGmvparams <- function(mu = NULL,
                 vcov        = vcv.P,
                 d.link.inv  = d.inv.links,
                 predict     = predict, 
-                rel.acc     = rel.acc, 
+                rel.acc     = rel.acc,
                 width       = width,
+                compound    = compound,
                 mask        = mask)
     
     vcv.G.obs <- Psi %*% vcv.G %*% t(Psi)
     
-    #Return a list of QG parameters on the observed scale
+    # Return a list of QG parameters on the observed scale
     return(list(mean.obs    = z_bar,
                 vcv.P.obs   = vcv.P.obs,
                 vcv.G.obs   = vcv.G.obs))

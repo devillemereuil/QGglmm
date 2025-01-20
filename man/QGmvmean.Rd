@@ -7,7 +7,7 @@ This function calculates the multivariate phenotypic mean on the observed scale 
 }
 \usage{
 QGmvmean(mu = NULL, vcov, link.inv, predict = NULL,
-         rel.acc = 0.001, width = 10, mask = NULL) 
+         rel.acc = 0.001, width = 10, compound = NULL, mask = NULL) 
 }
 \arguments{
   \item{mu}{Vector of latent intercepts estimated from a GLMM (ignored if predict is not \code{NULL}). (numeric)}
@@ -16,13 +16,14 @@ QGmvmean(mu = NULL, vcov, link.inv, predict = NULL,
   \item{predict}{Optional matrix of predicted values on the latent scale (each trait in each column). The latent predicted values must be computed while only accounting for the fixed effects (marginal to the random effects). (numeric)}
   \item{rel.acc}{Relative accuracy of the integral approximation. (numeric)}
   \item{width}{Parameter for the integral computation. The default value is 10, which should be sensible for most models. (numeric)}
+  \item{compound}{A vector of two indices, or list of such vectors (e.g. \code{list(c(1,2), c(4,5))}), providing the locations of "compound" distributions in the input (i.e. the dimensions that need to be "merged" into one in the output). The input must be ordered so that the first component (1 and 4 in the example above) is the latent trait for positive values and the second (2 and 5 in the example above) is the latent trait for the zero-component. (integer of length 2, or list of such vectors)}
   \item{mask}{Masking filter for removing predictions that don't exist in the population (e.g. female predictions for males for a sex-based bivariate model). Should the same dimensions as \code{predict} and values should be \code{FALSE} when the predictions should be filtered out.}
 }
 
 \details{
 This function needs the multivariate latent population mean (\code{mu}) or the marginal predicted values (\code{predict}) and the total latent variance-covariance matrix (\code{vcov}) to compute the observed phenotypic mean.
 
-To do so, it also requires the inverse functions of the link functions (\code{link.inv}). For an analysis with d traits, the function given to the \code{link.inv} argument should use a vector of length d and yield a vector of length d (see Example below).
+To do so, it also requires the inverse functions of the link functions (\code{link.inv}). For an analysis with d traits, the function given to the \code{link.inv} argument should use a vector of length d and yield a vector of length d (see Example below). When using \code{compound}, the functions corresponding to the compound distribution(s) should accept a 2-rows input and yield a vector.
 }
 \value{This function yields the mutlivariate phenotypic mean on the observed scale. (numeric)}
 

@@ -420,6 +420,7 @@ QGmvicc <- function(mu = NULL,
                     n.obs = NULL,
                     theta = NULL,
                     verbose = TRUE,
+                    compound = NULL,
                     mask = NULL) 
 {
     # Error if ordinal is used (multivariate code not available yet)
@@ -432,9 +433,6 @@ QGmvicc <- function(mu = NULL,
     #(lower mean - w, upper mean + w)
     w1 <- sqrt(diag(vcv.P - vcv.comp)) * width
     w2 <- sqrt(diag(vcv.comp)) * width
-    
-    # Number of dimensions
-    d <- length(w1)
     
     # If no fixed effects were included in the model
     if(is.null(predict)) {
@@ -468,34 +466,84 @@ QGmvicc <- function(mu = NULL,
         list.theta <- rep(list(NULL), length(models))
         list.theta[negbin] <- theta
         
+        # Need to account for compound models
+        comp_models <- models %in% c("ZIPoisson.log.logit", "HuPoisson.log.logit")
+        if (any(comp_models)) {
+            # Complicated way to compute the places of each 2-dimensional compound trait
+            # (add one dim each time a compound trait is added, starts with 0 obviously)
+            comp_models <- which(comp_models) + seq(length.out = sum(comp_models)) - 1
+            compound <- lapply(comp_models, function(i) {c(i, i + 1)})
+        }
+        
         models <- mapply(function(name, n.obs, theta) {
-            QGlink.funcs(name = name, n.obs = n.obs, theta = theta)
-        },
+                            QGlink.funcs(name = name, n.obs = n.obs, theta = theta)
+                         },
                          name       = models,
                          n.obs      = list.n.obs,
                          theta      = list.theta,
                          SIMPLIFY   = FALSE)
     }
     
+    # Setting up compound if needed 
+    # (ignored if compound already set up using model names above)
+    if (!is.null(compound)) {
+        if (!is.list(compound)) {
+            compound <- list(compound)
+        }
+    }
+    
+    # Number of dimensions
+    d_in <- length(w1)
+    d_out <- d_in - length(compound)
+    
+    # Dimensions checks
+    if (length(models) != d_out |
+        nrow(vcv.comp) != d_in | 
+        ncol(vcv.comp) != d_in | 
+        nrow(vcv.P) != d_in | 
+        ncol(vcv.P) != d_in | 
+        ncol(predict) != d_in) 
+    {
+        stop("Dimensions are incompatible, 
+             please check the dimensions of the input.")
+    }
+    
     # Now we can compute the needed functions
+    if (!is.null(compound)) {
+        c <- 1
+        i <- 1
+        mod_indices <- list()
+        while (i <= d_in) {
+            if (i %in% unlist(compound)) {
+                mod_indices <- c(mod_indices, compound[c])
+                i <- i + length(compound[[c]])
+                c <- c + 1
+            } else {
+                mod_indices <- c(mod_indices, list(i))
+                i <- i + 1
+            }
+        }
+    } else {
+        mod_indices <- as.list(seq(1, length(models)))
+    }
     inv.links <- function(mat) {
-        res <- mat
-        for (i in 1:d) {
-            res[i, ] <- models[[i]]$inv.link(mat[i, ])
+        res <- matrix(0, nrow = d_out, ncol = ncol(mat))
+        for (i in 1:d_out) {
+            res[i, ] <- models[[i]]$inv.link(mat[mod_indices[[i]], , drop = FALSE])
         }
         res
     }
     var.funcs <- function(mat) {
-        res <- mat
-        for (i in 1:d) {
-            res[i, ] <- models[[i]]$var.func(mat[i, ])
+        res <- matrix(0, nrow = d_out, ncol = ncol(mat))
+        for (i in 1:d_out) {
+            res[i, ] <- models[[i]]$var.func(mat[mod_indices[[i]], , drop = FALSE])
         }
         res
     }
     d.inv.links <- function(mat) {
-        res <- mat
-        for (i in 1:d) {
-            res[i, ] <- models[[i]]$d.inv.link(mat[i, ])
+        res <- matrix(0, nrow = d_in, ncol = ncol(mat))
+        for (i in 1:d_out) {
+            res[mod_indices[[i]], ] <- models[[i]]$d.inv.link(mat[mod_indices[[i]], , drop = FALSE])
         }
         res
     }
@@ -511,6 +559,7 @@ QGmvicc <- function(mu = NULL,
                       predict   = predict,
                       rel.acc   = rel.acc,
                       width     = width,
+                      compound  = compound,
                       mask      = mask)
     
     # Computing the variance-covariance matrix
@@ -526,6 +575,7 @@ QGmvicc <- function(mu = NULL,
                         rel.acc     = rel.acc,
                         width       = width,
                         exp.scale   = FALSE,
+                        compound    = compound,
                         mask        = mask)
     
     # Computing the logdet of vcv.P - vcv.comp
@@ -534,8 +584,7 @@ QGmvicc <- function(mu = NULL,
     # Function giving the conditional expectancy
     cond_exp <- function(t) {
         apply(t, 2, function(col) {
-            apply(
-                apply(predict, 1,
+                m <- apply(predict, 1,
                       function(pred_i) {
                           cubature::hcubature(
                               f  = function(x) {
@@ -544,19 +593,20 @@ QGmvicc <- function(mu = NULL,
                                                             pred_i + col, 
                                                             vcv.P - vcv.comp, 
                                                             logdet.cond), 
-                                                 d),
-                                             nrow = d,
+                                                 d_out),
+                                             nrow = d_out,
                                              byrow = TRUE)
                               },
                               lowerLimit = pred_i + col - w1,
                               upperLimit = pred_i + col + w1,
-                              fDim       = d,
+                              fDim       = d_out,
                               tol        = rel.acc,
                               absError   = 0.0001,
                               vectorInterface = TRUE
                           )$integral
-                      }
-                      ), 1, mean)
+                      })
+                m <- matrix(m, nrow = d_out)   # Needed for only one compound trait
+                apply(m, 1, mean)
         })
     }
     
@@ -571,27 +621,28 @@ QGmvicc <- function(mu = NULL,
     v <- cubature::hcubature(
         f  = function(x) {
             vec_sq_uptri(cond_exp(x)) *
-            matrix(rep(vec_mvnorm(x, rep(0, d), vcv.comp, logdet.comp), (d^2 + d)/2),
-                   nrow = (d^2 + d)/2,
+            matrix(rep(vec_mvnorm(x, rep(0, d_in), vcv.comp, logdet.comp), (d_out^2 + d_out)/2),
+                   nrow = (d_out^2 + d_out)/2,
                    byrow = TRUE)
         },
         lowerLimit = -w2,
         upperLimit = w2,
-        fDim       = (d^2 + d)/2,
+        fDim       = (d_out^2 + d_out)/2,
         tol        = rel.acc,
         absError   = 0.0001,
         vectorInterface = TRUE
     )$integral
+    v <- matrix(v, nrow = (d_out^2 + d_out) / 2)   # Needed for only one compound trait
     
     # Applying the mask if provided
     if(!is.null(mask)) {
         mask2 <- matrix(FALSE, ncol = ncol(v), nrow = nrow(v))
-        mask2[((1:d) * ((1:d) + 1)) / 2, ] <- t(mask)
+        mask2[((1:d_out) * ((1:d_out) + 1)) / 2, ] <- t(mask)
         v[mask2] <- NA
     }
     
     # Creating the VCV matrix
-    vcv <- matrix(NA, d, d)
+    vcv <- matrix(NA_real_, d_out, d_out)
     vcv[upper.tri(vcv, diag = TRUE)] <- v
     vcv[lower.tri(vcv)] <- vcv[upper.tri(vcv)]
     

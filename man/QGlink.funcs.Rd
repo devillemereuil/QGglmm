@@ -20,6 +20,8 @@ QGlink.funcs(name, n.obs = NULL, theta = NULL)
       \item{"Poisson.sqrt"} Poisson distribution with a square-root link
       \item{"negbin.log"} Negative - Binomial distribution wiht a log link (require the parameter \code{theta})
       \item{"negbin.sqrt"} Negative - Binomial distribution with a square-root link (require the parameter \code{theta})
+      \item{"ZIPoisson.log.logit"} Zero-inflated Poisson distribution with a log link for the Poisson part and logit link for the ZI part (compound distribution)
+      \item{"HuPoisson.log.logit"} Hurdle Poisson distribution with a log link for the Poisson part and logit link for the hurdle part (compound distribution)
       \item{"ordinal"} Multiple threshold model for ordinal categorical traits (require the parameter \code{cut.points})
     }}
   \item{n.obs}{Optional parameter required for "binomN" distributions (number of "trials"). See \code{\link{QGparams}}. (numeric)}
@@ -32,7 +34,8 @@ The inverse-link function is the inverse function of the link function. For exam
 
 The distribution variance function is a function yielding the variance of the distribution for a given latent trait. For a Poisson distribution, the variance is equal to the mean, hence the variance function is equal to the inverse-link function. For a binomial distribution, the variance is N * p(l) * (1 - p(l)), where p is the inverse-link function.
 
-For some distributions, such as "binomN" and "negbin", some extra-parameters are required.
+For some distributions, such as "binomN" and "negbin", some extra-parameters are required. The "compound" distributions (for now, zero-inflated and hurdle Poisson) functions take a 2-rows input instead of a vector (because they have two latent traits).
+
 }
 \value{
 This function yields a list of function:
